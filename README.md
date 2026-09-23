@@ -9,6 +9,13 @@ Noul 判断能力，通过 HTTP 为多个客户端共享模型。
 HTTP 服务、Sequence Builder 和答案后处理尚未实现。资源初始化成功后仍以非零码退出，
 不监听端口；当前没有服务 Docker 镜像。Linux 真实运行结果见 [#8 验收记录](docs/validation/model-loader.md)。
 
+#9 已提供[模型无关的 System One 类型与校验](src/system_one.rs)：请求规范化、
+完整响应 DTO、静态类型化错误，以及数字词法/嵌套顺序保留。
+`Request::from_slice(body, &limits)` 接收完整 body；`state`/`instructions` 保留 `RawValue`，
+后续 serializer 通过 `system_one::json::view` 按层读取，得到后值覆盖、首次位置不变的对象。
+原始数字不直接作为模型输入文字；Python dumps 对照和文本渲染留给 #11。
+可运行 `rtk cargo test --locked --test system_one` 验证该边界，不需要模型。
+
 ## 文档
 
 - [服务方案与验收条件](docs/laya-server-plan.md)

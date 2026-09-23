@@ -9,6 +9,8 @@ use std::{
     time::{Duration, Instant},
 };
 
+use laya_server::system_one::Limits;
+
 #[derive(Debug)]
 pub(crate) struct Config {
     pub model: PathBuf,
@@ -30,6 +32,7 @@ pub(crate) struct Config {
 impl Config {
     /// Parse option/value pairs without the executable name; errors contain only static text.
     pub fn from_args(args: impl IntoIterator<Item = OsString>) -> Result<Self, &'static str> {
+        let limits = Limits::default();
         let mut config = Self {
             model: PathBuf::new(),
             ort_library: PathBuf::from("libonnxruntime.so"),
@@ -37,10 +40,10 @@ impl Config {
             threads: 8,
             inter_op_threads: 1,
             max_concurrency: 2,
-            max_body_bytes: 1_048_576,
-            max_questions: 16,
-            max_options: 32,
-            max_json_depth: 64,
+            max_body_bytes: limits.max_body_bytes,
+            max_questions: limits.max_questions,
+            max_options: limits.max_options,
+            max_json_depth: limits.max_json_depth,
             queue_capacity: 32,
             queue_timeout: Duration::from_secs(30),
             inference_timeout: Duration::from_secs(120),

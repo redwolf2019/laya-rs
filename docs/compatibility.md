@@ -2,7 +2,9 @@
 
 版本日期：2026-09-23。适用任务：[冻结契约 #4](https://github.com/redwolf2019/laya-rs/issues/4)。
 本文是后续实现和验收的规范；[服务方案](laya-server-plan.md)说明实施顺序。
-当前只冻结行为，尚未实现服务、生成真实模型 golden 或验证以下数值阈值。
+本文冻结行为；#9 已实现模型无关的类型与输入边界，见
+[`src/system_one.rs`](../src/system_one.rs) 及 [`tests/system_one.rs`](../tests/system_one.rs)。
+尚未实现 HTTP 服务、生成完整响应真实模型 golden 或验证以下完整链路数值阈值。
 
 ## 1. 固定依据与边界
 
