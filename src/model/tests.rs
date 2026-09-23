@@ -134,13 +134,33 @@ fn linux_real_model_smoke() {
 }
 
 #[test]
-fn model_config_validates_all_temperatures_and_task_budgets() {
+fn model_config_preserves_default_type_and_bucket_temperatures() {
     let defaults = ModelConfig::from_slice(br#"{"max_len":1024,"head_max_len":256}"#).unwrap();
-    assert_eq!(defaults.temperature, [1.0; 3]);
-    assert!(defaults.temperature_by_options.is_empty());
+    let score = laya_server::system_one::Criteria::Score(vec![String::new(); 3]);
+    let noul = laya_server::system_one::Criteria::Noul {
+        false_description: String::new(),
+        true_description: String::new(),
+    };
+    assert_eq!(defaults.calibration.temperature(&score), 1.0);
+    assert_eq!(defaults.calibration.temperature(&noul), 1.0);
     let custom = ModelConfig::from_slice(br#"{"max_len":1024,"head_max_len":256,"temperature":[0.5,2,3],"temperature_by_options":{"choice:2":0.25}}"#).unwrap();
-    assert_eq!(custom.temperature, [0.5, 2.0, 3.0]);
-    assert_eq!(custom.temperature_by_options["choice:2"], 0.25);
+    let choice = laya_server::system_one::Criteria::Choice(vec![
+        laya_server::system_one::ChoiceOption {
+            key: "a".into(),
+            description: None,
+        },
+        laya_server::system_one::ChoiceOption {
+            key: "b".into(),
+            description: None,
+        },
+    ]);
+    assert_eq!(custom.calibration.temperature(&choice), 0.25);
+    assert_eq!(custom.calibration.temperature(&score), 2.0);
+    assert_eq!(custom.calibration.temperature(&noul), 3.0);
+}
+
+#[test]
+fn model_config_validates_all_temperatures_and_task_budgets() {
     let base = serde_json::json!({"max_len":1024,"head_max_len":256});
     for (key, value) in [
         ("max_len", serde_json::json!(8192)),

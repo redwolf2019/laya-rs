@@ -355,7 +355,7 @@ fn noul(raw: Option<&RawValue>) -> Result<Criteria, RequestError> {
     })
 }
 
-/// Full success envelope. Values are supplied by the future postprocessor, not inferred here.
+/// Full success envelope. Values are supplied by the postprocessor, not inferred here.
 #[derive(Debug, Serialize)]
 pub struct Response {
     model: &'static str,

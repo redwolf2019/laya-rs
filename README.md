@@ -6,7 +6,7 @@ A pure Rust inference runtime and HTTP server for Laya System-1 models.
 Noul 判断能力，通过 HTTP 为多个客户端共享模型。
 
 **当前状态：Rust 已加载并校验固定 bundle、Tokenizer 和 CPU Session，启动时执行真实张量探针。**
-Sequence Builder 已通过固定 tokenizer 的逐 token 对照；HTTP 服务和答案后处理尚未实现。资源初始化成功后仍以非零码退出，
+Sequence Builder 已通过固定 tokenizer 的逐 token 对照；答案后处理已通过固定 logits 对照；HTTP 服务尚未实现。资源初始化成功后仍以非零码退出，
 不监听端口；当前没有服务 Docker 镜像。Linux 真实运行结果见 [#8 验收记录](docs/validation/model-loader.md)。
 
 #9 已提供[模型无关的 System One 类型与校验](src/system_one.rs)：请求规范化、
@@ -23,6 +23,12 @@ Sequence Builder 已通过固定 tokenizer 的逐 token 对照；HTTP 服务和�
 CPU 输入缓冲区及 shape/usage，复用加载器的 tokenizer 和真实任务预算。
 全部 21 个官方样例及补充预算边界的 token、marker、mask、usage 已精确对照；
 命令与范围见 [序列验收记录](docs/validation/sequence.md)。普通 CI 不下载 tokenizer。
+
+#13 的 [`Calibration::response`](src/postprocess.rs) 校验 float32 输出并构造完整答案，
+复用类型/桶温度、稳定 softmax、官方四位舍入和未再次处理的 action 概率。
+`rtk cargo test --locked --test postprocess` 不依赖模型；对照与失败记录见
+[后处理验收](docs/validation/postprocess.md)。固定 ONNX 的 long-padding Score 仍为
+4.5306，官方为 4.5307；跨后端完整答案门槛尚未通过。
 
 ## 文档
 

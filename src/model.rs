@@ -6,7 +6,7 @@
 use std::{error::Error as StdError, fmt, fs::File, io::Read, path::Path};
 
 use crate::config::Config;
-use laya_server::sequence::SequenceBuilder;
+use laya_server::{postprocess::Calibration, sequence::SequenceBuilder};
 use ort::{
     session::Session,
     value::{Tensor, TensorElementType, ValueType},
@@ -22,14 +22,15 @@ mod tests;
 pub(crate) struct ModelConfig {
     pub max_len: usize,
     pub head_max_len: usize,
-    #[serde(default = "default_temperature")]
-    pub temperature: [f64; 3],
-    #[serde(default)]
-    pub temperature_by_options: std::collections::BTreeMap<String, f64>,
-}
-
-fn default_temperature() -> [f64; 3] {
-    [1.0; 3]
+    #[serde(flatten)]
+    #[cfg_attr(
+        not(test),
+        expect(
+            dead_code,
+            reason = "validated at startup; execution entry point is tracked in #14"
+        )
+    )]
+    pub calibration: Calibration,
 }
 
 impl ModelConfig {
@@ -39,14 +40,6 @@ impl ModelConfig {
         let expected = manifest()?.config;
         if config.max_len != expected.max_len || config.head_max_len != expected.head_max_len {
             return Err(Error::new("model token budgets differ from manifest"));
-        }
-        if config
-            .temperature
-            .iter()
-            .chain(config.temperature_by_options.values())
-            .any(|value| !value.is_finite() || *value <= 0.0)
-        {
-            return Err(Error::new("model temperatures must be finite and positive"));
         }
         Ok(config)
     }

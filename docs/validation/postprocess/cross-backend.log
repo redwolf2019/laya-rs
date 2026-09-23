@@ -1,0 +1,21 @@
+   Compiling laya-server v0.1.0 (/Users/redwolf/MyProjects/laya-rs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.60s
+     Running tests/postprocess.rs (target/debug/deps/postprocess-c1d46c10bc62c58a)
+
+running 1 test
+
+thread 'onnx_outputs_match_official_answers_exactly' (15613253) panicked at tests/postprocess.rs:282:13:
+assertion `left == right` failed: long-padding/field[0]/field[1]/field[3]: numeric difference
+  left: Some(4.5306)
+ right: Some(4.5307)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test onnx_outputs_match_official_answers_exactly ... FAILED
+
+failures:
+
+failures:
+    onnx_outputs_match_official_answers_exactly
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 9 filtered out; finished in 0.02s
+
+error: test failed, to rerun pass `--test postprocess`

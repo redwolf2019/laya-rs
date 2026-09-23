@@ -1,5 +1,8 @@
 # System One 官方参考 fixtures（#10）
 
+#13 [后处理测试](../postprocess.rs) 消费官方及 ONNX 两组固定输出，对照各自官方后处理
+重放结果，另保留跨后端完整答案失败门槛；范围和命令见[后处理验收](../../docs/validation/postprocess.md)。
+
 #11 的文本消费测试在 [fixtures.rs](../fixtures.rs) 中对全部 21 个请求的 `state_text`
 和各行 `instructions_text` 做 UTF-8 字节比较；测试从 `request_json` 原文解析。
 生产入口为 `Request::state_text()` 与 `Question::instructions_text()`，共享有序容器、
