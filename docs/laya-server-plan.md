@@ -1,7 +1,10 @@
 # Laya Rust HTTP Server 方案
 
-状态：待实现。本文根据用户提供的方案整理；本次只初始化工程配置与文档。
+状态：服务待实现，MVP 行为契约已冻结，尚未通过真实模型验收。
 版本日期：2026-09-23。
+
+字段、序列、校准、HTTP 错误、资源限制和验收阈值以
+[MVP 兼容契约](compatibility.md)为准；本文记录目标、工程边界与实施顺序。
 
 ## 1. 目标与边界
 
@@ -17,7 +20,8 @@ Laya multilingual 模型，为多个客户端回答类型化问题。
 
 运行服务不需要 Python、Node.js、PyTorch、CUDA 或 GPU。
 应用实现使用 Rust；ONNX Runtime 自身是原生运行库，因此不承诺整个二进制依赖栈
-仅包含 Rust。使用现成 ONNX bundle，不在本项目的构建或启动流程中引入 Python 导出。
+仅包含 Rust。模型准备遵循[兼容契约第 6 节](compatibility.md)，允许必要时独立离线导出；
+Python 仅用于模型准备和开发期对照，不进入应用构建、启动或推理。
 
 Laya 的职责是有限答案空间上的判断，不是聊天或文本生成，也不替代通用 LLM。
 典型用途包括工具路由、工单分类、任务风险评分和是否升级到人工或更大模型的判断。
@@ -56,10 +60,9 @@ models/multilingual/
     └── tokenizer_config.json
 ```
 
-预导出 bundle 的候选来源为
-[receptron/laya-onnx](https://huggingface.co/receptron/laya-onnx)，
-选择 `multilingual` 子目录。实施前固定 revision，确认文件齐全、许可证、
-文件校验值及 ONNX Runtime CPU 兼容性。本次不下载或提交权重。
+默认 multilingual 的固定 checkpoint、ONNX 文件布局与接收门槛见[兼容契约第 6 节](compatibility.md)。
+原候选 receptron/laya-onnx 的已核实 revision 只有英文，不能用于中文 MVP；
+必要时从固定官方 checkpoint 独立离线导出，并核验实际文件 SHA-256、许可证与 CPU 对照。权重不入 Git。
 
 ## 4. 技术栈与模块
 
@@ -67,7 +70,9 @@ models/multilingual/
 ort / ONNX Runtime、Tracing 和 Prometheus 指标。
 Tower / tower-http 以及 ndarray 按实际使用需要引入，不为目录完整而添加依赖。
 
-原方案中的版本号是选型线索，不是已经验证的依赖组合。
+候选组合为 Rust 1.98.1、ort 2.0.0-rc.13、ONNX Runtime CPU 1.28.0、tokenizers 0.23.2，
+依据为[固定运行库研究](https://github.com/redwolf2019/laya-rs/blob/ab20013f6b37a3d3a84368c1cfb464a9fdb619d6/docs/research/mvp-runtime.md)。
+这些是选型线索，不是已经验证的依赖组合。
 实施时确认 `ort` 实际发布版本、对应 ONNX Runtime ABI 和 Linux CPU 支持，
 选择兼容组合并提交 `Cargo.lock`。只启用所需的 CPU 与库功能。
 
@@ -100,8 +105,9 @@ Tower / tower-http 以及 ndarray 按实际使用需要引入，不为目录完�
 | `GET /readyz` | 模型、Tokenizer、ORT Session 均可用于推理时就绪 |
 | `GET /metrics` | Prometheus 文本指标 |
 
-`/v1/system-one` 是本项目约定路径。若目标 Jev 客户端使用不同路径，
-在核对协议后提供对应别名；仅路径相似不能证明完整兼容。
+`/v1/system-one` 是本项目约定路径，MVP 不新增未经证实的 Jev 路径别名。
+一次请求原子返回全部答案或错误；不返回部分答案，不自动重试。
+成功响应的 `model` 固定为官方值 `"rl-agent"`。
 
 请求示例：
 
@@ -141,15 +147,29 @@ Tower / tower-http 以及 ndarray 按实际使用需要引入，不为目录完�
 | Score | `score` 为等级索引的期望值，范围 0 到等级数减 1；附等级分布 |
 | Noul | `noul` 为 P(true)，范围 0 到 1 |
 
-兼容性不仅限于上面的简化字段。
-[参考类型定义](https://raw.githubusercontent.com/receptron/laya/main/src/types.ts)
-还包含 Choice / Score 的 `confidence`、Score 的 `legend` 和答案的
-`rl_agent.act_probability`。完整响应、请求的可选形式、舍入规则和错误语义
-必须以固定版本的参考实现为依据，不将省略字段的示例当作完整协议。
+完整响应还包括 Choice / Score 的 `confidence`、Score 的 `legend` 和答案的
+`rl_agent.act_probability`。采用[兼容契约第 1 节](compatibility.md)固定的官方源码语义；
+TypeScript 移植只用于实现参考，HTTP 路径和错误映射属于本项目约定。
 
-对空问题集、无候选项、无评分等级、不支持的类型、非法字段类型以及超出限制的
-请求返回明确错误。实施时明确最大请求体、问题数、选项数、排队容量和等待时限；
-这些资源边界不能只依赖模型的 token 截断。
+完整字段、默认值、Choice 重复项折叠与 JSON 规则见[兼容契约第 2–5 节](compatibility.md)。
+state/instructions 接受任意 JSON 类型；以 CPython 3.11.16 为解码/渲染参考，保留整数精度、
+浮点语义和对象顺序。重复对象键以后值覆盖并保留首次位置；未知字段忽略但仍受资源/语法校验。
+拒绝孤立 surrogate 与非标准 NaN/Infinity 字面量；合法指数溢出/下溢按 Python 输入文本语义处理。
+
+默认 body 最多 1 MiB、1–16 个问题、规范化后 Choice/Score 2–32 项、Noul 2 项、JSON 深度 64。
+这些资源边界独立于 token 截断；可调 CLI 和校验次序见[兼容契约第 7 节](compatibility.md)。
+统一错误体为 `{"error":{"code":"...","message":"..."}}`，只用静态文本或静态字段路径提示：
+
+| HTTP | code | 条件 |
+| --- | --- | --- |
+| 400 | `invalid_request` | JSON/字段/问题非法，数量或深度越界 |
+| 413 | `payload_too_large` | body 超限 |
+| 415 | `unsupported_media_type` | 媒体类型不符 |
+| 429 | `queue_full` | 等待队列已满 |
+| 503 | `queue_timeout` | 排队超时 |
+| 503 | `unavailable` | 未就绪或退出 |
+| 504 | `inference_timeout` | 执行等待超时 |
+| 500 | `inference_failed` | 模型或数值失败 |
 
 ## 6. Sequence Builder 与兼容性
 
@@ -171,10 +191,8 @@ state [SEP]
 - 一个请求中的多问题批处理布局，以及模型实际要求的其他输入张量。
 - input_tokens 的统计边界、输出字段、置信度和 act_probability 的计算。
 
-参考来源：
-[Laya 官方实现](https://github.com/he-jev/laya) 与
-[ONNX 移植的序列实现](https://raw.githubusercontent.com/receptron/laya/main/src/sequence.ts)。
-参考代码只用于理解和验证，部署服务不调用 Python 或 Node.js。
+固定参考来源及序列算法见[兼容契约第 1、3 节](compatibility.md)。
+参考代码仅用于独立模型准备和开发期验证，部署服务不调用 Python 或 Node.js。
 如移植代码，遵循来源许可证并保留必要归属。
 
 ## 7. 校准和后处理
@@ -186,9 +204,11 @@ softmax 需要采用数值稳定的实现，拒绝非有限输出，温度必须
 参考 `laya_config.json` 类型包含 `temperature` 和 `temperature_by_options`，
 不能为了统一默认值而覆盖已经存在的校准参数。
 
-原方案中的 `temperature = 1.0` 仅适合作为明确选择的未额外校准基线。
-若需要额外的业务校准，应记录参数来源并验证与兼容模式的差异。
-最终温度选择行为属于模型对照验收的一部分。
+缺少 temperature 时按官方回退 `[1,1,1]`，缺少选项表时回退 `{}`；
+桶覆盖优先于类型温度，不覆盖 bundle 已有值。非法温度启动失败。
+按官方 Python round 舍入四位；Choice 在未舍入概率上取最大，并列取最早项。
+action 头输出不作四位舍入，ONNX act_probs 不重复 softmax。
+完整公式与真实对照阈值见[兼容契约第 5、9 节](compatibility.md)，MVP 不引入业务再校准。
 
 概率不等于对单次结果的保证；危险操作不能仅凭一个未经业务验证的概率阈值执行。
 这类用途应结合业务规则，并按需要转交人工或更大模型。
@@ -203,16 +223,17 @@ softmax 需要采用数值稳定的实现，拒绝非有限输出，温度必须
 | ORT inter-op threads | 1 |
 | 最大推理并发 | 2 |
 
-这是 benchmark 起点，不是对所有硬件通用的最优配置。
+这是保守默认值和 benchmark 起点，不是对所有硬件通用的最优配置。
+队列默认容量 32、等待 30 秒；获槽后的 HTTP 执行等待默认 120 秒，退出 grace 默认 120 秒。
+CLI 暴露这些限制、输入上限、线程数和实际并发；参数与有效性规则见[兼容契约](compatibility.md)。
 
 使用 Tokio Semaphore 限制实际推理并发，推理移入阻塞任务。
 permit 必须覆盖真实 CPU 工作的整个生命周期：即使 HTTP 请求超时或客户端断开，
 仍在运行的阻塞推理也不能提前释放名额。对等待队列提供容量与超时限制。
 
-实施前确认所选 `ort` 版本对 Session 的可变借用和并发执行约束。
-共享模型不等于可以任意并发调用同一个 Session；
-若采用多个 Session 或执行槽，需要测量其额外 RSS 和实际并发收益。
-不能把串行 Session 外的 semaphore 大小直接当作真实推理并发。
+固定候选 ort 的 `Session::run` 要求可变借用；实际并发 2 需要两个独立可运行的执行槽。
+槽持有 permit 到阻塞工作及输出处理结束；HTTP 超时或断开后仍接收后台结果并回收资源。
+测量多 Session 的额外 RSS 和实际并发收益；串行 Session 外 semaphore=2 不构成真实并发 2。
 
 ## 9. 可观测性与生命周期
 
@@ -229,10 +250,14 @@ Prometheus 指标：
 
 指标标签只使用有界类别，不将状态文本、问题正文或任意客户端输入放入标签。
 队列和 inflight 在成功、错误、超时与取消路径均应正确回落。
+每个 System One HTTP 请求计一次，多问题不重复计数；错误按终态原因恰好计一次，
+晚到后台失败不再计同一请求的 errors。请求耗时包含排队，实际 Session run 耗时不含排队；
+HTTP 等待结束后，run 耗时仍观测到真实工作结束。完整边界见[兼容契约第 8 节](compatibility.md)。
 
-模型未加载或加载失败时不能返回就绪成功；如果服务此时仍监听，
-`/readyz` 返回 503。存活与就绪分别表达进程状态和推理可用性。
-退出时停止接受新推理，处理或明确终止等待请求，按约定处理在途工作。
+模型、tokenizer、原生库或 Session 加载失败时，在开始监听前非零退出。
+监听期间不可用或退出时 `/readyz` 返回 503；存活检查不代表推理可用。
+退出停止准入，排队请求结束为 unavailable，在途真实工作最多等 shutdown grace；
+到期记录未完成数量并非零退出整个进程，不声称 CPU 线程已经取消。
 
 ## 10. 启动与部署目标
 
@@ -247,7 +272,8 @@ Prometheus 指标：
 ```
 
 优先完成命令行配置。YAML 是后续按需扩展，不与命令行并行实现两套配置来源。
-线程数和并发数必须大于零，模型路径及监听参数错误应在启动时明确报告。
+线程数和并发数必须大于零，输入/队列/时间参数按[兼容契约第 7 节](compatibility.md)校验；
+模型路径及监听参数错误在启动时明确报告，不开始监听。
 
 使用多阶段 Docker 构建，最终镜像包含服务二进制、所需原生运行库及证书等基础文件。
 模型和 tokenizer 通过只读目录挂载；不在镜像中安装 Python、Node.js、PyTorch
@@ -271,7 +297,7 @@ docker run --cpus=8 --memory=8g -p 8080:8080 \
 - 确认 ONNX 输入输出名称、dtype、shape、动态维度与 CPU 支持。
 - 固定可编译的依赖组合及对应 ONNX Runtime 版本。
 - 准备中文、英文及三种问题类型的参考样例、token IDs 和期望输出。
-- 明确 API 完整字段、限制、错误语义和数值比较容差。
+- 实现并核对[兼容契约](compatibility.md)已冻结的 API、限制、错误与数值容差，不重新决定语义。
 
 验收：兼容性依据可复现；Rust 不需要通过运行 Python / Node.js 才能启动或推理。
 
@@ -284,6 +310,9 @@ docker run --cpus=8 --memory=8g -p 8080:8080 \
 
 验收：真实模型得到有效输出，关键序列与参考一致，数值误差满足事先确定的容差；
 没有权重时明确标记模型测试未执行，不能用模拟结果宣称兼容。
+逐项执行[兼容契约场景矩阵](compatibility.md)：token IDs/marker/mask/usage 精确相等；
+logits 使用 `abs <= 1e-4 + 1e-3*abs(reference)`，未舍入概率及 act_probability 使用
+`abs <= 1e-5 + 1e-4*abs(reference)`；官方舍入字段和离散 Choice 精确一致，失败不自动放宽。
 
 ### 阶段三：HTTP 服务与资源控制
 
