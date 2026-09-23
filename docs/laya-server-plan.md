@@ -20,8 +20,9 @@ Laya multilingual 模型，为多个客户端回答类型化问题。
 
 运行服务不需要 Python、Node.js、PyTorch、CUDA 或 GPU。
 应用实现使用 Rust；ONNX Runtime 自身是原生运行库，因此不承诺整个二进制依赖栈
-仅包含 Rust。模型准备遵循[兼容契约第 6 节](compatibility.md)，允许必要时独立离线导出；
-Python 仅用于模型准备和开发期对照，不进入应用构建、启动或推理。
+仅包含 Rust。优先使用经核验的现成 ONNX bundle；若没有满足固定参考版本的
+multilingual bundle，允许在独立的模型准备环节进行一次性离线导出。
+Python 仅可用于该准备环节和开发期参考对照，不进入服务构建、启动或推理流程。
 
 Laya 的职责是有限答案空间上的判断，不是聊天或文本生成，也不替代通用 LLM。
 典型用途包括工具路由、工单分类、任务风险评分和是否升级到人工或更大模型的判断。
@@ -60,9 +61,15 @@ models/multilingual/
     └── tokenizer_config.json
 ```
 
-默认 multilingual 的固定 checkpoint、ONNX 文件布局与接收门槛见[兼容契约第 6 节](compatibility.md)。
-原候选 receptron/laya-onnx 的已核实 revision 只有英文，不能用于中文 MVP；
-必要时从固定官方 checkpoint 独立离线导出，并核验实际文件 SHA-256、许可证与 CPU 对照。权重不入 Git。
+原候选 [receptron/laya-onnx](https://huggingface.co/receptron/laya-onnx) 在已核实的
+revision `68f27dfe5a27a54fb2b1fefc432f43f972e90868` 只有英文 bundle，
+没有 `multilingual` 子目录，不能作为中文 MVP 的模型来源。
+官方 multilingual checkpoint 为
+[convaiinnovations/laya-multilingual](https://huggingface.co/convaiinnovations/laya-multilingual/tree/052592a15d198d9ad47da779604259b10b47b7aa)。
+模型准备任务须核验预导出候选的来源和内容，必要时从固定官方 checkpoint 独立离线导出；
+固定最终 bundle revision 或导出环境、文件清单、许可证、实际校验值及 CPU 对照依据。
+权重不入 Git。研究与后续验证见
+[模型与运行库基线](https://github.com/redwolf2019/laya-rs/issues/3)。
 
 ## 4. 技术栈与模块
 
@@ -147,9 +154,16 @@ Tower / tower-http 以及 ndarray 按实际使用需要引入，不为目录完�
 | Score | `score` 为等级索引的期望值，范围 0 到等级数减 1；附等级分布 |
 | Noul | `noul` 为 P(true)，范围 0 到 1 |
 
-完整响应还包括 Choice / Score 的 `confidence`、Score 的 `legend` 和答案的
-`rl_agent.act_probability`。采用[兼容契约第 1 节](compatibility.md)固定的官方源码语义；
-TypeScript 移植只用于实现参考，HTTP 路径和错误映射属于本项目约定。
+兼容性不仅限于上面的简化字段。
+[参考类型定义](https://github.com/receptron/laya/blob/6478649e723122ca24bbf5fb69ed1010023c9750/src/types.ts)
+还包含 Choice / Score 的 `confidence`、Score 的 `legend` 和答案的
+`rl_agent.act_probability`。完整响应、请求的可选形式和舍入规则，以官方
+[he-jev/laya 固定版本](https://github.com/he-jev/laya/tree/c5d78730f3493e4fe16d61507ef4b78eef7318cf)
+为语义基线；TypeScript / ONNX 移植用于导出和实现参考，差异不得静默覆盖官方行为。
+保留完整 JSON 输入能力，另行验证跨语言数字和对象序列化。
+HTTP 路径、资源限制与错误映射属于本项目契约，不能仅凭本地推理 API 宣称 HTTP 兼容。
+详细差异见[协议基线研究](https://github.com/redwolf2019/laya-rs/issues/2)，
+不将省略字段的示例当作完整协议。
 
 完整字段、默认值、Choice 重复项折叠与 JSON 规则见[兼容契约第 2–5 节](compatibility.md)。
 state/instructions 接受任意 JSON 类型；以 CPython 3.11.16 为解码/渲染参考，保留整数精度、
@@ -191,8 +205,10 @@ state [SEP]
 - 一个请求中的多问题批处理布局，以及模型实际要求的其他输入张量。
 - input_tokens 的统计边界、输出字段、置信度和 act_probability 的计算。
 
-固定参考来源及序列算法见[兼容契约第 1、3 节](compatibility.md)。
-参考代码仅用于独立模型准备和开发期验证，部署服务不调用 Python 或 Node.js。
+参考来源：
+[Laya 官方实现](https://github.com/he-jev/laya/tree/c5d78730f3493e4fe16d61507ef4b78eef7318cf) 与
+[ONNX 移植的序列实现](https://github.com/receptron/laya/blob/6478649e723122ca24bbf5fb69ed1010023c9750/src/sequence.ts)。
+参考代码只用于独立的模型准备、理解和开发期验证，部署服务不调用 Python 或 Node.js。
 如移植代码，遵循来源许可证并保留必要归属。
 
 ## 7. 校准和后处理
@@ -261,6 +277,10 @@ HTTP 等待结束后，run 耗时仍观测到真实工作结束。完整边界�
 
 ## 10. 启动与部署目标
 
+MVP 首轮部署验收与 benchmark 使用本机 Docker Desktop 的 Linux ARM64 容器，
+记录实际 CPU、内存配额及虚拟化环境；结果不代表 16 核 / 32 GB 裸机或 Linux amd64。
+其他平台的可用性和性能需在对应环境另行验证。
+
 以下命令是目标接口，当前尚不可执行：
 
 ```sh
@@ -293,7 +313,7 @@ docker run --cpus=8 --memory=8g -p 8080:8080 \
 
 ### 阶段一：锁定兼容性依据
 
-- 固定参考源码 revision、模型 bundle revision、文件校验值及许可证。
+- 固定参考源码 revision、模型 bundle revision 或独立离线导出环境、文件校验值及许可证。
 - 确认 ONNX 输入输出名称、dtype、shape、动态维度与 CPU 支持。
 - 固定可编译的依赖组合及对应 ONNX Runtime 版本。
 - 准备中文、英文及三种问题类型的参考样例、token IDs 和期望输出。

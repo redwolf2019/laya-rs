@@ -11,6 +11,7 @@ Noul 判断能力，通过 HTTP 为多个客户端共享模型。
 ## 文档
 
 - [服务方案与验收条件](docs/laya-server-plan.md)
+- [MVP 开发路线图与可执行任务](https://github.com/redwolf2019/laya-rs/issues/1)
 - [领域术语](CONTEXT.md)
 - [Agent 工程约定](AGENTS.md)
 - [Issue tracker](docs/agents/issue-tracker.md)
