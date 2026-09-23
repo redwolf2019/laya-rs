@@ -524,7 +524,13 @@ fn explicit_limits_apply_without_the_serde_default_recursion_ceiling() {
     let body = format!(
         r#"{{"state":{nested},"questions":{{"q":{{"type":"noul","instructions":null}}}}}}"#
     );
-    assert!(Request::from_slice(body.as_bytes(), &limits).is_ok());
+    assert_eq!(
+        Request::from_slice(body.as_bytes(), &limits)
+            .unwrap()
+            .state_text()
+            .unwrap(),
+        nested
+    );
     limits.max_json_depth = 255;
     assert_eq!(
         Request::from_slice(body.as_bytes(), &limits).unwrap_err(),

@@ -1,5 +1,35 @@
 # System One 官方参考 fixtures（#10）
 
+#11 的文本消费测试在 [fixtures.rs](../fixtures.rs) 中对全部 21 个请求的 `state_text`
+和各行 `instructions_text` 做 UTF-8 字节比较；测试从 `request_json` 原文解析。
+生产入口为 `Request::state_text()` 与 `Question::instructions_text()`，共享有序容器、
+数字和字符串渲染；HTTP/Sequence Builder 尚未实现，目前没有其他生产文本调用路径。
+
+补充语言 oracle [python-json.json](python-json.json) 来自 CPython 3.11.16，
+由 [json_oracle.py](../../tools/model-prep/json_oracle.py) 生成，与模型 fixtures 分开保存。
+390 个接受样例覆盖全部 ASCII 控制字符、DEL、中文、补充平面/UTF-16 pair、重复键、
+两种文本入口、指数阈值两侧、最短小数的中点舍入、binary64 极值和固定种子的随机数。
+7 个拒绝样例记录 Python 异常类型；1100 层嵌套触发 Python `RecursionError`，
+Rust 按更严格的请求深度限制返回 `JsonDepth`。4301 位整数沿用 #10 接受样例：
+参考设置 `int_max_str_digits=0`，不能继承 Python 默认的 4300 位限制。
+孤立 surrogate、非法 UTF-8 及覆盖值中的非法 Unicode 沿用 #10 拒绝集。
+
+浮点先使用现有 serde_json 1.0.151 / zmij 1.0.23 的最短数字转换，再显式转换为
+Python 的记数法（指数范围 -4..15 用定点，其余指数带符号且至少两位）。
+容器及 Unicode 不使用 serde_json 默认 dump 或全局空格替换；转义规则对照
+[固定 CPython 编码器](https://github.com/python/cpython/blob/41388c9cb160d0886d5ca00d2e6c8782608a4549/Modules/_json.c)。
+
+开发期复现使用已有 #7 固定容器，新路径不能已存在：
+
+```sh
+rtk proxy docker exec -w /work laya-model-prep-7 python tools/model-prep/json_oracle.py /tmp/json-oracle-11.json
+rtk proxy docker exec laya-model-prep-7 cmp /work/tests/fixtures/python-json.json /tmp/json-oracle-11.json
+rtk cargo test --locked --test fixtures --test json_text --test system_one
+```
+
+`[已验证/HIGH，文本范围]` 上述 Rust 字节对照已通过，使用提交的 oracle，不调用 Python、
+Tokenizer 或模型。验证覆盖列出的样例，不能据此宣称所有 binary64 位模式或完整推理兼容。
+
 `[已验证/HIGH]` `system-one/` 来自固定官方 `RLAgent.system_one` 的 Linux CPU FP32
 实跑，共 21 个真实请求。官方结果是期望值，`onnx` 仅为待比较结果。
 20 个请求全部通过冻结门槛，`long-padding` 的 Score 出现四位舍入差异：

@@ -125,7 +125,7 @@ pub struct ErrorBody {
     pub message: &'static str,
 }
 
-/// Owned normalized request; state/instructions remain lossless for #11.
+/// Owned normalized request; state/instructions retain their lossless JSON.
 #[derive(Debug)]
 pub struct Request {
     pub state: Box<RawValue>,
@@ -133,6 +133,13 @@ pub struct Request {
 }
 
 impl Request {
+    /// Model input text: strings verbatim, otherwise Python `ensure_ascii=False`.
+    /// Invalid Unicode returns `JsonSyntax`; parse with `from_slice` first to
+    /// validate all fields (including overwritten values) and resource limits.
+    pub fn state_text(&self) -> Result<String, RequestError> {
+        json::render(&self.state, false)
+    }
+
     /// Reject invalid syntax, Unicode, fields and resource/model boundaries.
     /// Does not log input or call a model. A future HTTP reader must also bound
     /// bytes while receiving, before buffering the full request here.
@@ -169,6 +176,12 @@ pub struct Question {
 }
 
 impl Question {
+    /// Model instruction text: strings verbatim, otherwise Python `ensure_ascii=True`.
+    /// Uses the same input validation contract as [`Request::state_text`].
+    pub fn instructions_text(&self) -> Result<String, RequestError> {
+        json::render(&self.instructions, true)
+    }
+
     fn parse(name: String, raw: &RawValue, limits: &Limits) -> Result<Self, RequestError> {
         let fields = object(raw, Field::Question)?;
         let kind = string(required(&fields, "type", Field::Type)?, Field::Type)?;

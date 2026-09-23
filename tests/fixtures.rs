@@ -112,6 +112,10 @@ fn official_fixtures_are_integral_and_consumable_without_python() {
 
 fn check_model(fixture: ModelFixture) {
     let request = Request::from_slice(fixture.request_json.as_bytes(), &Limits::default()).unwrap();
+    assert_eq!(
+        request.state_text().unwrap().as_bytes(),
+        fixture.state_text.as_bytes()
+    );
     let b = request.questions.len();
     let t = &fixture.tensors;
     assert_eq!(b, fixture.rows.len());
@@ -129,6 +133,10 @@ fn check_model(fixture: ModelFixture) {
     }
     for (i, (question, row)) in request.questions.iter().zip(&fixture.rows).enumerate() {
         assert_eq!(question.name, row.name);
+        assert_eq!(
+            question.instructions_text().unwrap().as_bytes(),
+            row.instructions_text.as_bytes()
+        );
         assert_eq!(question.criteria.option_texts(), row.option_texts);
         check_row(&fixture, i);
     }

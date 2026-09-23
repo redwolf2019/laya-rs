@@ -12,9 +12,12 @@ HTTP 服务、Sequence Builder 和答案后处理尚未实现。资源初始化�
 #9 已提供[模型无关的 System One 类型与校验](src/system_one.rs)：请求规范化、
 完整响应 DTO、静态类型化错误，以及数字词法/嵌套顺序保留。
 `Request::from_slice(body, &limits)` 接收完整 body；`state`/`instructions` 保留 `RawValue`，
-后续 serializer 通过 `system_one::json::view` 按层读取，得到后值覆盖、首次位置不变的对象。
-原始数字不直接作为模型输入文字；Python dumps 对照和文本渲染留给 #11。
+`Request::state_text()` / `Question::instructions_text()` 将其渲染为官方模型输入文字：
+字符串原样使用，其余按 Python 的 Unicode/ASCII 两种 JSON 模式渲染，保持各层对象顺序。
+整数保留精度；浮点按 binary64 舍入并使用 Python 的记数法，包含负零和指数溢出/下溢。
 可运行 `rtk cargo test --locked --test system_one` 验证该边界，不需要模型。
+文本字节对照运行 `rtk cargo test --locked --test fixtures --test json_text`，
+来源与复现见 [fixtures 说明](tests/fixtures/README.md)。这些检查不需要 Python 或模型。
 
 ## 文档
 
