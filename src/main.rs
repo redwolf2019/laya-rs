@@ -52,7 +52,7 @@ fn main() -> ExitCode {
     eprintln!(
         "CPU model initialized: {} sessions, {} vocabulary entries, max_len={}",
         model.sessions.len(),
-        model.tokenizer.get_vocab_size(true),
+        model.sequence.tokenizer().get_vocab_size(true),
         model.config.max_len
     );
     eprintln!("Service not implemented: HTTP serving is unavailable");

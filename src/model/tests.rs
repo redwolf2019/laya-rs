@@ -115,11 +115,12 @@ fn linux_real_model_smoke() {
     .unwrap();
     let mut model = Model::load(&config).unwrap();
     assert_eq!(model.sessions.len(), 2);
-    assert!(model.tokenizer.get_truncation().is_none());
-    assert!(model.tokenizer.get_padding().is_none());
+    assert!(model.sequence.tokenizer().get_truncation().is_none());
+    assert!(model.sequence.tokenizer().get_padding().is_none());
     assert_eq!(
         model
-            .tokenizer
+            .sequence
+            .tokenizer()
             .encode("<bos><eos><mask><pad>", false)
             .unwrap()
             .get_ids(),

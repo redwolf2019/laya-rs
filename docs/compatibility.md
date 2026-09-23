@@ -144,6 +144,12 @@ K=最多选项数，按 questions 顺序组行，右侧 padding：
 
 不得以逐问题 forward 静默替代动态 B，也不把多个问题串成一条输入。
 
+Rust 实现为 [`SequenceBuilder::build`](../src/sequence.rs)：返回按行连续的 `Vec<i64>` /
+`Vec<bool>` 与 `[B,L]` / `[B,K]` shape，`qtype.len()=B`；不初始化 ORT。
+加载器传入已校验的 tokenizer、tokenizer 配置及任务预算。marker 丢失返回类型化
+`sequence::Error::MarkerLost`，HTTP 层须映射为上述 400；配置、tokenizer 和分配失败
+保持独立错误类别。专项对照范围见[序列验收记录](validation/sequence.md)。
+
 ## 4. 成功响应
 
 HTTP 200、JSON 对象，源码依据：[官方结果构造][api]。字段全集如下：

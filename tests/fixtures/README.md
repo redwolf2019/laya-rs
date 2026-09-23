@@ -3,7 +3,13 @@
 #11 的文本消费测试在 [fixtures.rs](../fixtures.rs) 中对全部 21 个请求的 `state_text`
 和各行 `instructions_text` 做 UTF-8 字节比较；测试从 `request_json` 原文解析。
 生产入口为 `Request::state_text()` 与 `Question::instructions_text()`，共享有序容器、
-数字和字符串渲染；HTTP/Sequence Builder 尚未实现，目前没有其他生产文本调用路径。
+数字和字符串渲染；#12 Sequence Builder 已消费这两个文本入口，HTTP 尚未实现。
+
+#12 在 [sequence.rs](../sequence.rs) 中用固定 tokenizer 对全部 21 个请求的五个批处理输入、
+shape、usage 和每次官方 tokenizer 调用结果逐值比较。补充
+[sequence-boundaries.json](sequence-boundaries.json) 使用相同官方源码及 tokenizer，
+仅改变任务预算，覆盖空/短状态、room=0/1、marker 边界和头部压缩。
+生成器、运行命令、普通 CI 与专项测试的区别见[序列验收记录](../../docs/validation/sequence.md)。
 
 补充语言 oracle [python-json.json](python-json.json) 来自 CPython 3.11.16，
 由 [json_oracle.py](../../tools/model-prep/json_oracle.py) 生成，与模型 fixtures 分开保存。

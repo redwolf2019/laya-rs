@@ -6,6 +6,7 @@
 use std::{error::Error as StdError, fmt, fs::File, io::Read, path::Path};
 
 use crate::config::Config;
+use laya_server::sequence::SequenceBuilder;
 use ort::{
     session::Session,
     value::{Tensor, TensorElementType, ValueType},
@@ -103,7 +104,7 @@ struct TensorSpec {
 /// Resources are constructed once before listening and owned until shutdown.
 pub(crate) struct Model {
     pub sessions: Vec<Session>,
-    pub tokenizer: Tokenizer,
+    pub sequence: SequenceBuilder,
     pub config: ModelConfig,
 }
 
@@ -113,7 +114,7 @@ impl Model {
     pub fn load(config: &Config) -> Result<Self, Error> {
         verify_bundle(&config.model)?;
         let settings = ModelConfig::from_slice(&read(&config.model.join("laya_config.json"))?)?;
-        let tokenizer = load_tokenizer(&config.model)?;
+        let sequence = load_sequence(&config.model, &settings)?;
         initialize_runtime(&config.ort_library)?;
         let mut sessions = Vec::new();
         for _ in 0..config.max_concurrency {
@@ -128,7 +129,7 @@ impl Model {
         }
         Ok(Self {
             sessions,
-            tokenizer,
+            sequence,
             config: settings,
         })
     }
@@ -138,15 +139,14 @@ fn read(path: &Path) -> Result<Vec<u8>, Error> {
     std::fs::read(path).map_err(|e| Error::caused("bundle file is missing or unreadable", e))
 }
 
-fn load_tokenizer(directory: &Path) -> Result<Tokenizer, Error> {
-    let mut tokenizer = Tokenizer::from_bytes(read(&directory.join("tokenizer/tokenizer.json"))?)
+fn load_sequence(directory: &Path, settings: &ModelConfig) -> Result<SequenceBuilder, Error> {
+    let tokenizer = Tokenizer::from_bytes(read(&directory.join("tokenizer/tokenizer.json"))?)
         .map_err(|e| Error::caused("tokenizer JSON is invalid", e))?;
-    tokenizer
-        .with_truncation(None)
-        .map_err(|e| Error::caused("cannot disable tokenizer truncation", e))?;
-    tokenizer.with_padding(None);
+    let bytes = read(&directory.join("tokenizer/tokenizer_config.json"))?;
+    let sequence = SequenceBuilder::new(tokenizer, &bytes, settings.max_len, settings.head_max_len)
+        .map_err(|e| Error::caused("sequence configuration is invalid", e))?;
     let config: std::collections::BTreeMap<String, serde_json::Value> =
-        serde_json::from_slice(&read(&directory.join("tokenizer/tokenizer_config.json"))?)
+        serde_json::from_slice(&bytes)
             .map_err(|e| Error::caused("tokenizer configuration is invalid", e))?;
     for (key, expected) in manifest()?.special_tokens {
         let token = key
@@ -154,17 +154,11 @@ fn load_tokenizer(directory: &Path) -> Result<Tokenizer, Error> {
             .and_then(|key| config.get(key))
             .and_then(|v| v.as_str())
             .ok_or_else(|| Error::new("special token configuration is invalid"))?;
-        if tokenizer.token_to_id(token) != Some(expected) {
+        if sequence.tokenizer().token_to_id(token) != Some(expected) {
             return Err(Error::new("special token ID differs from manifest"));
         }
-        let encoding = tokenizer
-            .encode(token, false)
-            .map_err(|e| Error::caused("special token encoding failed", e))?;
-        if encoding.get_ids() != [expected] {
-            return Err(Error::new("special token encoding differs from manifest"));
-        }
     }
-    Ok(tokenizer)
+    Ok(sequence)
 }
 
 fn initialize_runtime(path: &Path) -> Result<(), Error> {

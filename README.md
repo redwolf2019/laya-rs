@@ -6,7 +6,7 @@ A pure Rust inference runtime and HTTP server for Laya System-1 models.
 Noul 判断能力，通过 HTTP 为多个客户端共享模型。
 
 **当前状态：Rust 已加载并校验固定 bundle、Tokenizer 和 CPU Session，启动时执行真实张量探针。**
-HTTP 服务、Sequence Builder 和答案后处理尚未实现。资源初始化成功后仍以非零码退出，
+Sequence Builder 已通过固定 tokenizer 的逐 token 对照；HTTP 服务和答案后处理尚未实现。资源初始化成功后仍以非零码退出，
 不监听端口；当前没有服务 Docker 镜像。Linux 真实运行结果见 [#8 验收记录](docs/validation/model-loader.md)。
 
 #9 已提供[模型无关的 System One 类型与校验](src/system_one.rs)：请求规范化、
@@ -18,6 +18,11 @@ HTTP 服务、Sequence Builder 和答案后处理尚未实现。资源初始化�
 可运行 `rtk cargo test --locked --test system_one` 验证该边界，不需要模型。
 文本字节对照运行 `rtk cargo test --locked --test fixtures --test json_text`，
 来源与复现见 [fixtures 说明](tests/fixtures/README.md)。这些检查不需要 Python 或模型。
+
+#12 的 [`SequenceBuilder::build`](src/sequence.rs) 将规范化请求转换为五个按行排列的
+CPU 输入缓冲区及 shape/usage，复用加载器的 tokenizer 和真实任务预算。
+全部 21 个官方样例及补充预算边界的 token、marker、mask、usage 已精确对照；
+命令与范围见 [序列验收记录](docs/validation/sequence.md)。普通 CI 不下载 tokenizer。
 
 ## 文档
 
@@ -87,7 +92,7 @@ rtk cargo run --release --locked -- --model ./models/multilingual \
 固定图的哈希锁定 #7 已检查的 external-data location，所有引用文件须存在且哈希吻合。
 目录在验证后必须保持不变，部署时只读挂载。
 
-Tokenizer 禁用隐式 truncation/padding；后续 Sequence Builder 使用 `encode(text, false)`。
+Tokenizer 由 Sequence Builder 持有，禁用隐式 truncation/padding，使用 `encode(text, false)`。
 按 `--max-concurrency` 创建独立 CPU Session，实际设置 intra/inter-op threads；
 inter-op 大于 1 时启用 ORT 并行图执行。每个 Session 验证名称、dtype、shape、动态维度，
 并运行 #7 的 `tensor-L2` 输入，检查输出 shape、有限值和 action 概率。
@@ -130,7 +135,7 @@ Linux CI 运行 fmt、clippy、无模型测试，真实 smoke 以 `#[ignore]` �
 它要求 Linux、真实 bundle 与官方 ORT 库，缺文件会失败，不能静默改用 mock。
 执行方法、原生失败检查和输出见 [#8 验收记录](docs/validation/model-loader.md)。
 #7 的完整离线对照见 [模型清单](docs/model-manifest.json)；#8 验证固定张量加载/运行，
-尚不证明 Rust Sequence Builder、完整答案、Jev 兼容或性能。
+#12 另行验证 Rust Sequence Builder；尚不证明完整答案、Jev 兼容或性能。
 绿色 CI 不表示真实模型测试已运行。
 
 需求与任务在 [GitHub Issues](https://github.com/redwolf2019/laya-rs/issues) 管理。
@@ -138,4 +143,5 @@ Linux CI 运行 fmt、clippy、无模型测试，真实 smoke 以 `#[ignore]` �
 
 ## License
 
-项目代码使用 [MIT License](LICENSE)。模型权重及第三方运行库遵循各自许可证。
+项目原创代码使用 [MIT License](LICENSE)，序列算法移植归属见 [NOTICE](NOTICE.md)。
+模型权重及第三方运行库遵循各自许可证。

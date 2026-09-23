@@ -1,7 +1,7 @@
 # Laya Rust HTTP Server 方案
 
 状态：CLI、固定 bundle 加载、Rust CPU 张量探针、System One 类型、输入规范化与 Python JSON 文本渲染已实现；
-HTTP、序列及后处理待实现。
+Sequence Builder 与五个批处理输入已实现并通过固定 tokenizer 对照；HTTP 及后处理待实现。
 已通过 #8 固定张量验收，尚未通过完整 System One 模型兼容验收。
 版本日期：2026-09-23。
 

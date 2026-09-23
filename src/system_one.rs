@@ -371,10 +371,7 @@ impl Response {
         Self {
             model: "rl-agent",
             answers,
-            usage: Usage {
-                input_tokens,
-                output_tokens: 0,
-            },
+            usage: Usage::new(input_tokens),
         }
     }
 }
@@ -384,6 +381,15 @@ impl Response {
 pub struct Usage {
     pub input_tokens: usize,
     output_tokens: usize,
+}
+
+impl Usage {
+    pub(crate) fn new(input_tokens: usize) -> Self {
+        Self {
+            input_tokens,
+            output_tokens: 0,
+        }
+    }
 }
 
 /// Action head probability, without the main answer's four-place rounding.
