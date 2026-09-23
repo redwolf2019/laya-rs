@@ -27,8 +27,8 @@ CPU 输入缓冲区及 shape/usage，复用加载器的 tokenizer 和真实任�
 #13 的 [`Calibration::response`](src/postprocess.rs) 校验 float32 输出并构造完整答案，
 复用类型/桶温度、稳定 softmax、官方四位舍入和未再次处理的 action 概率。
 `rtk cargo test --locked --test postprocess` 不依赖模型；对照与失败记录见
-[后处理验收](docs/validation/postprocess.md)。固定 ONNX 的 long-padding Score 仍为
-4.5306，官方为 4.5307；跨后端完整答案门槛尚未通过。
+[后处理验收](docs/validation/postprocess.md)。离线导出中的 LayerNorm 展开已修复 long-padding
+Score 差异；21 个固定请求经 Rust 真实推理通过完整答案门槛（Linux ARM64 CPU）。
 
 ## 文档
 

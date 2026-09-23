@@ -1,7 +1,8 @@
 # System One 官方参考 fixtures（#10）
 
 #13 [后处理测试](../postprocess.rs) 消费官方及 ONNX 两组固定输出，对照各自官方后处理
-重放结果，另保留跨后端完整答案失败门槛；范围和命令见[后处理验收](../../docs/validation/postprocess.md)。
+重放结果。后续 LayerNorm 修复的新图输出保存在 [normalized-outputs.json](normalized-outputs.json)，
+跨后端完整答案门槛已通过；原 #10 失败数据不变。范围和命令见[后处理验收](../../docs/validation/postprocess.md)。
 
 #11 的文本消费测试在 [fixtures.rs](../fixtures.rs) 中对全部 21 个请求的 `state_text`
 和各行 `instructions_text` 做 UTF-8 字节比较；测试从 `request_json` 原文解析。
@@ -48,7 +49,7 @@ Tokenizer 或模型。验证覆盖列出的样例，不能据此宣称所有 bin
 
 来源、平台、完整 Python 包版本、模型/tokenizer/源码 SHA-256 和容器配额见
 [provenance.json](system-one/provenance.json)，输入权重沿用
-[#7 manifest](../../docs/model-manifest.json)，不进入 Git。
+[#7 历史 manifest](https://github.com/redwolf2019/laya-rs/blob/141bba9483029ce8222f0e9c138c9702e96a55a8/docs/model-manifest.json)，不进入 Git。
 官方 API SHA 为 `c5d78730f3493e4fe16d61507ef4b78eef7318cf`，checkpoint revision 为
 `052592a15d198d9ad47da779604259b10b47b7aa`。官方源码未修改，来源许可沿用
 [model-prep NOTICE](../../tools/model-prep/NOTICE.md)。

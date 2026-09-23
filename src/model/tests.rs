@@ -1,5 +1,7 @@
 use super::*;
 
+mod parity;
+
 fn tensor(ty: TensorElementType, shape: &[i64], symbols: &[&str]) -> ValueType {
     ValueType::Tensor {
         ty,
@@ -75,7 +77,7 @@ fn bundle_rejects_missing_truncated_and_same_size_corrupted_files() {
         verify_bundle(&root).unwrap_err().message,
         "bundle file size differs from manifest"
     );
-    file.set_len(2_680_422).unwrap();
+    file.set_len(manifest().unwrap().files[0].bytes).unwrap();
     assert_eq!(
         verify_bundle(&root).unwrap_err().message,
         "bundle file SHA-256 differs from manifest"

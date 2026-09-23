@@ -35,8 +35,8 @@
   "files": [
     {
       "path": "laya.onnx",
-      "bytes": 2680422,
-      "sha256": "a0a46af6144f0e7ff66612461be9064f528b1734bc87911463d3c7fc306ce7ef"
+      "bytes": 2649363,
+      "sha256": "5a028e8dac51de3c430514c47e047fc89911edaaa72762c3e880a3591cc0184c"
     },
     {
       "path": "laya.onnx.data",
@@ -200,8 +200,8 @@
   "tools": [
     {
       "path": "tools/model-prep/export.py",
-      "bytes": 2897,
-      "sha256": "a38f87598241290d7ae2afd716ca147a8ac49fcbe6f1f6b92e74a691d40838b9"
+      "bytes": 3061,
+      "sha256": "99e4f1a144fd698a3f3bf77799fb429634298206ca41f888158fd81207b92bf9"
     },
     {
       "path": "tools/model-prep/prepare.py",
@@ -227,33 +227,16 @@
       "path": "tools/model-prep/NOTICE.md",
       "bytes": 2043,
       "sha256": "bd0b93d7c933bb96b7457de588f5c79e83bf3bde8eb527e5d6030d163c0bc047"
-    }
-  ],
-  "evidence": [
-    {
-      "path": "docs/validation/model-prep/environment.log",
-      "bytes": 923,
-      "sha256": "cfacf3c0816a2883b6d1fa2dbd3712b5daeaf1228353e07105765510ee948e8f"
     },
     {
-      "path": "docs/validation/model-prep/export.log",
-      "bytes": 1622,
-      "sha256": "6a4a3940834baaf22712a842cebc1ea5d055f952a9ec0ecf20a4a2ff38df28e1"
+      "path": "tools/model-prep/normalize.py",
+      "bytes": 2938,
+      "sha256": "c88b21b6ab0a8a03f422bb4d9034da2f713279c036ae940dfa2b81e628100fc9"
     },
     {
-      "path": "docs/validation/model-prep/prepare.log",
-      "bytes": 659,
-      "sha256": "919e5358b738cc137ca86e0967aabe312416b2c5e1a3a434303da30348af6f5d"
-    },
-    {
-      "path": "docs/validation/model-prep/validation.json",
-      "bytes": 36078,
-      "sha256": "fe96570053279187efe39a8431ef55b3b23a866097f832ed8ae4630912f9a389"
-    },
-    {
-      "path": "docs/validation/model-prep/verify.log",
-      "bytes": 17206,
-      "sha256": "95b126d7ac2884dfd028e3b9d20a1134a5004bdb3e6379d5e046be51fe0c6a2f"
+      "path": "tools/model-prep/postprocess_oracle.py",
+      "bytes": 3384,
+      "sha256": "95a9322b179a56ff397ecb2718643df8841d96703331d0c4b7cf43cadd559a51"
     }
   ],
   "versions": {
@@ -273,8 +256,8 @@
       "": 18
     },
     "initializer_types": {
-      "FLOAT": 180,
-      "INT64": 21
+      "FLOAT": 230,
+      "INT64": 71
     },
     "external_data": [
       "laya.onnx.data"
@@ -344,12 +327,87 @@
     "pad_token_id": 0
   },
   "validation": {
+    "cases": 21,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "max_logit_error": 1.0967254638671875e-05,
+    "max_act_error": 0.0,
+    "rounded_answers": "exact",
+    "rust_live_parity": "docs/validation/postprocess/normalized-rust.log"
+  },
+  "reproduction": "tools/model-prep/README.md",
+  "normalization": {
+    "issue": 13,
+    "base_manifest_commit": "141bba9483029ce8222f0e9c138c9702e96a55a8",
+    "previous_graph": {
+      "path": "laya.onnx",
+      "bytes": 2680422,
+      "sha256": "a0a46af6144f0e7ff66612461be9064f528b1734bc87911463d3c7fc306ce7ef"
+    },
+    "method": "Centered FP32 variance and reciprocal multiplication; 50 LayerNormalization nodes expanded into standard ONNX operators",
+    "script": "tools/model-prep/normalize.py"
+  },
+  "base_export_evidence": [
+    {
+      "path": "docs/validation/model-prep/environment.log",
+      "bytes": 923,
+      "sha256": "cfacf3c0816a2883b6d1fa2dbd3712b5daeaf1228353e07105765510ee948e8f"
+    },
+    {
+      "path": "docs/validation/model-prep/export.log",
+      "bytes": 1622,
+      "sha256": "6a4a3940834baaf22712a842cebc1ea5d055f952a9ec0ecf20a4a2ff38df28e1"
+    },
+    {
+      "path": "docs/validation/model-prep/prepare.log",
+      "bytes": 659,
+      "sha256": "919e5358b738cc137ca86e0967aabe312416b2c5e1a3a434303da30348af6f5d"
+    },
+    {
+      "path": "docs/validation/model-prep/validation.json",
+      "bytes": 36078,
+      "sha256": "fe96570053279187efe39a8431ef55b3b23a866097f832ed8ae4630912f9a389"
+    },
+    {
+      "path": "docs/validation/model-prep/verify.log",
+      "bytes": 17206,
+      "sha256": "95b126d7ac2884dfd028e3b9d20a1134a5004bdb3e6379d5e046be51fe0c6a2f"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "tests/fixtures/normalized-outputs.json",
+      "bytes": 17350,
+      "sha256": "ed9ad357cb4ac8d65ef14d8feb495c8e909976ef02fad8d0b88fb17de4bd3d58"
+    },
+    {
+      "path": "docs/validation/postprocess/normalized-oracle.log",
+      "bytes": 2691,
+      "sha256": "2d6c08150e42d43cbfa28eb52d4b2f8cdb238d9e402ae7970729cad14ff11b57"
+    },
+    {
+      "path": "docs/validation/postprocess/old-bundle-rust.log",
+      "bytes": 1048,
+      "sha256": "8996d58b87a775c5944843661dc0d5894495d9e3b574ffb63655a17f30d6d73b"
+    },
+    {
+      "path": "docs/validation/postprocess/normalized-rust.log",
+      "bytes": 1068,
+      "sha256": "6efe3323c2f50ef1ce731d388756d7df0354b3ba84ee69980ad4c5a9ed0c54d2"
+    },
+    {
+      "path": "docs/validation/postprocess/layer-norm-diagnosis.json",
+      "bytes": 2611,
+      "sha256": "0dc46e6c536b484434904d77283926d1bf7d484ce49d15d0b546ce6a263fb2ab"
+    }
+  ],
+  "base_export_validation": {
     "cases": 19,
     "providers": [
       "CPUExecutionProvider"
     ],
     "max_logit_error": 1.6927719116210938e-05,
     "max_act_error": 0.0
-  },
-  "reproduction": "tools/model-prep/README.md"
+  }
 }

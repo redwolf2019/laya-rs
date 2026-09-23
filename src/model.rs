@@ -1,4 +1,4 @@
-//! Startup-only loading of the exact #7 bundle. The embedded manifest is trusted;
+//! Startup-only loading of the manifest-pinned #7/#13 bundle. The embedded manifest is trusted;
 //! files must remain immutable after verification (mount the bundle read-only).
 //! Graph identity pins its independently inspected external-data references, so
 //! validating every listed file also validates their location and contents.

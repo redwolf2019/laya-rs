@@ -343,9 +343,9 @@ fn assert_stages(calibration: &Calibration, request: &Request, data: &Value, nam
 }
 
 #[test]
-#[ignore = "cross-backend compatibility gate: #10 long-padding is known to fail; run explicitly"]
 fn onnx_outputs_match_official_answers_exactly() {
     let calibration: Calibration = serde_json::from_str("{}").unwrap();
+    let outputs = normalized_outputs();
     for file in fixture("manifest")["files"].as_array().unwrap() {
         let name = file["path"].as_str().unwrap().trim_end_matches(".json");
         let data = fixture(name);
@@ -358,7 +358,12 @@ fn onnx_outputs_match_official_answers_exactly() {
         )
         .unwrap();
         let tokens = data["response"]["usage"]["input_tokens"].as_u64().unwrap() as usize;
-        let mut actual = replay(&calibration, &request, &data["onnx"], tokens);
+        let mut actual = replay(
+            &calibration,
+            &request,
+            &outputs["cases"][format!("{name}.json")],
+            tokens,
+        );
         let mut expected = data["response"].clone();
         for (i, (a, e)) in actual["answers"]
             .as_object_mut()
@@ -378,4 +383,27 @@ fn onnx_outputs_match_official_answers_exactly() {
         }
         assert_json(&actual, &expected, name);
     }
+}
+
+fn normalized_outputs() -> Value {
+    use sha2::{Digest, Sha256};
+    let outputs: Value =
+        serde_json::from_str(include_str!("fixtures/normalized-outputs.json")).unwrap();
+    let manifest: Value =
+        serde_json::from_str(include_str!("../docs/model-manifest.json")).unwrap();
+    let graph = manifest["files"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|f| f["path"] == "laya.onnx")
+        .unwrap();
+    assert_eq!(outputs["graph_sha256"], graph["sha256"]);
+    let bytes = include_bytes!("fixtures/system-one/manifest.json");
+    let digest: String = Sha256::digest(bytes)
+        .iter()
+        .map(|b| format!("{b:02x}"))
+        .collect();
+    assert_eq!(outputs["reference_manifest_sha256"], digest);
+    assert_eq!(outputs["cases"].as_object().unwrap().len(), 21);
+    outputs
 }

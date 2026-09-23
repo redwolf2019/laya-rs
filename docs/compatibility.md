@@ -236,6 +236,12 @@ Tokenizer 和独立 CPU Sessions，并逐槽执行固定 `tensor-L2` 探针。�
 单个 Mutex Session 外的 semaphore=2 不构成并发 2。输出借用结束后才归还槽；
 内存共享、RSS 和性能收益必须实测，不先作承诺。
 
+2026-09-23 #13 补充：固定图的 50 处 LayerNorm 在离线导出时展开为中心化方差及倒数乘法，
+保持标准 ONNX 算子、FP32、原 epsilon 和权重，修复 long-padding 四位 Score 差异。
+当前图摘要在 [manifest](model-manifest.json)，原图摘要及原始失败证据保留。
+21 个固定请求已通过 Linux ARM64 Rust 序列、真实 ORT、后处理的完整对照，
+见[后处理验收](validation/postprocess.md)。本契约的精确字段要求及数值容差没有变更。
+
 ## 7. 资源、错误与生命周期
 
 以下是项目策略，不是性能测量。模型截断不替代 HTTP 资源校验。

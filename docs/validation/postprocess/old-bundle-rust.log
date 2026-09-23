@@ -1,0 +1,27 @@
+   Compiling laya-server v0.1.0 (/work)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.64s
+     Running unittests src/main.rs (/target/debug/deps/laya_server-afb554ae63eedbdb)
+
+running 1 test
+onnxruntime cpuid_info warning: Unknown CPU vendor. cpuinfo_vendor value: 0
+PASS: en-choice.json, slot=0
+PASS: en-noul.json, slot=1
+PASS: en-score.json, slot=0
+PASS: huge-integer.json, slot=1
+PASS: json-order-numbers.json, slot=0
+
+thread 'model::tests::parity::linux_system_one_model_parity' (945) panicked at src/model/tests/parity.rs:183:17:
+assertion `left == right` failed: long-padding.json/answer[1]/score
+  left: Some(4.5306)
+ right: Some(4.5307)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test model::tests::parity::linux_system_one_model_parity ... FAILED
+
+failures:
+
+failures:
+    model::tests::parity::linux_system_one_model_parity
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10 filtered out; finished in 14.20s
+
+error: test failed, to rerun pass `--bin laya-server`

@@ -1,0 +1,22 @@
+onnxruntime cpuid_info warning: Unknown CPU vendor. cpuinfo_vendor value: 0
+en-choice.json {"passed": true, "failures": [], "max_absolute_errors": {"logits": 5.4836273193359375e-06, "act_probs": 0.0}}
+en-noul.json {"passed": true, "failures": [], "max_absolute_errors": {"logits": 7.62939453125e-06, "act_probs": 0.0}}
+en-score.json {"passed": true, "failures": [], "max_absolute_errors": {"logits": 6.67572021484375e-06, "act_probs": 0.0}}
+huge-integer.json {"passed": true, "failures": [], "max_absolute_errors": {"logits": 7.3909759521484375e-06, "act_probs": 0.0}}
+json-order-numbers.json {"passed": true, "failures": [], "max_absolute_errors": {"logits": 6.67572021484375e-06, "act_probs": 0.0}}
+long-padding.json {"passed": true, "failures": [], "max_absolute_errors": {"logits": 3.337860107421875e-06, "act_probs": 0.0}}
+marker.json {"passed": true, "failures": [], "max_absolute_errors": {"logits": 4.410743713378906e-06, "act_probs": 0.0}}
+mixed-16.json {"passed": true, "failures": [], "max_absolute_errors": {"logits": 1.0967254638671875e-05, "act_probs": 0.0}}
+mixed-6.json {"passed": true, "failures": [], "max_absolute_errors": {"logits": 8.106231689453125e-06, "act_probs": 0.0}}
+normalization.json {"passed": true, "failures": [], "max_absolute_errors": {"logits": 4.0531158447265625e-06, "act_probs": 0.0}}
+options-10.json {"passed": true, "failures": [], "max_absolute_errors": {"logits": 1.6689300537109375e-06, "act_probs": 0.0}}
+options-11.json {"passed": true, "failures": [], "max_absolute_errors": {"logits": 1.0728836059570312e-06, "act_probs": 0.0}}
+options-2.json {"passed": true, "failures": [], "max_absolute_errors": {"logits": 4.798173904418945e-06, "act_probs": 0.0}}
+options-3.json {"passed": true, "failures": [], "max_absolute_errors": {"logits": 2.1457672119140625e-06, "act_probs": 0.0}}
+options-32.json {"passed": true, "failures": [], "max_absolute_errors": {"logits": 4.410743713378906e-06, "act_probs": 0.0}}
+options-5.json {"passed": true, "failures": [], "max_absolute_errors": {"logits": 2.6226043701171875e-06, "act_probs": 0.0}}
+options-6.json {"passed": true, "failures": [], "max_absolute_errors": {"logits": 1.2516975402832031e-06, "act_probs": 0.0}}
+scalars.json {"passed": true, "failures": [], "max_absolute_errors": {"logits": 4.76837158203125e-07, "act_probs": 0.0}}
+zh-choice.json {"passed": true, "failures": [], "max_absolute_errors": {"logits": 7.867813110351562e-06, "act_probs": 0.0}}
+zh-noul.json {"passed": true, "failures": [], "max_absolute_errors": {"logits": 3.337860107421875e-06, "act_probs": 0.0}}
+zh-score.json {"passed": true, "failures": [], "max_absolute_errors": {"logits": 3.0994415283203125e-06, "act_probs": 0.0}}

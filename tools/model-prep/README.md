@@ -1,11 +1,17 @@
 # multilingual 模型准备
 
-任务 [#7](https://github.com/redwolf2019/laya-rs/issues/7)。在仓库根目录执行。
+任务 [#7](https://github.com/redwolf2019/laya-rs/issues/7)，#13 补充归一化修复。在仓库根目录执行。
 这些 Python 工具只用于独立开发期导出/对照；Cargo、服务启动和发布镜像不调用它们。
 完整官方 API fixture 生成入口为 `fixtures.py`，覆盖、格式、复现与已知失败见
 [#10 fixtures](../../tests/fixtures/README.md)。
 最终运行文件及许可位于忽略目录 `models/multilingual/`，输入 checkpoint、下载元数据和
 中间日志位于其 `prep/` 子目录。权重不入 Git，没有上传到第三方模型仓库。
+
+#13 当前 bundle 在原图上将 50 处 LayerNorm 展开为中心化方差与倒数乘法，保持 FP32、
+原始权重和全部容差。导出脚本已接入 [normalize.py](normalize.py)。旧 #7 导出验收记录
+继续作为历史证据保留；当前图哈希、21 个固定请求的完整答案和 Rust 真实回归见
+[后处理验收](../../docs/validation/postprocess.md)。`postprocess_oracle.py` 可对当前图重新生成
+实际输出记录，官方期望始终从未修改的 #10 fixtures 读取。
 
 ## 固定输入与环境
 

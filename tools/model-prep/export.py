@@ -8,6 +8,7 @@ import shutil
 import sys
 
 from prepare import PREP, ROOT, SOURCE_HASHES, digest
+from normalize import rewrite
 
 
 def load_reference():
@@ -61,6 +62,9 @@ def export():
                         {0: batch, 1: options}, {0: batch, 1: options}, {0: batch}),
     )
     program.save(ROOT / "laya.onnx", external_data=True)
+    normalized = ROOT / "laya.normalized.onnx"
+    rewrite(ROOT / "laya.onnx", normalized)
+    normalized.replace(ROOT / "laya.onnx")
     shutil.copytree(PREP / "checkpoint/tokenizer", ROOT / "tokenizer", dirs_exist_ok=True)
     keys = ("max_len", "head_max_len", "temperature", "temperature_by_options")
     (ROOT / "laya_config.json").write_text(json.dumps({k: config[k] for k in keys}, indent=2) + "\n")

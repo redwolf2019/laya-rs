@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "platform": "Linux ARM64, ORT 1.28.0, PyTorch 2.10.0, NumPy 2.3.3",
+  "fixture": "tests/fixtures/system-one/long-padding.json",
+  "baseline_official_reproduced_bitwise": true,
+  "torch_hooks_preserved_logits_bitwise": true,
+  "onnx_stage_taps_changed_final_logits_max": 9.5367431640625e-07,
+  "first_stage_comparison": [
+    {
+      "stage": "embedding lookup",
+      "max_absolute_error": 0.0,
+      "equal_fraction": 1.0
+    },
+    {
+      "stage": "embedding LayerNorm",
+      "max_absolute_error": 5.7220458984375e-06,
+      "equal_fraction": 0.18820232815212673
+    }
+  ],
+  "same_embedding_input_comparison": {
+    "centered_fp32_reciprocal": {
+      "max_absolute_error": 1.9073486328125e-06,
+      "mean_absolute_error": 4.546709231334489e-09,
+      "equal_fraction": 0.8601231045193143
+    },
+    "official_mean_rstd_reciprocal": {
+      "max_absolute_error": 0.0,
+      "equal_fraction": 1.0
+    }
+  },
+  "official_score": 4.530653640627861,
+  "baseline_onnx_score": 4.530648112297058,
+  "counterfactual_official_stage_injected_into_original_onnx": [
+    {
+      "stage": "embedding LayerNorm",
+      "score": 4.530650153756142,
+      "round4": 4.5307
+    },
+    {
+      "stage": "encoder final norm",
+      "score": 4.530651494860649,
+      "round4": 4.5307
+    },
+    {
+      "stage": "scorer norm",
+      "score": 4.530652895569801,
+      "round4": 4.5307
+    }
+  ],
+  "centered_fp32_layer_norm": {
+    "all_50_score": 4.530650712549686,
+    "round4": 4.5307,
+    "all_21_fixtures_pass": true,
+    "repeated_graph_byte_equal": true
+  },
+  "rejected_configuration_probes": [
+    {
+      "level": "ORT_ENABLE_ALL",
+      "threads": 8,
+      "score": 4.530648112297058,
+      "rounded": 4.5306,
+      "max_logit_delta": 5.245208740234375e-06,
+      "same_as_saved_onnx": true,
+      "run_seconds": 2.4882187929999873
+    },
+    {
+      "level": "ORT_DISABLE_ALL",
+      "threads": 8,
+      "score": 4.530648246407509,
+      "rounded": 4.5306,
+      "max_logit_delta": 4.291534423828125e-06,
+      "same_as_saved_onnx": false,
+      "run_seconds": 2.280918875999987
+    },
+    {
+      "level": "ORT_ENABLE_BASIC",
+      "threads": 8,
+      "score": 4.530648246407509,
+      "rounded": 4.5306,
+      "max_logit_delta": 4.291534423828125e-06,
+      "same_as_saved_onnx": false,
+      "run_seconds": 2.1853200429999333
+    },
+    {
+      "level": "ORT_ENABLE_ALL",
+      "threads": 1,
+      "score": 4.530648112297058,
+      "rounded": 4.5306,
+      "max_logit_delta": 5.245208740234375e-06,
+      "same_as_saved_onnx": true,
+      "run_seconds": 11.873123297000006
+    }
+  ]
+}
