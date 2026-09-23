@@ -1,0 +1,310 @@
+{
+  "schema_version": 1,
+  "status": "failed",
+  "command": "python tools/model-prep/fixtures.py --output tests/fixtures/system-one",
+  "providers": [
+    "CPUExecutionProvider"
+  ],
+  "tolerances": {
+    "logits": {
+      "atol": 0.0001,
+      "rtol": 0.001
+    },
+    "probabilities": {
+      "atol": 1e-05,
+      "rtol": 0.0001
+    },
+    "rounded": "exact"
+  },
+  "files": [
+    {
+      "path": "artificial.json",
+      "sha256": "939193398095e52c73db8c6310f65a3988e58eb141f7d5461dccb3ea57b8e066"
+    },
+    {
+      "path": "en-choice.json",
+      "sha256": "c5b48f6ca9634fb89eda409e531bf490acab1adffb15e84003a546a80e4a95e0"
+    },
+    {
+      "path": "en-noul.json",
+      "sha256": "cd8a94daeb8f39d8b4fe75d7a8509ee966c7605b0a9ff6d905fe9861a3ff7c3a"
+    },
+    {
+      "path": "en-score.json",
+      "sha256": "a0bd1660954d320da08d4450fdfb19ac053aad6090fd7377f8602443f9af9f44"
+    },
+    {
+      "path": "huge-integer.json",
+      "sha256": "0ed2bf12bd415aa9d972b93a15d9dc975fa521d6aefc3df4d477ae9de51d8bc7"
+    },
+    {
+      "path": "json-order-numbers.json",
+      "sha256": "8eb4b1e7b229cb771c72f8764c92e3c835a5d79a2fba40d425a048a718a52df4"
+    },
+    {
+      "path": "long-padding.json",
+      "sha256": "8babc54cb374aaf670f5c54bab47738134608834a426aaa5920e97f4b5426370"
+    },
+    {
+      "path": "marker.json",
+      "sha256": "c57d7cf14a164a5b6889d4aa7292f204101e9093743ffc7591cb66cf452b42c3"
+    },
+    {
+      "path": "mixed-16.json",
+      "sha256": "6079ce53c61ea7e80d68dc0b78930de19f088e1a7fd6cbe4e8df57361af051b3"
+    },
+    {
+      "path": "mixed-6.json",
+      "sha256": "6b458c99814d4ddcd429519a7592f02b3a0cc7deeb474c34dbe015e6295a288b"
+    },
+    {
+      "path": "normalization.json",
+      "sha256": "06933611aed0e5bcf7987f026143c86f38a60f7ffa859874e3ff05e32484c7c6"
+    },
+    {
+      "path": "options-10.json",
+      "sha256": "39f2d4af2b64900a5b748e09464a1198e2f1a35249567a29f53f8e317a2c624a"
+    },
+    {
+      "path": "options-11.json",
+      "sha256": "f93e945e0d48b4db7e125247a807af16c694585287cbe772a3e5d3da91f6a965"
+    },
+    {
+      "path": "options-2.json",
+      "sha256": "207fe18ea05f2e27675c422cebd8c526d5573d425e144bb00a9b6e024112bc7d"
+    },
+    {
+      "path": "options-3.json",
+      "sha256": "75437f83a2f17269d35a4bdd7976015cc57fe6de97ca41672af501fe1bd322fa"
+    },
+    {
+      "path": "options-32.json",
+      "sha256": "57b182f344d96be0a2dac21d3fa850a00996a18392e1a644d7432bedbe6945af"
+    },
+    {
+      "path": "options-5.json",
+      "sha256": "0c438e16494550b6897f1649f675083f0f5af18860f63f5be34a012b0ee4e386"
+    },
+    {
+      "path": "options-6.json",
+      "sha256": "7cd0b0d7dd47c8ab5e100e9229aab8fe07a1acd4be06ec1ddfe82907159ec2a1"
+    },
+    {
+      "path": "provenance.json",
+      "sha256": "33e674e4518ec79a9985e3b5cc923cd2c6bebdf1c082e150b236eacf700b9406"
+    },
+    {
+      "path": "rejected.json",
+      "sha256": "1d764b6c1e9009224a6fc829320c545e5ffa5cf968e40b625780b98da45b4902"
+    },
+    {
+      "path": "scalars.json",
+      "sha256": "825ee164797211d2a2c08b580fecce6ab6f42d5c14355ff0639877787dec2e1b"
+    },
+    {
+      "path": "zh-choice.json",
+      "sha256": "2c0fbea93b41d3496aee0da465dd0fa45853c070a85e3ea8a50f8ef8a3856de1"
+    },
+    {
+      "path": "zh-noul.json",
+      "sha256": "28b6756e28de75b19d79b1e5264c5edd5c5352d9220e9c9a82f2d1b014e64649"
+    },
+    {
+      "path": "zh-score.json",
+      "sha256": "a8eb365159e8f61294dca9f1f3f49c69dbb7813f50960a90290d5e566f45d192"
+    }
+  ],
+  "comparisons": [
+    {
+      "name": "zh-choice",
+      "passed": true,
+      "failures": [],
+      "max_absolute_errors": {
+        "logits": 1.1920928955078125e-05,
+        "act_probs": 0.0
+      }
+    },
+    {
+      "name": "zh-score",
+      "passed": true,
+      "failures": [],
+      "max_absolute_errors": {
+        "logits": 4.0531158447265625e-06,
+        "act_probs": 0.0
+      }
+    },
+    {
+      "name": "zh-noul",
+      "passed": true,
+      "failures": [],
+      "max_absolute_errors": {
+        "logits": 3.2186508178710938e-06,
+        "act_probs": 0.0
+      }
+    },
+    {
+      "name": "en-choice",
+      "passed": true,
+      "failures": [],
+      "max_absolute_errors": {
+        "logits": 6.318092346191406e-06,
+        "act_probs": 0.0
+      }
+    },
+    {
+      "name": "en-score",
+      "passed": true,
+      "failures": [],
+      "max_absolute_errors": {
+        "logits": 6.67572021484375e-06,
+        "act_probs": 0.0
+      }
+    },
+    {
+      "name": "en-noul",
+      "passed": true,
+      "failures": [],
+      "max_absolute_errors": {
+        "logits": 1.4901161193847656e-06,
+        "act_probs": 0.0
+      }
+    },
+    {
+      "name": "mixed-6",
+      "passed": true,
+      "failures": [],
+      "max_absolute_errors": {
+        "logits": 1.1444091796875e-05,
+        "act_probs": 0.0
+      }
+    },
+    {
+      "name": "mixed-16",
+      "passed": true,
+      "failures": [],
+      "max_absolute_errors": {
+        "logits": 6.973743438720703e-06,
+        "act_probs": 0.0
+      }
+    },
+    {
+      "name": "options-2",
+      "passed": true,
+      "failures": [],
+      "max_absolute_errors": {
+        "logits": 5.930662155151367e-06,
+        "act_probs": 0.0
+      }
+    },
+    {
+      "name": "options-3",
+      "passed": true,
+      "failures": [],
+      "max_absolute_errors": {
+        "logits": 3.4570693969726562e-06,
+        "act_probs": 0.0
+      }
+    },
+    {
+      "name": "options-5",
+      "passed": true,
+      "failures": [],
+      "max_absolute_errors": {
+        "logits": 3.0994415283203125e-06,
+        "act_probs": 0.0
+      }
+    },
+    {
+      "name": "options-6",
+      "passed": true,
+      "failures": [],
+      "max_absolute_errors": {
+        "logits": 3.2186508178710938e-06,
+        "act_probs": 0.0
+      }
+    },
+    {
+      "name": "options-10",
+      "passed": true,
+      "failures": [],
+      "max_absolute_errors": {
+        "logits": 1.9669532775878906e-06,
+        "act_probs": 0.0
+      }
+    },
+    {
+      "name": "options-11",
+      "passed": true,
+      "failures": [],
+      "max_absolute_errors": {
+        "logits": 2.0265579223632812e-06,
+        "act_probs": 0.0
+      }
+    },
+    {
+      "name": "options-32",
+      "passed": true,
+      "failures": [],
+      "max_absolute_errors": {
+        "logits": 5.4836273193359375e-06,
+        "act_probs": 0.0
+      }
+    },
+    {
+      "name": "long-padding",
+      "passed": false,
+      "failures": [
+        "rounded_answer:1"
+      ],
+      "max_absolute_errors": {
+        "logits": 5.245208740234375e-06,
+        "act_probs": 0.0
+      }
+    },
+    {
+      "name": "marker",
+      "passed": true,
+      "failures": [],
+      "max_absolute_errors": {
+        "logits": 5.7220458984375e-06,
+        "act_probs": 0.0
+      }
+    },
+    {
+      "name": "normalization",
+      "passed": true,
+      "failures": [],
+      "max_absolute_errors": {
+        "logits": 4.76837158203125e-06,
+        "act_probs": 0.0
+      }
+    },
+    {
+      "name": "json-order-numbers",
+      "passed": true,
+      "failures": [],
+      "max_absolute_errors": {
+        "logits": 3.910064697265625e-05,
+        "act_probs": 0.0
+      }
+    },
+    {
+      "name": "huge-integer",
+      "passed": true,
+      "failures": [],
+      "max_absolute_errors": {
+        "logits": 4.76837158203125e-06,
+        "act_probs": 0.0
+      }
+    },
+    {
+      "name": "scalars",
+      "passed": true,
+      "failures": [],
+      "max_absolute_errors": {
+        "logits": 1.6689300537109375e-06,
+        "act_probs": 0.0
+      }
+    }
+  ]
+}

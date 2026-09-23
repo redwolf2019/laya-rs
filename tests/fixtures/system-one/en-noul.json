@@ -1,0 +1,279 @@
+{
+  "schema_version": 1,
+  "kind": "official_model",
+  "request_json": "{\"state\": \"The app crashes when I sign in.\", \"questions\": {\"noul\": {\"type\": \"noul\", \"instructions\": \"The customer reports a software fault.\"}}}",
+  "state_text": "The app crashes when I sign in.",
+  "rows": [
+    {
+      "name": "noul",
+      "type": "noul",
+      "instructions_text": "The customer reports a software fault.",
+      "option_texts": [
+        "false: no, the statement does not hold",
+        "true: yes, the statement holds"
+      ],
+      "option_keys": [
+        "false",
+        "true"
+      ],
+      "tokenizer_calls": [
+        {
+          "text": "noul question: The customer reports a software fault.",
+          "input_ids": [
+            552,
+            6311,
+            2872,
+            235292,
+            714,
+            6650,
+            8134,
+            476,
+            6815,
+            15639,
+            235265
+          ]
+        },
+        {
+          "text": " false: no, the statement does not hold",
+          "input_ids": [
+            1566,
+            235292,
+            793,
+            235269,
+            573,
+            6218,
+            1721,
+            780,
+            3385
+          ]
+        },
+        {
+          "text": " true: yes, the statement holds",
+          "input_ids": [
+            1382,
+            235292,
+            7778,
+            235269,
+            573,
+            6218,
+            12723
+          ]
+        },
+        {
+          "text": "The app crashes when I sign in.",
+          "input_ids": [
+            714,
+            1059,
+            52688,
+            1185,
+            590,
+            2035,
+            575,
+            235265
+          ]
+        }
+      ],
+      "length": 41,
+      "temperature": {
+        "bucket": "noul:2",
+        "value": 1.0,
+        "source": "temperature"
+      },
+      "scaled_logits": [
+        -2.7887086868286133,
+        0.20780402421951294
+      ],
+      "probabilities": [
+        0.04758366942405701,
+        0.9524163603782654
+      ],
+      "probability_dtype": "float32"
+    }
+  ],
+  "tensors": {
+    "input_ids": [
+      [
+        2,
+        552,
+        6311,
+        2872,
+        235292,
+        714,
+        6650,
+        8134,
+        476,
+        6815,
+        15639,
+        235265,
+        1,
+        4,
+        1566,
+        235292,
+        793,
+        235269,
+        573,
+        6218,
+        1721,
+        780,
+        3385,
+        4,
+        1382,
+        235292,
+        7778,
+        235269,
+        573,
+        6218,
+        12723,
+        1,
+        714,
+        1059,
+        52688,
+        1185,
+        590,
+        2035,
+        575,
+        235265,
+        1
+      ]
+    ],
+    "attention_mask": [
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    ],
+    "marker_pos": [
+      [
+        13,
+        23
+      ]
+    ],
+    "marker_mask": [
+      [
+        true,
+        true
+      ]
+    ],
+    "qtype": [
+      2
+    ]
+  },
+  "tensor_dtypes": {
+    "input_ids": "int64",
+    "attention_mask": "int64",
+    "marker_pos": "int64",
+    "marker_mask": "bool",
+    "qtype": "int64"
+  },
+  "logits": [
+    [
+      -2.7887086868286133,
+      0.20780402421951294
+    ]
+  ],
+  "act_logits": [
+    [
+      1296.2684326171875,
+      -1542.0540771484375
+    ]
+  ],
+  "act_probs": [
+    [
+      1.0,
+      0.0
+    ]
+  ],
+  "response": {
+    "model": "rl-agent",
+    "answers": {
+      "noul": {
+        "type": "noul",
+        "noul": 0.9524,
+        "rl_agent": {
+          "act_probability": 1.0
+        }
+      }
+    },
+    "usage": {
+      "input_tokens": 41,
+      "output_tokens": 0
+    }
+  },
+  "onnx": {
+    "logits": [
+      [
+        -2.788707733154297,
+        0.20780253410339355
+      ]
+    ],
+    "act_probs": [
+      [
+        1.0,
+        0.0
+      ]
+    ],
+    "response": {
+      "model": "rl-agent",
+      "answers": {
+        "noul": {
+          "type": "noul",
+          "noul": 0.9524,
+          "rl_agent": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 41,
+        "output_tokens": 0
+      }
+    }
+  },
+  "comparison": {
+    "passed": true,
+    "failures": [],
+    "max_absolute_errors": {
+      "logits": 1.4901161193847656e-06,
+      "act_probs": 0.0
+    }
+  }
+}

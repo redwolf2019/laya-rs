@@ -1,0 +1,264 @@
+{
+  "schema_version": 1,
+  "kind": "official_model",
+  "request_json": "{\"state\": \"The app crashes when I sign in.\", \"questions\": {\"choice\": {\"type\": \"choice\", \"instructions\": \"Choose a team.\", \"criteria\": {\"billing\": null, \"technical\": \"Software faults\", \"sales\": \"\"}}}}",
+  "state_text": "The app crashes when I sign in.",
+  "rows": [
+    {
+      "name": "choice",
+      "type": "choice",
+      "instructions_text": "Choose a team.",
+      "option_texts": [
+        "billing",
+        "technical: Software faults",
+        "sales"
+      ],
+      "option_keys": [
+        "billing",
+        "technical",
+        "sales"
+      ],
+      "tokenizer_calls": [
+        {
+          "text": "choice question: Choose a team.",
+          "input_ids": [
+            6241,
+            2872,
+            235292,
+            19262,
+            476,
+            2970,
+            235265
+          ]
+        },
+        {
+          "text": " billing",
+          "input_ids": [
+            54972
+          ]
+        },
+        {
+          "text": " technical: Software faults",
+          "input_ids": [
+            9838,
+            235292,
+            15358,
+            44165
+          ]
+        },
+        {
+          "text": " sales",
+          "input_ids": [
+            7108
+          ]
+        },
+        {
+          "text": "The app crashes when I sign in.",
+          "input_ids": [
+            714,
+            1059,
+            52688,
+            1185,
+            590,
+            2035,
+            575,
+            235265
+          ]
+        }
+      ],
+      "length": 28,
+      "temperature": {
+        "bucket": "choice:3-5",
+        "value": 1.0,
+        "source": "temperature"
+      },
+      "scaled_logits": [
+        -2.6671640872955322,
+        1.7569435834884644,
+        -3.923313617706299
+      ],
+      "probabilities": [
+        0.011803161352872849,
+        0.9848358035087585,
+        0.0033609296660870314
+      ],
+      "probability_dtype": "float32"
+    }
+  ],
+  "tensors": {
+    "input_ids": [
+      [
+        2,
+        6241,
+        2872,
+        235292,
+        19262,
+        476,
+        2970,
+        235265,
+        1,
+        4,
+        54972,
+        4,
+        9838,
+        235292,
+        15358,
+        44165,
+        4,
+        7108,
+        1,
+        714,
+        1059,
+        52688,
+        1185,
+        590,
+        2035,
+        575,
+        235265,
+        1
+      ]
+    ],
+    "attention_mask": [
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    ],
+    "marker_pos": [
+      [
+        9,
+        11,
+        16
+      ]
+    ],
+    "marker_mask": [
+      [
+        true,
+        true,
+        true
+      ]
+    ],
+    "qtype": [
+      0
+    ]
+  },
+  "tensor_dtypes": {
+    "input_ids": "int64",
+    "attention_mask": "int64",
+    "marker_pos": "int64",
+    "marker_mask": "bool",
+    "qtype": "int64"
+  },
+  "logits": [
+    [
+      -2.6671640872955322,
+      1.7569435834884644,
+      -3.923313617706299
+    ]
+  ],
+  "act_logits": [
+    [
+      1392.30615234375,
+      -1659.347412109375
+    ]
+  ],
+  "act_probs": [
+    [
+      1.0,
+      0.0
+    ]
+  ],
+  "response": {
+    "model": "rl-agent",
+    "answers": {
+      "choice": {
+        "type": "choice",
+        "choice": "technical",
+        "probabilities": {
+          "billing": 0.0118,
+          "technical": 0.9848,
+          "sales": 0.0034
+        },
+        "confidence": 0.9212,
+        "rl_agent": {
+          "act_probability": 1.0
+        }
+      }
+    },
+    "usage": {
+      "input_tokens": 28,
+      "output_tokens": 0
+    }
+  },
+  "onnx": {
+    "logits": [
+      [
+        -2.6671690940856934,
+        1.7569372653961182,
+        -3.923316478729248
+      ]
+    ],
+    "act_probs": [
+      [
+        1.0,
+        0.0
+      ]
+    ],
+    "response": {
+      "model": "rl-agent",
+      "answers": {
+        "choice": {
+          "type": "choice",
+          "choice": "technical",
+          "probabilities": {
+            "billing": 0.0118,
+            "technical": 0.9848,
+            "sales": 0.0034
+          },
+          "confidence": 0.9212,
+          "rl_agent": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 28,
+        "output_tokens": 0
+      }
+    }
+  },
+  "comparison": {
+    "passed": true,
+    "failures": [],
+    "max_absolute_errors": {
+      "logits": 6.318092346191406e-06,
+      "act_probs": 0.0
+    }
+  }
+}

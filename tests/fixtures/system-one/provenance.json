@@ -1,0 +1,235 @@
+{
+  "schema_version": 1,
+  "kind": "provenance",
+  "official_revision": "c5d78730f3493e4fe16d61507ef4b78eef7318cf",
+  "checkpoint_revision": "052592a15d198d9ad47da779604259b10b47b7aa",
+  "api": {
+    "url": "https://raw.githubusercontent.com/he-jev/laya/c5d78730f3493e4fe16d61507ef4b78eef7318cf/rl_agent_api.py",
+    "sha256": "be3b46819c9999c3ef88e0f2ecf6d3ab1cdfed1d9a8b466fc89811e34d44031b"
+  },
+  "inputs": [
+    {
+      "path": "models/multilingual/prep/checkpoint/.gitattributes",
+      "url": "https://huggingface.co/convaiinnovations/laya-multilingual/resolve/052592a15d198d9ad47da779604259b10b47b7aa/.gitattributes",
+      "bytes": 1580,
+      "sha256": "caf3ca02d5e883f643e939cbed54f94237f94c171797f0dfea5e25c7e33315b3",
+      "publisher": {
+        "rfilename": ".gitattributes",
+        "blobId": "f1ca65ce6a5b0774360fde1ec05157d9f937aaa2",
+        "size": 1580
+      }
+    },
+    {
+      "path": "models/multilingual/prep/checkpoint/README.md",
+      "url": "https://huggingface.co/convaiinnovations/laya-multilingual/resolve/052592a15d198d9ad47da779604259b10b47b7aa/README.md",
+      "bytes": 6957,
+      "sha256": "8a8a77d006d07a1a1ee1f964d83b4de935dee354a3e6f371c044b4a3b4c4ef70",
+      "publisher": {
+        "rfilename": "README.md",
+        "blobId": "593bdc34282938d9e3c6bc24660318fe8d9e6065",
+        "size": 6957
+      }
+    },
+    {
+      "path": "models/multilingual/prep/checkpoint/encoder/config.json",
+      "url": "https://huggingface.co/convaiinnovations/laya-multilingual/resolve/052592a15d198d9ad47da779604259b10b47b7aa/encoder/config.json",
+      "bytes": 1938,
+      "sha256": "83f6916d13ef0f556ac461f28308dc2bffa7ebeadee8ec9e2db5812020ea5bb4",
+      "publisher": {
+        "rfilename": "encoder/config.json",
+        "blobId": "0de0e2d30638873790cf962def52e2acf4db3eef",
+        "size": 1938
+      }
+    },
+    {
+      "path": "models/multilingual/prep/checkpoint/model.safetensors",
+      "url": "https://huggingface.co/convaiinnovations/laya-multilingual/resolve/052592a15d198d9ad47da779604259b10b47b7aa/model.safetensors",
+      "bytes": 643835514,
+      "sha256": "9d628fd971b700382ac6f65920a86f149777b2e748e0c955fb3b19695aa8f204",
+      "publisher": {
+        "rfilename": "model.safetensors",
+        "blobId": "b99c8bea239c53f6f6bce734557dc6c403fa6b3e",
+        "size": 643835514,
+        "lfs": {
+          "sha256": "9d628fd971b700382ac6f65920a86f149777b2e748e0c955fb3b19695aa8f204",
+          "size": 643835514,
+          "pointerSize": 134
+        }
+      }
+    },
+    {
+      "path": "models/multilingual/prep/checkpoint/rl_agent_config.json",
+      "url": "https://huggingface.co/convaiinnovations/laya-multilingual/resolve/052592a15d198d9ad47da779604259b10b47b7aa/rl_agent_config.json",
+      "bytes": 472,
+      "sha256": "25061739243b617ad88d1219ba6f8a9c86c5881ca28df024fa2d9b3b2fcc30c6",
+      "publisher": {
+        "rfilename": "rl_agent_config.json",
+        "blobId": "00e35f88bb731bb9126a914666ab1cdac8a204c8",
+        "size": 472
+      }
+    },
+    {
+      "path": "models/multilingual/prep/checkpoint/tokenizer/tokenizer.json",
+      "url": "https://huggingface.co/convaiinnovations/laya-multilingual/resolve/052592a15d198d9ad47da779604259b10b47b7aa/tokenizer/tokenizer.json",
+      "bytes": 34363188,
+      "sha256": "609d8f4c067cd3950f88594c5a802616cea245823836ef5848ee4fc40aab5b6f",
+      "publisher": {
+        "rfilename": "tokenizer/tokenizer.json",
+        "blobId": "56d765858ed38eaabd35cd90759cbb1f89b0baa4",
+        "size": 34363188,
+        "lfs": {
+          "sha256": "609d8f4c067cd3950f88594c5a802616cea245823836ef5848ee4fc40aab5b6f",
+          "size": 34363188,
+          "pointerSize": 133
+        }
+      }
+    },
+    {
+      "path": "models/multilingual/prep/checkpoint/tokenizer/tokenizer_config.json",
+      "url": "https://huggingface.co/convaiinnovations/laya-multilingual/resolve/052592a15d198d9ad47da779604259b10b47b7aa/tokenizer/tokenizer_config.json",
+      "bytes": 502,
+      "sha256": "424b69444bf7b5809dc2cd2e36d0bd71b8055124dd24274d6db3c655d38205e7",
+      "publisher": {
+        "rfilename": "tokenizer/tokenizer_config.json",
+        "blobId": "eea1ed61121530d74c1722dc2aab6ec917a75909",
+        "size": 502
+      }
+    },
+    {
+      "path": "models/multilingual/prep/source/rl_common.py",
+      "url": "https://raw.githubusercontent.com/he-jev/laya/c5d78730f3493e4fe16d61507ef4b78eef7318cf/rl_common.py",
+      "bytes": 19139,
+      "sha256": "8d83611d480c971d640a7b7d3aa2f2219c5e8455e9cc2329fd073681bd8be23e"
+    },
+    {
+      "path": "models/multilingual/prep/source/official-README.md",
+      "url": "https://raw.githubusercontent.com/he-jev/laya/c5d78730f3493e4fe16d61507ef4b78eef7318cf/README.md",
+      "bytes": 10217,
+      "sha256": "575cb8fb4fd82465036a9d265c283fec9448b78067e6045afac8cfa113dde98f"
+    },
+    {
+      "path": "models/multilingual/prep/source/export_onnx.py",
+      "url": "https://raw.githubusercontent.com/receptron/laya/6478649e723122ca24bbf5fb69ed1010023c9750/export/export_onnx.py",
+      "bytes": 3475,
+      "sha256": "a4da86abfe118779f8f0d5ac25d6213844f405d8feb1d222338fc98170d56b4b"
+    },
+    {
+      "path": "models/multilingual/prep/source/receptron-LICENSE",
+      "url": "https://raw.githubusercontent.com/receptron/laya/6478649e723122ca24bbf5fb69ed1010023c9750/LICENSE",
+      "bytes": 1066,
+      "sha256": "c07ddef02172ce4162a2aae8ebddd5c2b84d8374da865c592afea5710e2acc0c"
+    }
+  ],
+  "bundle_manifest_sha256": "efa4e04d21893debaffa96b0df374d07c45c2c3750d7942de3a3c1aa0342aaa3",
+  "bundle_files": [
+    {
+      "path": "laya.onnx",
+      "bytes": 2680422,
+      "sha256": "a0a46af6144f0e7ff66612461be9064f528b1734bc87911463d3c7fc306ce7ef"
+    },
+    {
+      "path": "laya.onnx.data",
+      "bytes": 1287651328,
+      "sha256": "6ef993ee707fe1d6a75529f4a1f8347ff89966ff955d332ea3ebe4e5171a9ac1"
+    },
+    {
+      "path": "laya_config.json",
+      "bytes": 127,
+      "sha256": "d9f54bcdd1993f9d5e6c5839516de423599759a635a1d53b172c154b3f717880"
+    },
+    {
+      "path": "tokenizer/tokenizer.json",
+      "bytes": 34363188,
+      "sha256": "609d8f4c067cd3950f88594c5a802616cea245823836ef5848ee4fc40aab5b6f"
+    },
+    {
+      "path": "tokenizer/tokenizer_config.json",
+      "bytes": 502,
+      "sha256": "424b69444bf7b5809dc2cd2e36d0bd71b8055124dd24274d6db3c655d38205e7"
+    },
+    {
+      "path": "licenses/Apache-2.0.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "licenses/NOTICE.md",
+      "bytes": 2043,
+      "sha256": "bd0b93d7c933bb96b7457de588f5c79e83bf3bde8eb527e5d6030d163c0bc047"
+    },
+    {
+      "path": "licenses/model-README.md",
+      "bytes": 6957,
+      "sha256": "8a8a77d006d07a1a1ee1f964d83b4de935dee354a3e6f371c044b4a3b4c4ef70"
+    },
+    {
+      "path": "licenses/official-README.md",
+      "bytes": 10217,
+      "sha256": "575cb8fb4fd82465036a9d265c283fec9448b78067e6045afac8cfa113dde98f"
+    },
+    {
+      "path": "licenses/receptron-LICENSE",
+      "bytes": 1066,
+      "sha256": "c07ddef02172ce4162a2aae8ebddd5c2b84d8374da865c592afea5710e2acc0c"
+    }
+  ],
+  "python": "3.11.16 (main, Sep 19 2026, 01:11:36) [GCC 12.2.0]",
+  "platform": "Linux-6.12.76-linuxkit-aarch64-with-glibc2.36",
+  "image": "python@sha256:a36c24f9cbdf4fd0f52d67f0823eeac19c2028c637cecc392d97f980d4fec56b",
+  "cgroup": {
+    "cpu.max": "800000 100000",
+    "memory.max": "12884901888",
+    "memory.swap.max": "0"
+  },
+  "versions": {
+    "annotated-doc": "0.0.5",
+    "anyio": "4.15.1",
+    "certifi": "2026.7.22",
+    "click": "8.5.0",
+    "filelock": "4.0.1",
+    "flatbuffers": "25.12.19",
+    "fsspec": "2026.9.0",
+    "h11": "0.16.0",
+    "hf-xet": "1.6.0",
+    "httpcore": "1.0.9",
+    "httpx": "0.28.1",
+    "huggingface_hub": "1.32.0",
+    "idna": "3.20",
+    "Jinja2": "3.1.6",
+    "markdown-it-py": "4.2.0",
+    "MarkupSafe": "3.0.3",
+    "mdurl": "0.1.2",
+    "ml_dtypes": "0.6.0",
+    "mpmath": "1.3.0",
+    "networkx": "3.6.1",
+    "numpy": "2.3.3",
+    "onnx": "1.20.1",
+    "onnx-ir": "1.0.0",
+    "onnxruntime": "1.28.0",
+    "onnxscript": "0.5.4",
+    "packaging": "26.3",
+    "pip": "24.0",
+    "protobuf": "7.36.2",
+    "Pygments": "2.21.0",
+    "PyYAML": "6.0.3",
+    "regex": "2026.9.10",
+    "rich": "15.0.0",
+    "safetensors": "0.7.0",
+    "setuptools": "79.0.1",
+    "shellingham": "1.5.4",
+    "sympy": "1.14.0",
+    "tokenizers": "0.22.2",
+    "torch": "2.10.0",
+    "tqdm": "4.70.1",
+    "transformers": "5.0.0",
+    "typer": "0.27.2",
+    "typer-slim": "0.24.0",
+    "typing_extensions": "4.16.0",
+    "wheel": "0.46.3"
+  },
+  "tools": {
+    "/work/tools/model-prep/fixtures.py": "57a69d12f6f636cb8127e20819403937e48f5b19fbc561d3ab23fbf3e8c1afec",
+    "/work/tools/model-prep/fixture_cases.py": "9d42b18799ddf84ce77c5887a9ea16279e72ecee5d4ea558ff6b8f311954b32f",
+    "tools/model-prep/requirements.lock": "0253a755baa9cb1c11e3ca2feb99a8b04e67819fdb40b5b0cb9c9cca1f39d191"
+  }
+}

@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "kind": "official_model",
+  "request_json": "{\"state\": \"The app crashes when I sign in.\", \"questions\": {\"score\": {\"type\": \"score\", \"instructions\": \"Rate urgency.\", \"criteria\": [\"low\", \"medium\", \"high\"]}}}",
+  "state_text": "The app crashes when I sign in.",
+  "rows": [
+    {
+      "name": "score",
+      "type": "score",
+      "instructions_text": "Rate urgency.",
+      "option_texts": [
+        "level 0: low",
+        "level 1: medium",
+        "level 2: high"
+      ],
+      "option_keys": [
+        "0",
+        "1",
+        "2"
+      ],
+      "tokenizer_calls": [
+        {
+          "text": "score question: Rate urgency.",
+          "input_ids": [
+            7716,
+            2872,
+            235292,
+            19129,
+            72424,
+            235265
+          ]
+        },
+        {
+          "text": " level 0: low",
+          "input_ids": [
+            2403,
+            235248,
+            235276,
+            235292,
+            3178
+          ]
+        },
+        {
+          "text": " level 1: medium",
+          "input_ids": [
+            2403,
+            235248,
+            235274,
+            235292,
+            8890
+          ]
+        },
+        {
+          "text": " level 2: high",
+          "input_ids": [
+            2403,
+            235248,
+            235284,
+            235292,
+            1536
+          ]
+        },
+        {
+          "text": "The app crashes when I sign in.",
+          "input_ids": [
+            714,
+            1059,
+            52688,
+            1185,
+            590,
+            2035,
+            575,
+            235265
+          ]
+        }
+      ],
+      "length": 36,
+      "temperature": {
+        "bucket": "score:3-5",
+        "value": 1.0,
+        "source": "temperature"
+      },
+      "scaled_logits": [
+        -4.3144989013671875,
+        -2.0260257720947266,
+        -4.551527976989746
+      ],
+      "probabilities": [
+        0.0858454555273056,
+        0.8464251160621643,
+        0.06772934645414352
+      ],
+      "probability_dtype": "float32"
+    }
+  ],
+  "tensors": {
+    "input_ids": [
+      [
+        2,
+        7716,
+        2872,
+        235292,
+        19129,
+        72424,
+        235265,
+        1,
+        4,
+        2403,
+        235248,
+        235276,
+        235292,
+        3178,
+        4,
+        2403,
+        235248,
+        235274,
+        235292,
+        8890,
+        4,
+        2403,
+        235248,
+        235284,
+        235292,
+        1536,
+        1,
+        714,
+        1059,
+        52688,
+        1185,
+        590,
+        2035,
+        575,
+        235265,
+        1
+      ]
+    ],
+    "attention_mask": [
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    ],
+    "marker_pos": [
+      [
+        8,
+        14,
+        20
+      ]
+    ],
+    "marker_mask": [
+      [
+        true,
+        true,
+        true
+      ]
+    ],
+    "qtype": [
+      1
+    ]
+  },
+  "tensor_dtypes": {
+    "input_ids": "int64",
+    "attention_mask": "int64",
+    "marker_pos": "int64",
+    "marker_mask": "bool",
+    "qtype": "int64"
+  },
+  "logits": [
+    [
+      -4.3144989013671875,
+      -2.0260257720947266,
+      -4.551527976989746
+    ]
+  ],
+  "act_logits": [
+    [
+      1701.84619140625,
+      -2014.134521484375
+    ]
+  ],
+  "act_probs": [
+    [
+      1.0,
+      0.0
+    ]
+  ],
+  "response": {
+    "model": "rl-agent",
+    "answers": {
+      "score": {
+        "type": "score",
+        "score": 0.9819,
+        "legend": {
+          "0": "low",
+          "1": "medium",
+          "2": "high"
+        },
+        "probabilities": {
+          "0": 0.0858,
+          "1": 0.8464,
+          "2": 0.0677
+        },
+        "confidence": 0.5137,
+        "rl_agent": {
+          "act_probability": 1.0
+        }
+      }
+    },
+    "usage": {
+      "input_tokens": 36,
+      "output_tokens": 0
+    }
+  },
+  "onnx": {
+    "logits": [
+      [
+        -4.314505577087402,
+        -2.026027202606201,
+        -4.5515289306640625
+      ]
+    ],
+    "act_probs": [
+      [
+        1.0,
+        0.0
+      ]
+    ],
+    "response": {
+      "model": "rl-agent",
+      "answers": {
+        "score": {
+          "type": "score",
+          "score": 0.9819,
+          "legend": {
+            "0": "low",
+            "1": "medium",
+            "2": "high"
+          },
+          "probabilities": {
+            "0": 0.0858,
+            "1": 0.8464,
+            "2": 0.0677
+          },
+          "confidence": 0.5137,
+          "rl_agent": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 36,
+        "output_tokens": 0
+      }
+    }
+  },
+  "comparison": {
+    "passed": true,
+    "failures": [],
+    "max_absolute_errors": {
+      "logits": 6.67572021484375e-06,
+      "act_probs": 0.0
+    }
+  }
+}

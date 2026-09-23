@@ -1,0 +1,589 @@
+{
+  "schema_version": 1,
+  "kind": "official_model",
+  "request_json": "{\"state\": \"<mask><mask> <bos> <eos> <unk> <pad> <mask> <start_of_turn> <end_of_turn> [MASK] 😄\", \"questions\": {\"q\": {\"type\": \"choice\", \"instructions\": \"<mask><mask> <bos> <eos> <unk> <pad> <mask> <start_of_turn> <end_of_turn> [MASK]\", \"criteria\": {\"<mask>\": \"<mask> x\", \"\": \"<eos>\"}}, \"n\": {\"type\": \"noul\", \"instructions\": \"成立吗？\", \"criteria\": {\"false\": \"\", \"true\": \"成立\", \"ignored\": null}}}}",
+  "state_text": "<mask><mask> <bos> <eos> <unk> <pad> <mask> <start_of_turn> <end_of_turn> [MASK] 😄",
+  "rows": [
+    {
+      "name": "q",
+      "type": "choice",
+      "instructions_text": "<mask><mask> <bos> <eos> <unk> <pad> <mask> <start_of_turn> <end_of_turn> [MASK]",
+      "option_texts": [
+        "<mask>: <mask> x",
+        ": <eos>"
+      ],
+      "option_keys": [
+        "<mask>",
+        ""
+      ],
+      "tokenizer_calls": [
+        {
+          "text": "choice question:    <bos> <eos> <unk> <pad>   <start_of_turn> <end_of_turn> [MASK]",
+          "input_ids": [
+            6241,
+            2872,
+            235292,
+            235248,
+            235248,
+            235248,
+            235248,
+            2,
+            235248,
+            1,
+            235248,
+            3,
+            235248,
+            0,
+            235248,
+            235248,
+            235248,
+            106,
+            235248,
+            107,
+            892,
+            43551,
+            235307
+          ]
+        },
+        {
+          "text": "  :   x",
+          "input_ids": [
+            235248,
+            865,
+            235248,
+            235248,
+            1141
+          ]
+        },
+        {
+          "text": " : <eos>",
+          "input_ids": [
+            865,
+            235248,
+            1
+          ]
+        },
+        {
+          "text": "   <bos> <eos> <unk> <pad>   <start_of_turn> <end_of_turn> [MASK] 😄",
+          "input_ids": [
+            235248,
+            235248,
+            235248,
+            2,
+            235248,
+            1,
+            235248,
+            3,
+            235248,
+            0,
+            235248,
+            235248,
+            235248,
+            106,
+            235248,
+            107,
+            892,
+            43551,
+            235307,
+            123781
+          ]
+        }
+      ],
+      "length": 57,
+      "temperature": {
+        "bucket": "choice:2",
+        "value": 1.0,
+        "source": "temperature"
+      },
+      "scaled_logits": [
+        -2.295156478881836,
+        -1.4088001251220703
+      ],
+      "probabilities": [
+        0.2918623089790344,
+        0.7081376910209656
+      ],
+      "probability_dtype": "float32"
+    },
+    {
+      "name": "n",
+      "type": "noul",
+      "instructions_text": "成立吗？",
+      "option_texts": [
+        "false: no, the statement does not hold",
+        "true: 成立"
+      ],
+      "option_keys": [
+        "false",
+        "true"
+      ],
+      "tokenizer_calls": [
+        {
+          "text": "noul question: 成立吗？",
+          "input_ids": [
+            552,
+            6311,
+            2872,
+            235292,
+            38062,
+            235947,
+            236403,
+            235544
+          ]
+        },
+        {
+          "text": " false: no, the statement does not hold",
+          "input_ids": [
+            1566,
+            235292,
+            793,
+            235269,
+            573,
+            6218,
+            1721,
+            780,
+            3385
+          ]
+        },
+        {
+          "text": " true: 成立",
+          "input_ids": [
+            1382,
+            235292,
+            38062,
+            235947
+          ]
+        },
+        {
+          "text": "   <bos> <eos> <unk> <pad>   <start_of_turn> <end_of_turn> [MASK] 😄",
+          "input_ids": [
+            235248,
+            235248,
+            235248,
+            2,
+            235248,
+            1,
+            235248,
+            3,
+            235248,
+            0,
+            235248,
+            235248,
+            235248,
+            106,
+            235248,
+            107,
+            892,
+            43551,
+            235307,
+            123781
+          ]
+        }
+      ],
+      "length": 47,
+      "temperature": {
+        "bucket": "noul:2",
+        "value": 1.0,
+        "source": "temperature"
+      },
+      "scaled_logits": [
+        0.1745527982711792,
+        0.7658206224441528
+      ],
+      "probabilities": [
+        0.3563440144062042,
+        0.6436560153961182
+      ],
+      "probability_dtype": "float32"
+    }
+  ],
+  "tensors": {
+    "input_ids": [
+      [
+        2,
+        6241,
+        2872,
+        235292,
+        235248,
+        235248,
+        235248,
+        235248,
+        2,
+        235248,
+        1,
+        235248,
+        3,
+        235248,
+        0,
+        235248,
+        235248,
+        235248,
+        106,
+        235248,
+        107,
+        892,
+        43551,
+        235307,
+        1,
+        4,
+        235248,
+        865,
+        235248,
+        235248,
+        1141,
+        4,
+        865,
+        235248,
+        1,
+        1,
+        235248,
+        235248,
+        235248,
+        2,
+        235248,
+        1,
+        235248,
+        3,
+        235248,
+        0,
+        235248,
+        235248,
+        235248,
+        106,
+        235248,
+        107,
+        892,
+        43551,
+        235307,
+        123781,
+        1
+      ],
+      [
+        2,
+        552,
+        6311,
+        2872,
+        235292,
+        38062,
+        235947,
+        236403,
+        235544,
+        1,
+        4,
+        1566,
+        235292,
+        793,
+        235269,
+        573,
+        6218,
+        1721,
+        780,
+        3385,
+        4,
+        1382,
+        235292,
+        38062,
+        235947,
+        1,
+        235248,
+        235248,
+        235248,
+        2,
+        235248,
+        1,
+        235248,
+        3,
+        235248,
+        0,
+        235248,
+        235248,
+        235248,
+        106,
+        235248,
+        107,
+        892,
+        43551,
+        235307,
+        123781,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "attention_mask": [
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "marker_pos": [
+      [
+        25,
+        31
+      ],
+      [
+        10,
+        20
+      ]
+    ],
+    "marker_mask": [
+      [
+        true,
+        true
+      ],
+      [
+        true,
+        true
+      ]
+    ],
+    "qtype": [
+      0,
+      2
+    ]
+  },
+  "tensor_dtypes": {
+    "input_ids": "int64",
+    "attention_mask": "int64",
+    "marker_pos": "int64",
+    "marker_mask": "bool",
+    "qtype": "int64"
+  },
+  "logits": [
+    [
+      -2.295156478881836,
+      -1.4088001251220703
+    ],
+    [
+      0.1745527982711792,
+      0.7658206224441528
+    ]
+  ],
+  "act_logits": [
+    [
+      1192.167724609375,
+      -1423.458984375
+    ],
+    [
+      1306.509521484375,
+      -1554.1348876953125
+    ]
+  ],
+  "act_probs": [
+    [
+      1.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0
+    ]
+  ],
+  "response": {
+    "model": "rl-agent",
+    "answers": {
+      "q": {
+        "type": "choice",
+        "choice": "",
+        "probabilities": {
+          "<mask>": 0.2919,
+          "": 0.7081
+        },
+        "confidence": 0.1289,
+        "rl_agent": {
+          "act_probability": 1.0
+        }
+      },
+      "n": {
+        "type": "noul",
+        "noul": 0.6437,
+        "rl_agent": {
+          "act_probability": 1.0
+        }
+      }
+    },
+    "usage": {
+      "input_tokens": 104,
+      "output_tokens": 0
+    }
+  },
+  "onnx": {
+    "logits": [
+      [
+        -2.2951595783233643,
+        -1.4088058471679688
+      ],
+      [
+        0.1745566725730896,
+        0.7658202648162842
+      ]
+    ],
+    "act_probs": [
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ]
+    ],
+    "response": {
+      "model": "rl-agent",
+      "answers": {
+        "q": {
+          "type": "choice",
+          "choice": "",
+          "probabilities": {
+            "<mask>": 0.2919,
+            "": 0.7081
+          },
+          "confidence": 0.1289,
+          "rl_agent": {
+            "act_probability": 1.0
+          }
+        },
+        "n": {
+          "type": "noul",
+          "noul": 0.6437,
+          "rl_agent": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 104,
+        "output_tokens": 0
+      }
+    }
+  },
+  "comparison": {
+    "passed": true,
+    "failures": [],
+    "max_absolute_errors": {
+      "logits": 5.7220458984375e-06,
+      "act_probs": 0.0
+    }
+  }
+}

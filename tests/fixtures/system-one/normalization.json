@@ -1,0 +1,627 @@
+{
+  "schema_version": 1,
+  "kind": "official_model",
+  "request_json": "{\"state\": null, \"questions\": {\"10\": {\"type\": \"choice\", \"instructions\": true, \"criteria\": [\"b\", \"a\", \"b\", \"\"]}, \"2\": {\"type\": \"score\", \"instructions\": [], \"criteria\": [\"high\", \"low\", \"high\"]}, \"\": {\"type\": \"noul\", \"instructions\": {}, \"criteria\": {\"false\": \"不成立\"}}}}",
+  "state_text": "null",
+  "rows": [
+    {
+      "name": "10",
+      "type": "choice",
+      "instructions_text": "true",
+      "option_texts": [
+        "b",
+        "a",
+        ""
+      ],
+      "option_keys": [
+        "b",
+        "a",
+        ""
+      ],
+      "tokenizer_calls": [
+        {
+          "text": "choice question: true",
+          "input_ids": [
+            6241,
+            2872,
+            235292,
+            1382
+          ]
+        },
+        {
+          "text": " b",
+          "input_ids": [
+            518
+          ]
+        },
+        {
+          "text": " a",
+          "input_ids": [
+            476
+          ]
+        },
+        {
+          "text": " ",
+          "input_ids": [
+            235248
+          ]
+        },
+        {
+          "text": "null",
+          "input_ids": [
+            1468
+          ]
+        }
+      ],
+      "length": 15,
+      "temperature": {
+        "bucket": "choice:3-5",
+        "value": 1.0,
+        "source": "temperature"
+      },
+      "scaled_logits": [
+        -1.4857876300811768,
+        -1.3354637622833252,
+        -0.5329577922821045
+      ],
+      "probabilities": [
+        0.2102939933538437,
+        0.24440589547157288,
+        0.5453001260757446
+      ],
+      "probability_dtype": "float32"
+    },
+    {
+      "name": "2",
+      "type": "score",
+      "instructions_text": "[]",
+      "option_texts": [
+        "level 0: high",
+        "level 1: low",
+        "level 2: high"
+      ],
+      "option_keys": [
+        "0",
+        "1",
+        "2"
+      ],
+      "tokenizer_calls": [
+        {
+          "text": "score question: []",
+          "input_ids": [
+            7716,
+            2872,
+            235292,
+            2422
+          ]
+        },
+        {
+          "text": " level 0: high",
+          "input_ids": [
+            2403,
+            235248,
+            235276,
+            235292,
+            1536
+          ]
+        },
+        {
+          "text": " level 1: low",
+          "input_ids": [
+            2403,
+            235248,
+            235274,
+            235292,
+            3178
+          ]
+        },
+        {
+          "text": " level 2: high",
+          "input_ids": [
+            2403,
+            235248,
+            235284,
+            235292,
+            1536
+          ]
+        },
+        {
+          "text": "null",
+          "input_ids": [
+            1468
+          ]
+        }
+      ],
+      "length": 27,
+      "temperature": {
+        "bucket": "score:3-5",
+        "value": 1.0,
+        "source": "temperature"
+      },
+      "scaled_logits": [
+        -4.508140563964844,
+        -3.640469551086426,
+        -3.5360145568847656
+      ],
+      "probabilities": [
+        0.1659773886203766,
+        0.39525166153907776,
+        0.43877097964286804
+      ],
+      "probability_dtype": "float32"
+    },
+    {
+      "name": "",
+      "type": "noul",
+      "instructions_text": "{}",
+      "option_texts": [
+        "false: 不成立",
+        "true: yes, the statement holds"
+      ],
+      "option_keys": [
+        "false",
+        "true"
+      ],
+      "tokenizer_calls": [
+        {
+          "text": "noul question: {}",
+          "input_ids": [
+            552,
+            6311,
+            2872,
+            235292,
+            5969
+          ]
+        },
+        {
+          "text": " false: 不成立",
+          "input_ids": [
+            1566,
+            235292,
+            19626,
+            60603
+          ]
+        },
+        {
+          "text": " true: yes, the statement holds",
+          "input_ids": [
+            1382,
+            235292,
+            7778,
+            235269,
+            573,
+            6218,
+            12723
+          ]
+        },
+        {
+          "text": "null",
+          "input_ids": [
+            1468
+          ]
+        }
+      ],
+      "length": 23,
+      "temperature": {
+        "bucket": "noul:2",
+        "value": 1.0,
+        "source": "temperature"
+      },
+      "scaled_logits": [
+        -0.3868056535720825,
+        0.015616893768310547
+      ],
+      "probabilities": [
+        0.4007304608821869,
+        0.5992695689201355
+      ],
+      "probability_dtype": "float32"
+    }
+  ],
+  "tensors": {
+    "input_ids": [
+      [
+        2,
+        6241,
+        2872,
+        235292,
+        1382,
+        1,
+        4,
+        518,
+        4,
+        476,
+        4,
+        235248,
+        1,
+        1468,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        2,
+        7716,
+        2872,
+        235292,
+        2422,
+        1,
+        4,
+        2403,
+        235248,
+        235276,
+        235292,
+        1536,
+        4,
+        2403,
+        235248,
+        235274,
+        235292,
+        3178,
+        4,
+        2403,
+        235248,
+        235284,
+        235292,
+        1536,
+        1,
+        1468,
+        1
+      ],
+      [
+        2,
+        552,
+        6311,
+        2872,
+        235292,
+        5969,
+        1,
+        4,
+        1566,
+        235292,
+        19626,
+        60603,
+        4,
+        1382,
+        235292,
+        7778,
+        235269,
+        573,
+        6218,
+        12723,
+        1,
+        1468,
+        1,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "attention_mask": [
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "marker_pos": [
+      [
+        6,
+        8,
+        10
+      ],
+      [
+        6,
+        12,
+        18
+      ],
+      [
+        7,
+        12,
+        0
+      ]
+    ],
+    "marker_mask": [
+      [
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        false
+      ]
+    ],
+    "qtype": [
+      0,
+      1,
+      2
+    ]
+  },
+  "tensor_dtypes": {
+    "input_ids": "int64",
+    "attention_mask": "int64",
+    "marker_pos": "int64",
+    "marker_mask": "bool",
+    "qtype": "int64"
+  },
+  "logits": [
+    [
+      -1.4857876300811768,
+      -1.3354637622833252,
+      -0.5329577922821045
+    ],
+    [
+      -4.508140563964844,
+      -3.640469551086426,
+      -3.5360145568847656
+    ],
+    [
+      -0.3868056535720825,
+      0.015616893768310547,
+      -10000.0
+    ]
+  ],
+  "act_logits": [
+    [
+      1262.211181640625,
+      -1503.2884521484375
+    ],
+    [
+      1507.445556640625,
+      -1780.5289306640625
+    ],
+    [
+      1434.1343994140625,
+      -1700.3319091796875
+    ]
+  ],
+  "act_probs": [
+    [
+      1.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0
+    ]
+  ],
+  "response": {
+    "model": "rl-agent",
+    "answers": {
+      "10": {
+        "type": "choice",
+        "choice": "",
+        "probabilities": {
+          "b": 0.2103,
+          "a": 0.2444,
+          "": 0.5453
+        },
+        "confidence": 0.0871,
+        "rl_agent": {
+          "act_probability": 1.0
+        }
+      },
+      "2": {
+        "type": "score",
+        "score": 1.2728,
+        "legend": {
+          "0": "high",
+          "1": "low",
+          "2": "high"
+        },
+        "probabilities": {
+          "0": 0.166,
+          "1": 0.3953,
+          "2": 0.4388
+        },
+        "confidence": 0.0657,
+        "rl_agent": {
+          "act_probability": 1.0
+        }
+      },
+      "": {
+        "type": "noul",
+        "noul": 0.5993,
+        "rl_agent": {
+          "act_probability": 1.0
+        }
+      }
+    },
+    "usage": {
+      "input_tokens": 65,
+      "output_tokens": 0
+    }
+  },
+  "onnx": {
+    "logits": [
+      [
+        -1.485785961151123,
+        -1.3354623317718506,
+        -0.532956600189209
+      ],
+      [
+        -4.508141994476318,
+        -3.640470504760742,
+        -3.5360097885131836
+      ],
+      [
+        -0.3868076801300049,
+        0.015617668628692627,
+        -10000.0
+      ]
+    ],
+    "act_probs": [
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ]
+    ],
+    "response": {
+      "model": "rl-agent",
+      "answers": {
+        "10": {
+          "type": "choice",
+          "choice": "",
+          "probabilities": {
+            "b": 0.2103,
+            "a": 0.2444,
+            "": 0.5453
+          },
+          "confidence": 0.0871,
+          "rl_agent": {
+            "act_probability": 1.0
+          }
+        },
+        "2": {
+          "type": "score",
+          "score": 1.2728,
+          "legend": {
+            "0": "high",
+            "1": "low",
+            "2": "high"
+          },
+          "probabilities": {
+            "0": 0.166,
+            "1": 0.3953,
+            "2": 0.4388
+          },
+          "confidence": 0.0657,
+          "rl_agent": {
+            "act_probability": 1.0
+          }
+        },
+        "": {
+          "type": "noul",
+          "noul": 0.5993,
+          "rl_agent": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 65,
+        "output_tokens": 0
+      }
+    }
+  },
+  "comparison": {
+    "passed": true,
+    "failures": [],
+    "max_absolute_errors": {
+      "logits": 4.76837158203125e-06,
+      "act_probs": 0.0
+    }
+  }
+}

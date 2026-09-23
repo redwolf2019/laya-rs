@@ -1,0 +1,283 @@
+{
+  "schema_version": 1,
+  "kind": "official_model",
+  "request_json": "{\"state\": \"test\", \"questions\": {\"q\": {\"type\": \"choice\", \"instructions\": \"Select.\", \"criteria\": [\"0\", \"1\", \"2\", \"3\", \"4\"]}}}",
+  "state_text": "test",
+  "rows": [
+    {
+      "name": "q",
+      "type": "choice",
+      "instructions_text": "Select.",
+      "option_texts": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "option_keys": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "tokenizer_calls": [
+        {
+          "text": "choice question: Select.",
+          "input_ids": [
+            6241,
+            2872,
+            235292,
+            12408,
+            235265
+          ]
+        },
+        {
+          "text": " 0",
+          "input_ids": [
+            235248,
+            235276
+          ]
+        },
+        {
+          "text": " 1",
+          "input_ids": [
+            235248,
+            235274
+          ]
+        },
+        {
+          "text": " 2",
+          "input_ids": [
+            235248,
+            235284
+          ]
+        },
+        {
+          "text": " 3",
+          "input_ids": [
+            235248,
+            235304
+          ]
+        },
+        {
+          "text": " 4",
+          "input_ids": [
+            235248,
+            235310
+          ]
+        },
+        {
+          "text": "test",
+          "input_ids": [
+            2121
+          ]
+        }
+      ],
+      "length": 25,
+      "temperature": {
+        "bucket": "choice:3-5",
+        "value": 1.0,
+        "source": "temperature"
+      },
+      "scaled_logits": [
+        -0.5377069711685181,
+        -0.31495440006256104,
+        -0.026312410831451416,
+        0.25922155380249023,
+        -0.6185660362243652
+      ],
+      "probabilities": [
+        0.14167985320091248,
+        0.17703059315681458,
+        0.23626749217510223,
+        0.3143473267555237,
+        0.13067469000816345
+      ],
+      "probability_dtype": "float32"
+    }
+  ],
+  "tensors": {
+    "input_ids": [
+      [
+        2,
+        6241,
+        2872,
+        235292,
+        12408,
+        235265,
+        1,
+        4,
+        235248,
+        235276,
+        4,
+        235248,
+        235274,
+        4,
+        235248,
+        235284,
+        4,
+        235248,
+        235304,
+        4,
+        235248,
+        235310,
+        1,
+        2121,
+        1
+      ]
+    ],
+    "attention_mask": [
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    ],
+    "marker_pos": [
+      [
+        7,
+        10,
+        13,
+        16,
+        19
+      ]
+    ],
+    "marker_mask": [
+      [
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
+    ],
+    "qtype": [
+      0
+    ]
+  },
+  "tensor_dtypes": {
+    "input_ids": "int64",
+    "attention_mask": "int64",
+    "marker_pos": "int64",
+    "marker_mask": "bool",
+    "qtype": "int64"
+  },
+  "logits": [
+    [
+      -0.5377069711685181,
+      -0.31495440006256104,
+      -0.026312410831451416,
+      0.25922155380249023,
+      -0.6185660362243652
+    ]
+  ],
+  "act_logits": [
+    [
+      1393.3714599609375,
+      -1655.1732177734375
+    ]
+  ],
+  "act_probs": [
+    [
+      1.0,
+      0.0
+    ]
+  ],
+  "response": {
+    "model": "rl-agent",
+    "answers": {
+      "q": {
+        "type": "choice",
+        "choice": "3",
+        "probabilities": {
+          "0": 0.1417,
+          "1": 0.177,
+          "2": 0.2363,
+          "3": 0.3143,
+          "4": 0.1307
+        },
+        "confidence": 0.0345,
+        "rl_agent": {
+          "act_probability": 1.0
+        }
+      }
+    },
+    "usage": {
+      "input_tokens": 25,
+      "output_tokens": 0
+    }
+  },
+  "onnx": {
+    "logits": [
+      [
+        -0.537706196308136,
+        -0.3149552345275879,
+        -0.026313960552215576,
+        0.2592184543609619,
+        -0.6185680627822876
+      ]
+    ],
+    "act_probs": [
+      [
+        1.0,
+        0.0
+      ]
+    ],
+    "response": {
+      "model": "rl-agent",
+      "answers": {
+        "q": {
+          "type": "choice",
+          "choice": "3",
+          "probabilities": {
+            "0": 0.1417,
+            "1": 0.177,
+            "2": 0.2363,
+            "3": 0.3143,
+            "4": 0.1307
+          },
+          "confidence": 0.0345,
+          "rl_agent": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 25,
+        "output_tokens": 0
+      }
+    }
+  },
+  "comparison": {
+    "passed": true,
+    "failures": [],
+    "max_absolute_errors": {
+      "logits": 3.0994415283203125e-06,
+      "act_probs": 0.0
+    }
+  }
+}

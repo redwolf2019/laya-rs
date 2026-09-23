@@ -1,0 +1,23 @@
+onnxruntime cpuid_info warning: Unknown CPU vendor. cpuinfo_vendor value: 0
+{"name": "zh-choice", "passed": true, "failures": [], "max_absolute_errors": {"logits": 1.1920928955078125e-05, "act_probs": 0.0}}
+{"name": "zh-score", "passed": true, "failures": [], "max_absolute_errors": {"logits": 4.0531158447265625e-06, "act_probs": 0.0}}
+{"name": "zh-noul", "passed": true, "failures": [], "max_absolute_errors": {"logits": 3.2186508178710938e-06, "act_probs": 0.0}}
+{"name": "en-choice", "passed": true, "failures": [], "max_absolute_errors": {"logits": 6.318092346191406e-06, "act_probs": 0.0}}
+{"name": "en-score", "passed": true, "failures": [], "max_absolute_errors": {"logits": 6.67572021484375e-06, "act_probs": 0.0}}
+{"name": "en-noul", "passed": true, "failures": [], "max_absolute_errors": {"logits": 1.4901161193847656e-06, "act_probs": 0.0}}
+{"name": "mixed-6", "passed": true, "failures": [], "max_absolute_errors": {"logits": 1.1444091796875e-05, "act_probs": 0.0}}
+{"name": "mixed-16", "passed": true, "failures": [], "max_absolute_errors": {"logits": 6.973743438720703e-06, "act_probs": 0.0}}
+{"name": "options-2", "passed": true, "failures": [], "max_absolute_errors": {"logits": 5.930662155151367e-06, "act_probs": 0.0}}
+{"name": "options-3", "passed": true, "failures": [], "max_absolute_errors": {"logits": 3.4570693969726562e-06, "act_probs": 0.0}}
+{"name": "options-5", "passed": true, "failures": [], "max_absolute_errors": {"logits": 3.0994415283203125e-06, "act_probs": 0.0}}
+{"name": "options-6", "passed": true, "failures": [], "max_absolute_errors": {"logits": 3.2186508178710938e-06, "act_probs": 0.0}}
+{"name": "options-10", "passed": true, "failures": [], "max_absolute_errors": {"logits": 1.9669532775878906e-06, "act_probs": 0.0}}
+{"name": "options-11", "passed": true, "failures": [], "max_absolute_errors": {"logits": 2.0265579223632812e-06, "act_probs": 0.0}}
+{"name": "options-32", "passed": true, "failures": [], "max_absolute_errors": {"logits": 5.4836273193359375e-06, "act_probs": 0.0}}
+{"name": "long-padding", "passed": false, "failures": ["rounded_answer:1"], "max_absolute_errors": {"logits": 5.245208740234375e-06, "act_probs": 0.0}}
+{"name": "marker", "passed": true, "failures": [], "max_absolute_errors": {"logits": 5.7220458984375e-06, "act_probs": 0.0}}
+{"name": "normalization", "passed": true, "failures": [], "max_absolute_errors": {"logits": 4.76837158203125e-06, "act_probs": 0.0}}
+{"name": "json-order-numbers", "passed": true, "failures": [], "max_absolute_errors": {"logits": 3.910064697265625e-05, "act_probs": 0.0}}
+{"name": "huge-integer", "passed": true, "failures": [], "max_absolute_errors": {"logits": 4.76837158203125e-06, "act_probs": 0.0}}
+{"name": "scalars", "passed": true, "failures": [], "max_absolute_errors": {"logits": 1.6689300537109375e-06, "act_probs": 0.0}}
+FAIL: preserved all outputs; do not replace golden or relax tolerances

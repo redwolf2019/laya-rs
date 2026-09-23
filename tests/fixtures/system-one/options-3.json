@@ -1,0 +1,237 @@
+{
+  "schema_version": 1,
+  "kind": "official_model",
+  "request_json": "{\"state\": \"test\", \"questions\": {\"q\": {\"type\": \"choice\", \"instructions\": \"Select.\", \"criteria\": [\"0\", \"1\", \"2\"]}}}",
+  "state_text": "test",
+  "rows": [
+    {
+      "name": "q",
+      "type": "choice",
+      "instructions_text": "Select.",
+      "option_texts": [
+        "0",
+        "1",
+        "2"
+      ],
+      "option_keys": [
+        "0",
+        "1",
+        "2"
+      ],
+      "tokenizer_calls": [
+        {
+          "text": "choice question: Select.",
+          "input_ids": [
+            6241,
+            2872,
+            235292,
+            12408,
+            235265
+          ]
+        },
+        {
+          "text": " 0",
+          "input_ids": [
+            235248,
+            235276
+          ]
+        },
+        {
+          "text": " 1",
+          "input_ids": [
+            235248,
+            235274
+          ]
+        },
+        {
+          "text": " 2",
+          "input_ids": [
+            235248,
+            235284
+          ]
+        },
+        {
+          "text": "test",
+          "input_ids": [
+            2121
+          ]
+        }
+      ],
+      "length": 19,
+      "temperature": {
+        "bucket": "choice:3-5",
+        "value": 1.0,
+        "source": "temperature"
+      },
+      "scaled_logits": [
+        -0.5203239917755127,
+        -0.3129022419452667,
+        -0.17134034633636475
+      ],
+      "probabilities": [
+        0.2741132080554962,
+        0.337296724319458,
+        0.3885900378227234
+      ],
+      "probability_dtype": "float32"
+    }
+  ],
+  "tensors": {
+    "input_ids": [
+      [
+        2,
+        6241,
+        2872,
+        235292,
+        12408,
+        235265,
+        1,
+        4,
+        235248,
+        235276,
+        4,
+        235248,
+        235274,
+        4,
+        235248,
+        235284,
+        1,
+        2121,
+        1
+      ]
+    ],
+    "attention_mask": [
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    ],
+    "marker_pos": [
+      [
+        7,
+        10,
+        13
+      ]
+    ],
+    "marker_mask": [
+      [
+        true,
+        true,
+        true
+      ]
+    ],
+    "qtype": [
+      0
+    ]
+  },
+  "tensor_dtypes": {
+    "input_ids": "int64",
+    "attention_mask": "int64",
+    "marker_pos": "int64",
+    "marker_mask": "bool",
+    "qtype": "int64"
+  },
+  "logits": [
+    [
+      -0.5203239917755127,
+      -0.3129022419452667,
+      -0.17134034633636475
+    ]
+  ],
+  "act_logits": [
+    [
+      1400.428466796875,
+      -1663.387939453125
+    ]
+  ],
+  "act_probs": [
+    [
+      1.0,
+      0.0
+    ]
+  ],
+  "response": {
+    "model": "rl-agent",
+    "answers": {
+      "q": {
+        "type": "choice",
+        "choice": "2",
+        "probabilities": {
+          "0": 0.2741,
+          "1": 0.3373,
+          "2": 0.3886
+        },
+        "confidence": 0.0091,
+        "rl_agent": {
+          "act_probability": 1.0
+        }
+      }
+    },
+    "usage": {
+      "input_tokens": 19,
+      "output_tokens": 0
+    }
+  },
+  "onnx": {
+    "logits": [
+      [
+        -0.5203248262405396,
+        -0.31290340423583984,
+        -0.17134380340576172
+      ]
+    ],
+    "act_probs": [
+      [
+        1.0,
+        0.0
+      ]
+    ],
+    "response": {
+      "model": "rl-agent",
+      "answers": {
+        "q": {
+          "type": "choice",
+          "choice": "2",
+          "probabilities": {
+            "0": 0.2741,
+            "1": 0.3373,
+            "2": 0.3886
+          },
+          "confidence": 0.0091,
+          "rl_agent": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 19,
+        "output_tokens": 0
+      }
+    }
+  },
+  "comparison": {
+    "passed": true,
+    "failures": [],
+    "max_absolute_errors": {
+      "logits": 3.4570693969726562e-06,
+      "act_probs": 0.0
+    }
+  }
+}

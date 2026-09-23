@@ -1,0 +1,214 @@
+{
+  "schema_version": 1,
+  "kind": "official_model",
+  "request_json": "{\"state\": \"test\", \"questions\": {\"q\": {\"type\": \"choice\", \"instructions\": \"Select.\", \"criteria\": [\"0\", \"1\"]}}}",
+  "state_text": "test",
+  "rows": [
+    {
+      "name": "q",
+      "type": "choice",
+      "instructions_text": "Select.",
+      "option_texts": [
+        "0",
+        "1"
+      ],
+      "option_keys": [
+        "0",
+        "1"
+      ],
+      "tokenizer_calls": [
+        {
+          "text": "choice question: Select.",
+          "input_ids": [
+            6241,
+            2872,
+            235292,
+            12408,
+            235265
+          ]
+        },
+        {
+          "text": " 0",
+          "input_ids": [
+            235248,
+            235276
+          ]
+        },
+        {
+          "text": " 1",
+          "input_ids": [
+            235248,
+            235274
+          ]
+        },
+        {
+          "text": "test",
+          "input_ids": [
+            2121
+          ]
+        }
+      ],
+      "length": 16,
+      "temperature": {
+        "bucket": "choice:2",
+        "value": 1.0,
+        "source": "temperature"
+      },
+      "scaled_logits": [
+        -0.17072507739067078,
+        -0.37451237440109253
+      ],
+      "probabilities": [
+        0.5507712364196777,
+        0.44922876358032227
+      ],
+      "probability_dtype": "float32"
+    }
+  ],
+  "tensors": {
+    "input_ids": [
+      [
+        2,
+        6241,
+        2872,
+        235292,
+        12408,
+        235265,
+        1,
+        4,
+        235248,
+        235276,
+        4,
+        235248,
+        235274,
+        1,
+        2121,
+        1
+      ]
+    ],
+    "attention_mask": [
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    ],
+    "marker_pos": [
+      [
+        7,
+        10
+      ]
+    ],
+    "marker_mask": [
+      [
+        true,
+        true
+      ]
+    ],
+    "qtype": [
+      0
+    ]
+  },
+  "tensor_dtypes": {
+    "input_ids": "int64",
+    "attention_mask": "int64",
+    "marker_pos": "int64",
+    "marker_mask": "bool",
+    "qtype": "int64"
+  },
+  "logits": [
+    [
+      -0.17072507739067078,
+      -0.37451237440109253
+    ]
+  ],
+  "act_logits": [
+    [
+      1407.9034423828125,
+      -1671.3399658203125
+    ]
+  ],
+  "act_probs": [
+    [
+      1.0,
+      0.0
+    ]
+  ],
+  "response": {
+    "model": "rl-agent",
+    "answers": {
+      "q": {
+        "type": "choice",
+        "choice": "0",
+        "probabilities": {
+          "0": 0.5508,
+          "1": 0.4492
+        },
+        "confidence": 0.0075,
+        "rl_agent": {
+          "act_probability": 1.0
+        }
+      }
+    },
+    "usage": {
+      "input_tokens": 16,
+      "output_tokens": 0
+    }
+  },
+  "onnx": {
+    "logits": [
+      [
+        -0.17071914672851562,
+        -0.3745114207267761
+      ]
+    ],
+    "act_probs": [
+      [
+        1.0,
+        0.0
+      ]
+    ],
+    "response": {
+      "model": "rl-agent",
+      "answers": {
+        "q": {
+          "type": "choice",
+          "choice": "0",
+          "probabilities": {
+            "0": 0.5508,
+            "1": 0.4492
+          },
+          "confidence": 0.0075,
+          "rl_agent": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 16,
+        "output_tokens": 0
+      }
+    }
+  },
+  "comparison": {
+    "passed": true,
+    "failures": [],
+    "max_absolute_errors": {
+      "logits": 5.930662155151367e-06,
+      "act_probs": 0.0
+    }
+  }
+}

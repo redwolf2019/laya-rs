@@ -2,6 +2,8 @@
 
 任务 [#7](https://github.com/redwolf2019/laya-rs/issues/7)。在仓库根目录执行。
 这些 Python 工具只用于独立开发期导出/对照；Cargo、服务启动和发布镜像不调用它们。
+完整官方 API fixture 生成入口为 `fixtures.py`，覆盖、格式、复现与已知失败见
+[#10 fixtures](../../tests/fixtures/README.md)。
 最终运行文件及许可位于忽略目录 `models/multilingual/`，输入 checkpoint、下载元数据和
 中间日志位于其 `prep/` 子目录。权重不入 Git，没有上传到第三方模型仓库。
 

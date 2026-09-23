@@ -1,0 +1,273 @@
+{
+  "schema_version": 1,
+  "kind": "official_model",
+  "request_json": "{\"state\": \"客户重复扣款，希望立即退款。\", \"questions\": {\"noul\": {\"type\": \"noul\", \"instructions\": \"客户需要退款。\"}}}",
+  "state_text": "客户重复扣款，希望立即退款。",
+  "rows": [
+    {
+      "name": "noul",
+      "type": "noul",
+      "instructions_text": "客户需要退款。",
+      "option_texts": [
+        "false: no, the statement does not hold",
+        "true: yes, the statement holds"
+      ],
+      "option_keys": [
+        "false",
+        "true"
+      ],
+      "tokenizer_calls": [
+        {
+          "text": "noul question: 客户需要退款。",
+          "input_ids": [
+            552,
+            6311,
+            2872,
+            235292,
+            231537,
+            11213,
+            186612,
+            235362
+          ]
+        },
+        {
+          "text": " false: no, the statement does not hold",
+          "input_ids": [
+            1566,
+            235292,
+            793,
+            235269,
+            573,
+            6218,
+            1721,
+            780,
+            3385
+          ]
+        },
+        {
+          "text": " true: yes, the statement holds",
+          "input_ids": [
+            1382,
+            235292,
+            7778,
+            235269,
+            573,
+            6218,
+            12723
+          ]
+        },
+        {
+          "text": "客户重复扣款，希望立即退款。",
+          "input_ids": [
+            231537,
+            79825,
+            238498,
+            236604,
+            235365,
+            19878,
+            63110,
+            186612,
+            235362
+          ]
+        }
+      ],
+      "length": 39,
+      "temperature": {
+        "bucket": "noul:2",
+        "value": 1.0,
+        "source": "temperature"
+      },
+      "scaled_logits": [
+        -4.588558673858643,
+        0.9632306098937988
+      ],
+      "probabilities": [
+        0.0038655076641589403,
+        0.9961345195770264
+      ],
+      "probability_dtype": "float32"
+    }
+  ],
+  "tensors": {
+    "input_ids": [
+      [
+        2,
+        552,
+        6311,
+        2872,
+        235292,
+        231537,
+        11213,
+        186612,
+        235362,
+        1,
+        4,
+        1566,
+        235292,
+        793,
+        235269,
+        573,
+        6218,
+        1721,
+        780,
+        3385,
+        4,
+        1382,
+        235292,
+        7778,
+        235269,
+        573,
+        6218,
+        12723,
+        1,
+        231537,
+        79825,
+        238498,
+        236604,
+        235365,
+        19878,
+        63110,
+        186612,
+        235362,
+        1
+      ]
+    ],
+    "attention_mask": [
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    ],
+    "marker_pos": [
+      [
+        10,
+        20
+      ]
+    ],
+    "marker_mask": [
+      [
+        true,
+        true
+      ]
+    ],
+    "qtype": [
+      2
+    ]
+  },
+  "tensor_dtypes": {
+    "input_ids": "int64",
+    "attention_mask": "int64",
+    "marker_pos": "int64",
+    "marker_mask": "bool",
+    "qtype": "int64"
+  },
+  "logits": [
+    [
+      -4.588558673858643,
+      0.9632306098937988
+    ]
+  ],
+  "act_logits": [
+    [
+      1205.443115234375,
+      -1438.9296875
+    ]
+  ],
+  "act_probs": [
+    [
+      1.0,
+      0.0
+    ]
+  ],
+  "response": {
+    "model": "rl-agent",
+    "answers": {
+      "noul": {
+        "type": "noul",
+        "noul": 0.9961,
+        "rl_agent": {
+          "act_probability": 1.0
+        }
+      }
+    },
+    "usage": {
+      "input_tokens": 39,
+      "output_tokens": 0
+    }
+  },
+  "onnx": {
+    "logits": [
+      [
+        -4.588561534881592,
+        0.963227391242981
+      ]
+    ],
+    "act_probs": [
+      [
+        1.0,
+        0.0
+      ]
+    ],
+    "response": {
+      "model": "rl-agent",
+      "answers": {
+        "noul": {
+          "type": "noul",
+          "noul": 0.9961,
+          "rl_agent": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 39,
+        "output_tokens": 0
+      }
+    }
+  },
+  "comparison": {
+    "passed": true,
+    "failures": [],
+    "max_absolute_errors": {
+      "logits": 3.2186508178710938e-06,
+      "act_probs": 0.0
+    }
+  }
+}
