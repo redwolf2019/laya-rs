@@ -1,0 +1,573 @@
++ export LC_ALL=C
++ LC_ALL=C
++ date -u +%FT%TZ
+2026-09-23T09:12:04Z
++ uname -srm
+Linux 6.12.76-linuxkit aarch64
+++ uname -m
++ test aarch64 = aarch64
++ cat /etc/os-release
+PRETTY_NAME="Debian GNU/Linux 12 (bookworm)"
+NAME="Debian GNU/Linux"
+VERSION_ID="12"
+VERSION="12 (bookworm)"
+VERSION_CODENAME=bookworm
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
++ lscpu
+Architecture:                            aarch64
+CPU op-mode(s):                          64-bit
+Byte Order:                              Little Endian
+CPU(s):                                  8
+On-line CPU(s) list:                     0-7
+Vendor ID:                               Apple
+Model name:                              -
+Model:                                   0
+Thread(s) per core:                      1
+Core(s) per cluster:                     8
+Socket(s):                               -
+Cluster(s):                              1
+Stepping:                                0x0
+BogoMIPS:                                48.00
+Flags:                                   fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 asimddp sha512 asimdfhm dit uscat ilrcpc flagm sb paca pacg dcpodp flagm2 frint i8mm bf16 bti
+Vulnerability Gather data sampling:      Not affected
+Vulnerability Indirect target selection: Not affected
+Vulnerability Itlb multihit:             Not affected
+Vulnerability L1tf:                      Not affected
+Vulnerability Mds:                       Not affected
+Vulnerability Meltdown:                  Not affected
+Vulnerability Mmio stale data:           Not affected
+Vulnerability Reg file data sampling:    Not affected
+Vulnerability Retbleed:                  Not affected
+Vulnerability Spec rstack overflow:      Not affected
+Vulnerability Spec store bypass:         Vulnerable
+Vulnerability Spectre v1:                Mitigation; __user pointer sanitization
+Vulnerability Spectre v2:                Mitigation; CSV2, but not BHB
+Vulnerability Srbds:                     Not affected
+Vulnerability Tsa:                       Not affected
+Vulnerability Tsx async abort:           Not affected
+Vulnerability Vmscape:                   Not affected
++ cat /proc/meminfo
+MemTotal:       16355580 kB
+MemFree:        15397508 kB
+MemAvailable:   15698672 kB
+Buffers:          118868 kB
+Cached:           360264 kB
+SwapCached:            0 kB
+Active:           439512 kB
+Inactive:         255972 kB
+Active(anon):     216944 kB
+Inactive(anon):        0 kB
+Active(file):     222568 kB
+Inactive(file):   255972 kB
+Unevictable:           0 kB
+Mlocked:               0 kB
+SwapTotal:       1048572 kB
+SwapFree:        1048572 kB
+Zswap:                 0 kB
+Zswapped:              0 kB
+Dirty:               244 kB
+Writeback:             0 kB
+AnonPages:        196316 kB
+Mapped:           142228 kB
+Shmem:               592 kB
+KReclaimable:      33952 kB
+Slab:              75952 kB
+SReclaimable:      33952 kB
+SUnreclaim:        42000 kB
+KernelStack:        3968 kB
+PageTables:         2508 kB
+SecPageTables:         0 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:     9226360 kB
+Committed_AS:    1153684 kB
+VmallocTotal:   135288315904 kB
+VmallocUsed:        5228 kB
+VmallocChunk:          0 kB
+Percpu:             2080 kB
+AnonHugePages:    122880 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+FileHugePages:         0 kB
+FilePmdMapped:         0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+Hugetlb:               0 kB
++ cat /sys/fs/cgroup/cpu.max /sys/fs/cgroup/cpuset.cpus.effective
+800000 100000
+0-7
++ cat /sys/fs/cgroup/memory.max /sys/fs/cgroup/memory.swap.max
+12884901888
+0
+++ cat /sys/fs/cgroup/cpu.max
++ test '800000 100000' = '800000 100000'
+++ cat /sys/fs/cgroup/memory.max
++ test 12884901888 = 12884901888
+++ cat /sys/fs/cgroup/memory.swap.max
++ test 0 = 0
++ df -k / /assets
+Filesystem             1K-blocks      Used Available Use% Mounted on
+overlay                263111748  15878696 233794948   7% /
+/run/host_mark/private 971350180 905350180  66000000  94% /assets
++ getconf GNU_LIBC_VERSION
+glibc 2.36
++ for tool in python python3 node nvidia-smi
++ command -v python
++ for tool in python python3 node nvidia-smi
++ command -v python3
++ for tool in python python3 node nvidia-smi
++ command -v node
++ for tool in python python3 node nvidia-smi
++ command -v nvidia-smi
++ cd /tmp
++ printf '%s  %s\n' e15ff8b5d85afe6c144d97c6fd432254bf76a219daaf17658087d6ecb3e8f0bb /assets/onnxruntime-linux-aarch64-1.28.0.tgz
++ sha256sum -c -
+/assets/onnxruntime-linux-aarch64-1.28.0.tgz: OK
++ tar -xzf /assets/onnxruntime-linux-aarch64-1.28.0.tgz
++ ort_dir=/tmp/onnxruntime-linux-aarch64-1.28.0
++ apt-get update -qq
++ apt-get install -y -o Dpkg::Use-Pty=0 --no-install-recommends gcc libc6-dev binutils file
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  binutils-aarch64-linux-gnu binutils-common cpp cpp-12 gcc-12 libasan8
+  libatomic1 libbinutils libc-dev-bin libcc1-0 libcrypt-dev libctf-nobfd0
+  libctf0 libgcc-12-dev libgomp1 libgprofng0 libgssapi-krb5-2 libhwasan0
+  libisl23 libitm1 libjansson4 libk5crypto3 libkeyutils1 libkrb5-3
+  libkrb5support0 liblsan0 libmagic-mgc libmagic1 libmpc3 libmpfr6 libnsl-dev
+  libnsl2 libssl3 libtirpc-common libtirpc-dev libtirpc3 libtsan2 libubsan1
+  linux-libc-dev rpcsvc-proto
+Suggested packages:
+  binutils-doc cpp-doc gcc-12-locales cpp-12-doc gcc-multilib make
+  manpages-dev autoconf automake libtool flex bison gdb gcc-doc gcc-12-doc
+  glibc-doc krb5-doc krb5-user
+Recommended packages:
+  manpages manpages-dev libc-devtools krb5-locales
+The following NEW packages will be installed:
+  binutils binutils-aarch64-linux-gnu binutils-common cpp cpp-12 file gcc
+  gcc-12 libasan8 libatomic1 libbinutils libc-dev-bin libc6-dev libcc1-0
+  libcrypt-dev libctf-nobfd0 libctf0 libgcc-12-dev libgomp1 libgprofng0
+  libgssapi-krb5-2 libhwasan0 libisl23 libitm1 libjansson4 libk5crypto3
+  libkeyutils1 libkrb5-3 libkrb5support0 liblsan0 libmagic-mgc libmagic1
+  libmpc3 libmpfr6 libnsl-dev libnsl2 libssl3 libtirpc-common libtirpc-dev
+  libtirpc3 libtsan2 libubsan1 linux-libc-dev rpcsvc-proto
+0 upgraded, 44 newly installed, 0 to remove and 1 not upgraded.
+Need to get 48.0 MB of archives.
+After this operation, 205 MB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian bookworm/main arm64 libmagic-mgc arm64 1:5.44-3 [305 kB]
+Get:2 http://deb.debian.org/debian bookworm/main arm64 libmagic1 arm64 1:5.44-3 [98.5 kB]
+Get:3 http://deb.debian.org/debian bookworm/main arm64 file arm64 1:5.44-3 [42.5 kB]
+Get:4 http://deb.debian.org/debian bookworm/main arm64 binutils-common arm64 2.40-2 [2487 kB]
+Get:5 http://deb.debian.org/debian bookworm/main arm64 libbinutils arm64 2.40-2 [645 kB]
+Get:6 http://deb.debian.org/debian bookworm/main arm64 libctf-nobfd0 arm64 2.40-2 [144 kB]
+Get:7 http://deb.debian.org/debian bookworm/main arm64 libctf0 arm64 2.40-2 [79.2 kB]
+Get:8 http://deb.debian.org/debian bookworm/main arm64 libgprofng0 arm64 2.40-2 [680 kB]
+Get:9 http://deb.debian.org/debian bookworm/main arm64 libjansson4 arm64 2.14-2 [40.2 kB]
+Get:10 http://deb.debian.org/debian bookworm/main arm64 binutils-aarch64-linux-gnu arm64 2.40-2 [2637 kB]
+Get:11 http://deb.debian.org/debian bookworm/main arm64 binutils arm64 2.40-2 [64.9 kB]
+Get:12 http://deb.debian.org/debian bookworm/main arm64 libisl23 arm64 0.25-1.1 [610 kB]
+Get:13 http://deb.debian.org/debian bookworm/main arm64 libmpfr6 arm64 4.2.0-1 [600 kB]
+Get:14 http://deb.debian.org/debian bookworm/main arm64 libmpc3 arm64 1.3.1-1 [49.2 kB]
+Get:15 http://deb.debian.org/debian bookworm/main arm64 cpp-12 arm64 12.2.0-14+deb12u1 [8228 kB]
+Get:16 http://deb.debian.org/debian bookworm/main arm64 cpp arm64 4:12.2.0-3 [6832 B]
+Get:17 http://deb.debian.org/debian bookworm/main arm64 libcc1-0 arm64 12.2.0-14+deb12u1 [37.7 kB]
+Get:18 http://deb.debian.org/debian bookworm/main arm64 libgomp1 arm64 12.2.0-14+deb12u1 [104 kB]
+Get:19 http://deb.debian.org/debian bookworm/main arm64 libitm1 arm64 12.2.0-14+deb12u1 [24.0 kB]
+Get:20 http://deb.debian.org/debian bookworm/main arm64 libatomic1 arm64 12.2.0-14+deb12u1 [9568 B]
+Get:21 http://deb.debian.org/debian bookworm/main arm64 libasan8 arm64 12.2.0-14+deb12u1 [2096 kB]
+Get:22 http://deb.debian.org/debian bookworm/main arm64 liblsan0 arm64 12.2.0-14+deb12u1 [926 kB]
+Get:23 http://deb.debian.org/debian bookworm/main arm64 libtsan2 arm64 12.2.0-14+deb12u1 [2178 kB]
+Get:24 http://deb.debian.org/debian bookworm/main arm64 libubsan1 arm64 12.2.0-14+deb12u1 [862 kB]
+Get:25 http://deb.debian.org/debian bookworm/main arm64 libhwasan0 arm64 12.2.0-14+deb12u1 [999 kB]
+Get:26 http://deb.debian.org/debian bookworm/main arm64 libgcc-12-dev arm64 12.2.0-14+deb12u1 [956 kB]
+Get:27 http://deb.debian.org/debian bookworm/main arm64 gcc-12 arm64 12.2.0-14+deb12u1 [16.3 MB]
+Get:28 http://deb.debian.org/debian bookworm/main arm64 gcc arm64 4:12.2.0-3 [5244 B]
+Get:29 http://deb.debian.org/debian bookworm/main arm64 libc-dev-bin arm64 2.36-9+deb12u14 [47.2 kB]
+Get:30 http://deb.debian.org/debian-security bookworm-security/main arm64 linux-libc-dev arm64 6.1.187-1 [2333 kB]
+Get:31 http://deb.debian.org/debian bookworm/main arm64 libcrypt-dev arm64 1:4.4.33-2 [121 kB]
+Get:32 http://deb.debian.org/debian bookworm/main arm64 libkrb5support0 arm64 1.20.1-2+deb12u5 [32.6 kB]
+Get:33 http://deb.debian.org/debian bookworm/main arm64 libk5crypto3 arm64 1.20.1-2+deb12u5 [79.9 kB]
+Get:34 http://deb.debian.org/debian bookworm/main arm64 libkeyutils1 arm64 1.6.3-2 [8844 B]
+Get:35 http://deb.debian.org/debian bookworm/main arm64 libssl3 arm64 3.0.20-1~deb12u2 [1824 kB]
+Get:36 http://deb.debian.org/debian bookworm/main arm64 libkrb5-3 arm64 1.20.1-2+deb12u5 [316 kB]
+Get:37 http://deb.debian.org/debian bookworm/main arm64 libgssapi-krb5-2 arm64 1.20.1-2+deb12u5 [124 kB]
+Get:38 http://deb.debian.org/debian bookworm/main arm64 libtirpc-common all 1.3.3+ds-1 [14.0 kB]
+Get:39 http://deb.debian.org/debian bookworm/main arm64 libtirpc3 arm64 1.3.3+ds-1 [80.9 kB]
+Get:40 http://deb.debian.org/debian bookworm/main arm64 libnsl2 arm64 1.3.0-2 [36.9 kB]
+Get:41 http://deb.debian.org/debian bookworm/main arm64 libtirpc-dev arm64 1.3.3+ds-1 [194 kB]
+Get:42 http://deb.debian.org/debian bookworm/main arm64 libnsl-dev arm64 1.3.0-2 [66.1 kB]
+Get:43 http://deb.debian.org/debian bookworm/main arm64 rpcsvc-proto arm64 1.4.3-1 [59.7 kB]
+Get:44 http://deb.debian.org/debian bookworm/main arm64 libc6-dev arm64 2.36-9+deb12u14 [1436 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 48.0 MB in 25s (1897 kB/s)
+Selecting previously unselected package libmagic-mgc.
+(Reading database ... 6090 files and directories currently installed.)
+Preparing to unpack .../00-libmagic-mgc_1%3a5.44-3_arm64.deb ...
+Unpacking libmagic-mgc (1:5.44-3) ...
+Selecting previously unselected package libmagic1:arm64.
+Preparing to unpack .../01-libmagic1_1%3a5.44-3_arm64.deb ...
+Unpacking libmagic1:arm64 (1:5.44-3) ...
+Selecting previously unselected package file.
+Preparing to unpack .../02-file_1%3a5.44-3_arm64.deb ...
+Unpacking file (1:5.44-3) ...
+Selecting previously unselected package binutils-common:arm64.
+Preparing to unpack .../03-binutils-common_2.40-2_arm64.deb ...
+Unpacking binutils-common:arm64 (2.40-2) ...
+Selecting previously unselected package libbinutils:arm64.
+Preparing to unpack .../04-libbinutils_2.40-2_arm64.deb ...
+Unpacking libbinutils:arm64 (2.40-2) ...
+Selecting previously unselected package libctf-nobfd0:arm64.
+Preparing to unpack .../05-libctf-nobfd0_2.40-2_arm64.deb ...
+Unpacking libctf-nobfd0:arm64 (2.40-2) ...
+Selecting previously unselected package libctf0:arm64.
+Preparing to unpack .../06-libctf0_2.40-2_arm64.deb ...
+Unpacking libctf0:arm64 (2.40-2) ...
+Selecting previously unselected package libgprofng0:arm64.
+Preparing to unpack .../07-libgprofng0_2.40-2_arm64.deb ...
+Unpacking libgprofng0:arm64 (2.40-2) ...
+Selecting previously unselected package libjansson4:arm64.
+Preparing to unpack .../08-libjansson4_2.14-2_arm64.deb ...
+Unpacking libjansson4:arm64 (2.14-2) ...
+Selecting previously unselected package binutils-aarch64-linux-gnu.
+Preparing to unpack .../09-binutils-aarch64-linux-gnu_2.40-2_arm64.deb ...
+Unpacking binutils-aarch64-linux-gnu (2.40-2) ...
+Selecting previously unselected package binutils.
+Preparing to unpack .../10-binutils_2.40-2_arm64.deb ...
+Unpacking binutils (2.40-2) ...
+Selecting previously unselected package libisl23:arm64.
+Preparing to unpack .../11-libisl23_0.25-1.1_arm64.deb ...
+Unpacking libisl23:arm64 (0.25-1.1) ...
+Selecting previously unselected package libmpfr6:arm64.
+Preparing to unpack .../12-libmpfr6_4.2.0-1_arm64.deb ...
+Unpacking libmpfr6:arm64 (4.2.0-1) ...
+Selecting previously unselected package libmpc3:arm64.
+Preparing to unpack .../13-libmpc3_1.3.1-1_arm64.deb ...
+Unpacking libmpc3:arm64 (1.3.1-1) ...
+Selecting previously unselected package cpp-12.
+Preparing to unpack .../14-cpp-12_12.2.0-14+deb12u1_arm64.deb ...
+Unpacking cpp-12 (12.2.0-14+deb12u1) ...
+Selecting previously unselected package cpp.
+Preparing to unpack .../15-cpp_4%3a12.2.0-3_arm64.deb ...
+Unpacking cpp (4:12.2.0-3) ...
+Selecting previously unselected package libcc1-0:arm64.
+Preparing to unpack .../16-libcc1-0_12.2.0-14+deb12u1_arm64.deb ...
+Unpacking libcc1-0:arm64 (12.2.0-14+deb12u1) ...
+Selecting previously unselected package libgomp1:arm64.
+Preparing to unpack .../17-libgomp1_12.2.0-14+deb12u1_arm64.deb ...
+Unpacking libgomp1:arm64 (12.2.0-14+deb12u1) ...
+Selecting previously unselected package libitm1:arm64.
+Preparing to unpack .../18-libitm1_12.2.0-14+deb12u1_arm64.deb ...
+Unpacking libitm1:arm64 (12.2.0-14+deb12u1) ...
+Selecting previously unselected package libatomic1:arm64.
+Preparing to unpack .../19-libatomic1_12.2.0-14+deb12u1_arm64.deb ...
+Unpacking libatomic1:arm64 (12.2.0-14+deb12u1) ...
+Selecting previously unselected package libasan8:arm64.
+Preparing to unpack .../20-libasan8_12.2.0-14+deb12u1_arm64.deb ...
+Unpacking libasan8:arm64 (12.2.0-14+deb12u1) ...
+Selecting previously unselected package liblsan0:arm64.
+Preparing to unpack .../21-liblsan0_12.2.0-14+deb12u1_arm64.deb ...
+Unpacking liblsan0:arm64 (12.2.0-14+deb12u1) ...
+Selecting previously unselected package libtsan2:arm64.
+Preparing to unpack .../22-libtsan2_12.2.0-14+deb12u1_arm64.deb ...
+Unpacking libtsan2:arm64 (12.2.0-14+deb12u1) ...
+Selecting previously unselected package libubsan1:arm64.
+Preparing to unpack .../23-libubsan1_12.2.0-14+deb12u1_arm64.deb ...
+Unpacking libubsan1:arm64 (12.2.0-14+deb12u1) ...
+Selecting previously unselected package libhwasan0:arm64.
+Preparing to unpack .../24-libhwasan0_12.2.0-14+deb12u1_arm64.deb ...
+Unpacking libhwasan0:arm64 (12.2.0-14+deb12u1) ...
+Selecting previously unselected package libgcc-12-dev:arm64.
+Preparing to unpack .../25-libgcc-12-dev_12.2.0-14+deb12u1_arm64.deb ...
+Unpacking libgcc-12-dev:arm64 (12.2.0-14+deb12u1) ...
+Selecting previously unselected package gcc-12.
+Preparing to unpack .../26-gcc-12_12.2.0-14+deb12u1_arm64.deb ...
+Unpacking gcc-12 (12.2.0-14+deb12u1) ...
+Selecting previously unselected package gcc.
+Preparing to unpack .../27-gcc_4%3a12.2.0-3_arm64.deb ...
+Unpacking gcc (4:12.2.0-3) ...
+Selecting previously unselected package libc-dev-bin.
+Preparing to unpack .../28-libc-dev-bin_2.36-9+deb12u14_arm64.deb ...
+Unpacking libc-dev-bin (2.36-9+deb12u14) ...
+Selecting previously unselected package linux-libc-dev:arm64.
+Preparing to unpack .../29-linux-libc-dev_6.1.187-1_arm64.deb ...
+Unpacking linux-libc-dev:arm64 (6.1.187-1) ...
+Selecting previously unselected package libcrypt-dev:arm64.
+Preparing to unpack .../30-libcrypt-dev_1%3a4.4.33-2_arm64.deb ...
+Unpacking libcrypt-dev:arm64 (1:4.4.33-2) ...
+Selecting previously unselected package libkrb5support0:arm64.
+Preparing to unpack .../31-libkrb5support0_1.20.1-2+deb12u5_arm64.deb ...
+Unpacking libkrb5support0:arm64 (1.20.1-2+deb12u5) ...
+Selecting previously unselected package libk5crypto3:arm64.
+Preparing to unpack .../32-libk5crypto3_1.20.1-2+deb12u5_arm64.deb ...
+Unpacking libk5crypto3:arm64 (1.20.1-2+deb12u5) ...
+Selecting previously unselected package libkeyutils1:arm64.
+Preparing to unpack .../33-libkeyutils1_1.6.3-2_arm64.deb ...
+Unpacking libkeyutils1:arm64 (1.6.3-2) ...
+Selecting previously unselected package libssl3:arm64.
+Preparing to unpack .../34-libssl3_3.0.20-1~deb12u2_arm64.deb ...
+Unpacking libssl3:arm64 (3.0.20-1~deb12u2) ...
+Selecting previously unselected package libkrb5-3:arm64.
+Preparing to unpack .../35-libkrb5-3_1.20.1-2+deb12u5_arm64.deb ...
+Unpacking libkrb5-3:arm64 (1.20.1-2+deb12u5) ...
+Selecting previously unselected package libgssapi-krb5-2:arm64.
+Preparing to unpack .../36-libgssapi-krb5-2_1.20.1-2+deb12u5_arm64.deb ...
+Unpacking libgssapi-krb5-2:arm64 (1.20.1-2+deb12u5) ...
+Selecting previously unselected package libtirpc-common.
+Preparing to unpack .../37-libtirpc-common_1.3.3+ds-1_all.deb ...
+Unpacking libtirpc-common (1.3.3+ds-1) ...
+Selecting previously unselected package libtirpc3:arm64.
+Preparing to unpack .../38-libtirpc3_1.3.3+ds-1_arm64.deb ...
+Unpacking libtirpc3:arm64 (1.3.3+ds-1) ...
+Selecting previously unselected package libnsl2:arm64.
+Preparing to unpack .../39-libnsl2_1.3.0-2_arm64.deb ...
+Unpacking libnsl2:arm64 (1.3.0-2) ...
+Selecting previously unselected package libtirpc-dev:arm64.
+Preparing to unpack .../40-libtirpc-dev_1.3.3+ds-1_arm64.deb ...
+Unpacking libtirpc-dev:arm64 (1.3.3+ds-1) ...
+Selecting previously unselected package libnsl-dev:arm64.
+Preparing to unpack .../41-libnsl-dev_1.3.0-2_arm64.deb ...
+Unpacking libnsl-dev:arm64 (1.3.0-2) ...
+Selecting previously unselected package rpcsvc-proto.
+Preparing to unpack .../42-rpcsvc-proto_1.4.3-1_arm64.deb ...
+Unpacking rpcsvc-proto (1.4.3-1) ...
+Selecting previously unselected package libc6-dev:arm64.
+Preparing to unpack .../43-libc6-dev_2.36-9+deb12u14_arm64.deb ...
+Unpacking libc6-dev:arm64 (2.36-9+deb12u14) ...
+Setting up libkeyutils1:arm64 (1.6.3-2) ...
+Setting up libmagic-mgc (1:5.44-3) ...
+Setting up libtirpc-common (1.3.3+ds-1) ...
+Setting up binutils-common:arm64 (2.40-2) ...
+Setting up libssl3:arm64 (3.0.20-1~deb12u2) ...
+Setting up libmagic1:arm64 (1:5.44-3) ...
+Setting up linux-libc-dev:arm64 (6.1.187-1) ...
+Setting up libctf-nobfd0:arm64 (2.40-2) ...
+Setting up file (1:5.44-3) ...
+Setting up libgomp1:arm64 (12.2.0-14+deb12u1) ...
+Setting up libjansson4:arm64 (2.14-2) ...
+Setting up libkrb5support0:arm64 (1.20.1-2+deb12u5) ...
+Setting up rpcsvc-proto (1.4.3-1) ...
+Setting up libmpfr6:arm64 (4.2.0-1) ...
+Setting up libmpc3:arm64 (1.3.1-1) ...
+Setting up libatomic1:arm64 (12.2.0-14+deb12u1) ...
+Setting up libk5crypto3:arm64 (1.20.1-2+deb12u5) ...
+Setting up libubsan1:arm64 (12.2.0-14+deb12u1) ...
+Setting up libhwasan0:arm64 (12.2.0-14+deb12u1) ...
+Setting up libcrypt-dev:arm64 (1:4.4.33-2) ...
+Setting up libasan8:arm64 (12.2.0-14+deb12u1) ...
+Setting up libkrb5-3:arm64 (1.20.1-2+deb12u5) ...
+Setting up libtsan2:arm64 (12.2.0-14+deb12u1) ...
+Setting up libbinutils:arm64 (2.40-2) ...
+Setting up libisl23:arm64 (0.25-1.1) ...
+Setting up libc-dev-bin (2.36-9+deb12u14) ...
+Setting up libcc1-0:arm64 (12.2.0-14+deb12u1) ...
+Setting up liblsan0:arm64 (12.2.0-14+deb12u1) ...
+Setting up libitm1:arm64 (12.2.0-14+deb12u1) ...
+Setting up libctf0:arm64 (2.40-2) ...
+Setting up cpp-12 (12.2.0-14+deb12u1) ...
+Setting up libgprofng0:arm64 (2.40-2) ...
+Setting up libgcc-12-dev:arm64 (12.2.0-14+deb12u1) ...
+Setting up libgssapi-krb5-2:arm64 (1.20.1-2+deb12u5) ...
+Setting up cpp (4:12.2.0-3) ...
+Setting up libtirpc3:arm64 (1.3.3+ds-1) ...
+Setting up binutils-aarch64-linux-gnu (2.40-2) ...
+Setting up binutils (2.40-2) ...
+Setting up libtirpc-dev:arm64 (1.3.3+ds-1) ...
+Setting up gcc-12 (12.2.0-14+deb12u1) ...
+Setting up libnsl2:arm64 (1.3.0-2) ...
+Setting up gcc (4:12.2.0-3) ...
+Setting up libnsl-dev:arm64 (1.3.0-2) ...
+Setting up libc6-dev:arm64 (2.36-9+deb12u14) ...
+Processing triggers for libc-bin (2.36-9+deb12u14) ...
++ dpkg-query -W libc6 libstdc++6 gcc binutils file
+binutils	2.40-2
+file	1:5.44-3
+gcc	4:12.2.0-3
+libc6:arm64	2.36-9+deb12u14
+libstdc++6:arm64	12.2.0-14+deb12u1
++ ls -l /tmp/onnxruntime-linux-aarch64-1.28.0/lib
+total 20316
+drwxrwxr-x 3 1001 1001     4096 Jul 25 02:34 cmake
+lrwxrwxrwx 1 1001 1001       19 Jul 25 02:34 libonnxruntime.so -> libonnxruntime.so.1
+lrwxrwxrwx 1 1001 1001       24 Jul 25 02:34 libonnxruntime.so.1 -> libonnxruntime.so.1.28.0
+-rwxr-xr-x 1 1001 1001 20591712 Jul 25 02:23 libonnxruntime.so.1.28.0
+-rwxr-xr-x 1 1001 1001   198792 Jul 25 02:16 libonnxruntime_providers_shared.so
+drwxrwxr-x 2 1001 1001     4096 Jul 25 02:34 pkgconfig
++ for library in "$ort_dir"/lib/libonnxruntime.so.1.28.0 "$ort_dir"/lib/libonnxruntime_providers_shared.so
++ file /tmp/onnxruntime-linux-aarch64-1.28.0/lib/libonnxruntime.so.1.28.0
+/tmp/onnxruntime-linux-aarch64-1.28.0/lib/libonnxruntime.so.1.28.0: ELF 64-bit LSB shared object, ARM aarch64, version 1 (SYSV), dynamically linked, BuildID[sha1]=31b6bfa6afe7b2cca8f235d89851dfd8c76cb60e, stripped
++ readelf -d /tmp/onnxruntime-linux-aarch64-1.28.0/lib/libonnxruntime.so.1.28.0
+
+Dynamic section at offset 0x139e3f0 contains 37 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libdl.so.2]
+ 0x0000000000000001 (NEEDED)             Shared library: [librt.so.1]
+ 0x0000000000000001 (NEEDED)             Shared library: [libpthread.so.0]
+ 0x0000000000000001 (NEEDED)             Shared library: [libstdc++.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [ld-linux-aarch64.so.1]
+ 0x000000000000000e (SONAME)             Library soname: [libonnxruntime.so.1]
+ 0x000000000000001d (RUNPATH)            Library runpath: [$ORIGIN]
+ 0x000000000000000c (INIT)               0xa0000
+ 0x000000000000000d (FINI)               0xf88ea8
+ 0x0000000000000019 (INIT_ARRAY)         0x1367d00
+ 0x000000000000001b (INIT_ARRAYSZ)       136 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x1367d88
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x298
+ 0x0000000000000005 (STRTAB)             0x2788
+ 0x0000000000000006 (SYMTAB)             0x2c8
+ 0x000000000000000a (STRSZ)              9499 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x139e680
+ 0x0000000000000002 (PLTRELSZ)           8520 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0x9dc70
+ 0x0000000000000007 (RELA)               0x5210
+ 0x0000000000000008 (RELASZ)             625248 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffffc (VERDEF)             0x4fb8
+ 0x000000006ffffffd (VERDEFNUM)          2
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW
+ 0x000000006ffffffe (VERNEED)            0x4ff0
+ 0x000000006fffffff (VERNEEDNUM)         7
+ 0x000000006ffffff0 (VERSYM)             0x4ca4
+ 0x000000006ffffff9 (RELACOUNT)          22577
+ 0x0000000000000000 (NULL)               0x0
++ readelf --version-info /tmp/onnxruntime-linux-aarch64-1.28.0/lib/libonnxruntime.so.1.28.0
++ sed -n '/Version needs section/,$p'
+Version needs section '.gnu.version_r' contains 7 entries:
+ Addr: 0x0000000000004ff0  Offset: 0x00004ff0  Link: 4 (.dynstr)
+  000000: Version: 1  File: ld-linux-aarch64.so.1  Cnt: 1
+  0x0010:   Name: GLIBC_2.17  Flags: none  Version: 27
+  0x0020: Version: 1  File: libgcc_s.so.1  Cnt: 4
+  0x0030:   Name: GCC_3.3.1  Flags: none  Version: 29
+  0x0040:   Name: GCC_4.5.0  Flags: none  Version: 22
+  0x0050:   Name: GCC_4.0.0  Flags: none  Version: 21
+  0x0060:   Name: GCC_3.0  Flags: none  Version: 17
+  0x0070: Version: 1  File: libdl.so.2  Cnt: 1
+  0x0080:   Name: GLIBC_2.17  Flags: none  Version: 15
+  0x0090: Version: 1  File: libm.so.6  Cnt: 2
+  0x00a0:   Name: GLIBC_2.27  Flags: none  Version: 19
+  0x00b0:   Name: GLIBC_2.17  Flags: none  Version: 13
+  0x00c0: Version: 1  File: libpthread.so.0  Cnt: 1
+  0x00d0:   Name: GLIBC_2.17  Flags: none  Version: 6
+  0x00e0: Version: 1  File: libstdc++.so.6  Cnt: 17
+  0x00f0:   Name: GLIBCXX_3.4.14  Flags: none  Version: 28
+  0x0100:   Name: GLIBCXX_3.4.17  Flags: none  Version: 26
+  0x0110:   Name: CXXABI_1.3.8  Flags: none  Version: 25
+  0x0120:   Name: GLIBCXX_3.4.18  Flags: none  Version: 24
+  0x0130:   Name: GLIBCXX_3.4.19  Flags: none  Version: 23
+  0x0140:   Name: CXXABI_1.3.5  Flags: none  Version: 20
+  0x0150:   Name: GLIBCXX_3.4.9  Flags: none  Version: 18
+  0x0160:   Name: CXXABI_1.3.7  Flags: none  Version: 16
+  0x0170:   Name: GLIBCXX_3.4.15  Flags: none  Version: 14
+  0x0180:   Name: CXXABI_1.3.11  Flags: none  Version: 12
+  0x0190:   Name: CXXABI_1.3.9  Flags: none  Version: 11
+  0x01a0:   Name: GLIBCXX_3.4.11  Flags: none  Version: 10
+  0x01b0:   Name: CXXABI_1.3  Flags: none  Version: 9
+  0x01c0:   Name: GLIBCXX_3.4.20  Flags: none  Version: 8
+  0x01d0:   Name: CXXABI_1.3.2  Flags: none  Version: 7
+  0x01e0:   Name: GLIBCXX_3.4  Flags: none  Version: 5
+  0x01f0:   Name: GLIBCXX_3.4.21  Flags: none  Version: 4
+  0x0200: Version: 1  File: libc.so.6  Cnt: 1
+  0x0210:   Name: GLIBC_2.17  Flags: none  Version: 3
++ ldd /tmp/onnxruntime-linux-aarch64-1.28.0/lib/libonnxruntime.so.1.28.0
+	linux-vdso.so.1 (0x0000ffff8c8ec000)
+	libdl.so.2 => /lib/aarch64-linux-gnu/libdl.so.2 (0x0000ffff8b4c0000)
+	librt.so.1 => /lib/aarch64-linux-gnu/librt.so.1 (0x0000ffff8b490000)
+	libpthread.so.0 => /lib/aarch64-linux-gnu/libpthread.so.0 (0x0000ffff8b460000)
+	libstdc++.so.6 => /lib/aarch64-linux-gnu/libstdc++.so.6 (0x0000ffff8b240000)
+	libm.so.6 => /lib/aarch64-linux-gnu/libm.so.6 (0x0000ffff8b190000)
+	libgcc_s.so.1 => /lib/aarch64-linux-gnu/libgcc_s.so.1 (0x0000ffff8b150000)
+	libc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffff8afa0000)
+	/lib/ld-linux-aarch64.so.1 (0x0000ffff8c8a0000)
++ for library in "$ort_dir"/lib/libonnxruntime.so.1.28.0 "$ort_dir"/lib/libonnxruntime_providers_shared.so
++ file /tmp/onnxruntime-linux-aarch64-1.28.0/lib/libonnxruntime_providers_shared.so
+/tmp/onnxruntime-linux-aarch64-1.28.0/lib/libonnxruntime_providers_shared.so: ELF 64-bit LSB shared object, ARM aarch64, version 1 (SYSV), dynamically linked, BuildID[sha1]=f76ef3991cf291a8dc67821858d00e19cc3807c5, stripped
++ readelf -d /tmp/onnxruntime-linux-aarch64-1.28.0/lib/libonnxruntime_providers_shared.so
+
+Dynamic section at offset 0x2fd70 contains 32 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libstdc++.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x000000000000000e (SONAME)             Library soname: [libonnxruntime_providers_shared.so]
+ 0x000000000000000c (INIT)               0x10000
+ 0x000000000000000d (FINI)               0x1018c
+ 0x0000000000000019 (INIT_ARRAY)         0x3fd58
+ 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x3fd60
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x260
+ 0x0000000000000005 (STRTAB)             0x380
+ 0x0000000000000006 (SYMTAB)             0x290
+ 0x000000000000000a (STRSZ)              223 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x3ffb0
+ 0x0000000000000002 (PLTRELSZ)           48 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0x578
+ 0x0000000000000007 (RELA)               0x4d0
+ 0x0000000000000008 (RELASZ)             168 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffffc (VERDEF)             0x478
+ 0x000000006ffffffd (VERDEFNUM)          2
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW
+ 0x000000006ffffffe (VERNEED)            0x4b0
+ 0x000000006fffffff (VERNEEDNUM)         1
+ 0x000000006ffffff0 (VERSYM)             0x460
+ 0x000000006ffffff9 (RELACOUNT)          3
+ 0x0000000000000000 (NULL)               0x0
++ readelf --version-info /tmp/onnxruntime-linux-aarch64-1.28.0/lib/libonnxruntime_providers_shared.so
++ sed -n '/Version needs section/,$p'
+Version needs section '.gnu.version_r' contains 1 entry:
+ Addr: 0x00000000000004b0  Offset: 0x000004b0  Link: 4 (.dynstr)
+  000000: Version: 1  File: libc.so.6  Cnt: 1
+  0x0010:   Name: GLIBC_2.17  Flags: none  Version: 3
++ ldd /tmp/onnxruntime-linux-aarch64-1.28.0/lib/libonnxruntime_providers_shared.so
+	linux-vdso.so.1 (0x0000ffffb68d9000)
+	libstdc++.so.6 => /lib/aarch64-linux-gnu/libstdc++.so.6 (0x0000ffffb6620000)
+	libm.so.6 => /lib/aarch64-linux-gnu/libm.so.6 (0x0000ffffb6570000)
+	libgcc_s.so.1 => /lib/aarch64-linux-gnu/libgcc_s.so.1 (0x0000ffffb6530000)
+	libc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffffb6380000)
+	/lib/ld-linux-aarch64.so.1 (0x0000ffffb6890000)
++ cat
++ gcc -Wall -Wextra -Werror -I /tmp/onnxruntime-linux-aarch64-1.28.0/include /tmp/ort-probe.c -L /tmp/onnxruntime-linux-aarch64-1.28.0/lib -Wl,-rpath,/tmp/onnxruntime-linux-aarch64-1.28.0/lib -lonnxruntime -o /tmp/ort-probe
++ ldd /tmp/ort-probe
+	linux-vdso.so.1 (0x0000ffff85674000)
+	libonnxruntime.so.1 => /tmp/onnxruntime-linux-aarch64-1.28.0/lib/libonnxruntime.so.1 (0x0000ffff84250000)
+	libc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffff840a0000)
+	libdl.so.2 => /lib/aarch64-linux-gnu/libdl.so.2 (0x0000ffff84070000)
+	librt.so.1 => /lib/aarch64-linux-gnu/librt.so.1 (0x0000ffff84040000)
+	libpthread.so.0 => /lib/aarch64-linux-gnu/libpthread.so.0 (0x0000ffff84010000)
+	libstdc++.so.6 => /lib/aarch64-linux-gnu/libstdc++.so.6 (0x0000ffff83df0000)
+	libm.so.6 => /lib/aarch64-linux-gnu/libm.so.6 (0x0000ffff83d40000)
+	libgcc_s.so.1 => /lib/aarch64-linux-gnu/libgcc_s.so.1 (0x0000ffff83d00000)
+	/lib/ld-linux-aarch64.so.1 (0x0000ffff85630000)
++ /tmp/ort-probe
+onnxruntime cpuid_info warning: Unknown CPU vendor. cpuinfo_vendor value: 0
+ORT version: 1.28.0; requested C API: 28
+Provider count: 1
+CPUExecutionProvider
+PASS: native ORT load, API 28, CPU-only provider, environment creation
++ for tool in python python3 node nvidia-smi
++ command -v python
++ for tool in python python3 node nvidia-smi
++ command -v python3
++ for tool in python python3 node nvidia-smi
++ command -v node
++ for tool in python python3 node nvidia-smi
++ command -v nvidia-smi

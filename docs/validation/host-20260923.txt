@@ -1,0 +1,32 @@
++ date -u +%FT%TZ
+2026-09-23T09:09:19Z
++ uname -sm
+Darwin arm64
++ sw_vers
+ProductName:		macOS
+ProductVersion:		27.0
+BuildVersion:		26A428
++ sysctl machdep.cpu.brand_string hw.ncpu hw.memsize
+machdep.cpu.brand_string: Apple M2 Max
+hw.ncpu: 12
+hw.memsize: 68719476736
++ df -k .
+Filesystem   1024-blocks      Used Available Capacity iused     ifree %iused  Mounted on
+/dev/disk3s5   971350180 879367420  66136028    94% 9676638 661360280    1%   /System/Volumes/Data
++ defaults read /Applications/Docker.app/Contents/Info CFBundleShortVersionString
+4.85.0
++ docker context show
+desktop-linux
++ docker version --format '{{json .Server}}'
+{"Platform":{"Name":"Docker Desktop 4.85.0 (235549)"},"Version":"29.6.2","ApiVersion":"1.55","MinAPIVersion":"1.40","Os":"linux","Arch":"arm64","Components":[{"Name":"Engine","Version":"29.6.2","Details":{"ApiVersion":"1.55","Arch":"arm64","BuildTime":"Thu Jul 16 16:13:03 2026","Experimental":"false","GitCommit":"3d80467","GoVersion":"go1.26.5","KernelVersion":"6.12.76-linuxkit","MinAPIVersion":"1.40","Module":"github.com/moby/moby/v2","ModuleVersion":"v2.0.0+unknown","Os":"linux"}},{"Name":"containerd","Version":"v2.2.5","Details":{"GitCommit":"e53c7c1516c3b2bff98eb76f1f4117477e6f4e66"}},{"Name":"runc","Version":"1.3.6","Details":{"GitCommit":"v1.3.6-0-g491b69ba"}},{"Name":"docker-init","Version":"0.19.0","Details":{"GitCommit":"de40ad0"}}],"GitCommit":"3d80467","GoVersion":"go1.26.5","KernelVersion":"6.12.76-linuxkit","BuildTime":"2026-07-16T16:13:03.000000000+00:00"}
++ docker info --format 'Kernel={{.KernelVersion}} OS={{.OSType}} Arch={{.Architecture}} CPUs={{.NCPU}} MemoryBytes={{.MemTotal}} Cgroup={{.CgroupVersion}} Driver={{.Driver}}'
+Kernel=6.12.76-linuxkit OS=linux Arch=aarch64 CPUs=8 MemoryBytes=16748113920 Cgroup=2 Driver=overlay2
++ docker image inspect debian@sha256:3783cc01769c7b2b1b83a5c5ad96c815348e28ed7da68e2e3687004faa906251 --format '{{json .RepoDigests}} {{.Id}} {{.Os}}/{{.Architecture}}'
+["debian@sha256:3783cc01769c7b2b1b83a5c5ad96c815348e28ed7da68e2e3687004faa906251"] sha256:813cd0370d827a30abbef1cf99f88217f87fda9612dd5241c9015ba182d32428 linux/arm64
++ ps -axo comm
++ rg com.docker.virtualization
+/Applications/Docker.app/Contents/MacOS/com.docker.virtualization
++ gh api repos/microsoft/onnxruntime/releases/tags/v1.28.0 --jq '.assets[] | select(.name=="onnxruntime-linux-aarch64-1.28.0.tgz") | {name,size,digest,browser_download_url}'
+{"browser_download_url":"https://github.com/microsoft/onnxruntime/releases/download/v1.28.0/onnxruntime-linux-aarch64-1.28.0.tgz","digest":"sha256:e15ff8b5d85afe6c144d97c6fd432254bf76a219daaf17658087d6ecb3e8f0bb","name":"onnxruntime-linux-aarch64-1.28.0.tgz","size":8116278}
++ shasum -a 256 /tmp/laya-validation-20260923/onnxruntime-linux-aarch64-1.28.0.tgz
+e15ff8b5d85afe6c144d97c6fd432254bf76a219daaf17658087d6ecb3e8f0bb  /tmp/laya-validation-20260923/onnxruntime-linux-aarch64-1.28.0.tgz
