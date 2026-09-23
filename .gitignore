@@ -1,0 +1,10 @@
+/target/
+/models/
+*.onnx
+*.onnx.data
+
+.env
+.env.*
+!.env.example
+
+.DS_Store
