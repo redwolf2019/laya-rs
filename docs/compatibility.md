@@ -211,6 +211,11 @@ ORT CPU 1.28.0、tokenizers 0.23.2；实际 Cargo.lock、原生 ABI 和 Linux AR
 在真实 Session 读取第 3/5 节张量名、dtype、shape、动态 B/L/K，并验证 B=1/B>1、混合 K 和长度边界。
 真实 tokenizer 决定特殊 token ID；目前没有经过验收的 ID 表或模型 golden。
 
+2026-09-23 #7 补充：独立 Linux ARM64 开发环境已完成固定官方 checkpoint 的 fp32 导出及
+CPU ORT 对照；最终文件、动态接口、特殊 token ID 与验证范围见
+[manifest](model-manifest.json)、[模型准备记录](../tools/model-prep/README.md)。
+上段的“目前”描述 #4 冻结时状态；#7 不替代 Rust 推理、完整响应 golden 或 HTTP 验收。
+
 `[已验证/HIGH，所选 ort 源码范围，见运行库报告]` `Session::run` 要求可变借用。
 实际并发 2 使用两个独立可运行 Session/执行槽，复用同一磁盘 bundle；
 单个 Mutex Session 外的 semaphore=2 不构成并发 2。输出借用结束后才归还槽；

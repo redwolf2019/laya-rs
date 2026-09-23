@@ -11,6 +11,7 @@ Noul 判断能力，通过 HTTP 为多个客户端共享模型。
 ## 文档
 
 - [服务方案与验收条件](docs/laya-server-plan.md)
+- [multilingual bundle 准备与真实 CPU 对照](tools/model-prep/README.md)
 - [MVP 开发路线图与可执行任务](https://github.com/redwolf2019/laya-rs/issues/1)
 - [领域术语](CONTEXT.md)
 - [Agent 工程约定](AGENTS.md)
@@ -102,7 +103,9 @@ ORT。后续加载器应先调用可失败的 `ort::init_from(path)` 并处理�
 ## 验证范围
 
 Linux CI 运行 fmt、clippy 和无模型单元/CLI 测试，独立列出 **Real model validation — NOT RUN**。
-缺权重且真实模型测试尚未实现；绿色 CI 不表示 multilingual 推理、Jev 兼容性或性能通过。
+#7 已在独立 Linux ARM64 Python 开发环境导出并对照真实 bundle，见
+[模型清单](docs/model-manifest.json)；Rust 真实模型测试尚未实现，CI 不执行该离线验证。
+绿色 CI 不表示 Rust multilingual 推理、Jev 兼容性或性能通过。
 CLI 测试中的已有目录也不充当模型测试。具体工具链与本地 Linux 执行结果见
 [#6 验收记录](https://github.com/redwolf2019/laya-rs/issues/6)。
 

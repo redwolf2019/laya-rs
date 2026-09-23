@@ -1,0 +1,17 @@
+W0923 09:42:04.301000 170 site-packages/torch/onnx/_internal/exporter/_registration.py:110] torchvision is not installed. Skipping torchvision::nms
+[torch.onnx] Obtain model graph for `Wrapper([...]` with `torch.export.export(..., strict=False)`...
+[torch.onnx] Obtain model graph for `Wrapper([...]` with `torch.export.export(..., strict=False)`... ✅
+[torch.onnx] Run decomposition...
+/usr/local/lib/python3.11/copyreg.py:105: FutureWarning: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+  return cls.__new__(cls, *args)
+[torch.onnx] Run decomposition... ✅
+[torch.onnx] Translate the graph into ONNX...
+[torch.onnx] Translate the graph into ONNX... ✅
+/usr/local/lib/python3.11/site-packages/torch/onnx/_internal/exporter/_onnx_program.py:460: UserWarning: # The axis name: batch will not be used, since it shares the same shape constraints with another axis: batch.
+  rename_mapping = _dynamic_shapes.create_rename_mapping(
+/usr/local/lib/python3.11/site-packages/torch/onnx/_internal/exporter/_onnx_program.py:460: UserWarning: # The axis name: seq will not be used, since it shares the same shape constraints with another axis: seq.
+  rename_mapping = _dynamic_shapes.create_rename_mapping(
+/usr/local/lib/python3.11/site-packages/torch/onnx/_internal/exporter/_onnx_program.py:460: UserWarning: # The axis name: options will not be used, since it shares the same shape constraints with another axis: options.
+  rename_mapping = _dynamic_shapes.create_rename_mapping(
+Applied 89 of general pattern rewrite rules.
+exported models/multilingual

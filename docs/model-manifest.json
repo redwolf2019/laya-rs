@@ -1,0 +1,355 @@
+{
+  "schema_version": 1,
+  "status": "verified",
+  "model": "laya-multilingual",
+  "precision": "fp32",
+  "checkpoint": {
+    "repository": "convaiinnovations/laya-multilingual",
+    "revision": "052592a15d198d9ad47da779604259b10b47b7aa"
+  },
+  "official_source": {
+    "repository": "he-jev/laya",
+    "revision": "c5d78730f3493e4fe16d61507ef4b78eef7318cf"
+  },
+  "exporter_reference": {
+    "repository": "receptron/laya",
+    "revision": "6478649e723122ca24bbf5fb69ed1010023c9750"
+  },
+  "bundle_directory": "models/multilingual",
+  "preparation_directory": "models/multilingual/prep",
+  "image": "python@sha256:a36c24f9cbdf4fd0f52d67f0823eeac19c2028c637cecc392d97f980d4fec56b",
+  "platform": "linux/arm64",
+  "cpu_limit": 8,
+  "memory_bytes": 12884901888,
+  "swap_bytes": 0,
+  "config": {
+    "max_len": 1024,
+    "head_max_len": 256,
+    "temperature": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "temperature_by_options": {}
+  },
+  "files": [
+    {
+      "path": "laya.onnx",
+      "bytes": 2680422,
+      "sha256": "a0a46af6144f0e7ff66612461be9064f528b1734bc87911463d3c7fc306ce7ef"
+    },
+    {
+      "path": "laya.onnx.data",
+      "bytes": 1287651328,
+      "sha256": "6ef993ee707fe1d6a75529f4a1f8347ff89966ff955d332ea3ebe4e5171a9ac1"
+    },
+    {
+      "path": "laya_config.json",
+      "bytes": 127,
+      "sha256": "d9f54bcdd1993f9d5e6c5839516de423599759a635a1d53b172c154b3f717880"
+    },
+    {
+      "path": "tokenizer/tokenizer.json",
+      "bytes": 34363188,
+      "sha256": "609d8f4c067cd3950f88594c5a802616cea245823836ef5848ee4fc40aab5b6f"
+    },
+    {
+      "path": "tokenizer/tokenizer_config.json",
+      "bytes": 502,
+      "sha256": "424b69444bf7b5809dc2cd2e36d0bd71b8055124dd24274d6db3c655d38205e7"
+    },
+    {
+      "path": "licenses/Apache-2.0.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "licenses/NOTICE.md",
+      "bytes": 2043,
+      "sha256": "bd0b93d7c933bb96b7457de588f5c79e83bf3bde8eb527e5d6030d163c0bc047"
+    },
+    {
+      "path": "licenses/model-README.md",
+      "bytes": 6957,
+      "sha256": "8a8a77d006d07a1a1ee1f964d83b4de935dee354a3e6f371c044b4a3b4c4ef70"
+    },
+    {
+      "path": "licenses/official-README.md",
+      "bytes": 10217,
+      "sha256": "575cb8fb4fd82465036a9d265c283fec9448b78067e6045afac8cfa113dde98f"
+    },
+    {
+      "path": "licenses/receptron-LICENSE",
+      "bytes": 1066,
+      "sha256": "c07ddef02172ce4162a2aae8ebddd5c2b84d8374da865c592afea5710e2acc0c"
+    }
+  ],
+  "inputs": [
+    {
+      "path": "models/multilingual/prep/checkpoint/.gitattributes",
+      "url": "https://huggingface.co/convaiinnovations/laya-multilingual/resolve/052592a15d198d9ad47da779604259b10b47b7aa/.gitattributes",
+      "bytes": 1580,
+      "sha256": "caf3ca02d5e883f643e939cbed54f94237f94c171797f0dfea5e25c7e33315b3",
+      "publisher": {
+        "rfilename": ".gitattributes",
+        "blobId": "f1ca65ce6a5b0774360fde1ec05157d9f937aaa2",
+        "size": 1580
+      }
+    },
+    {
+      "path": "models/multilingual/prep/checkpoint/README.md",
+      "url": "https://huggingface.co/convaiinnovations/laya-multilingual/resolve/052592a15d198d9ad47da779604259b10b47b7aa/README.md",
+      "bytes": 6957,
+      "sha256": "8a8a77d006d07a1a1ee1f964d83b4de935dee354a3e6f371c044b4a3b4c4ef70",
+      "publisher": {
+        "rfilename": "README.md",
+        "blobId": "593bdc34282938d9e3c6bc24660318fe8d9e6065",
+        "size": 6957
+      }
+    },
+    {
+      "path": "models/multilingual/prep/checkpoint/encoder/config.json",
+      "url": "https://huggingface.co/convaiinnovations/laya-multilingual/resolve/052592a15d198d9ad47da779604259b10b47b7aa/encoder/config.json",
+      "bytes": 1938,
+      "sha256": "83f6916d13ef0f556ac461f28308dc2bffa7ebeadee8ec9e2db5812020ea5bb4",
+      "publisher": {
+        "rfilename": "encoder/config.json",
+        "blobId": "0de0e2d30638873790cf962def52e2acf4db3eef",
+        "size": 1938
+      }
+    },
+    {
+      "path": "models/multilingual/prep/checkpoint/model.safetensors",
+      "url": "https://huggingface.co/convaiinnovations/laya-multilingual/resolve/052592a15d198d9ad47da779604259b10b47b7aa/model.safetensors",
+      "bytes": 643835514,
+      "sha256": "9d628fd971b700382ac6f65920a86f149777b2e748e0c955fb3b19695aa8f204",
+      "publisher": {
+        "rfilename": "model.safetensors",
+        "blobId": "b99c8bea239c53f6f6bce734557dc6c403fa6b3e",
+        "size": 643835514,
+        "lfs": {
+          "sha256": "9d628fd971b700382ac6f65920a86f149777b2e748e0c955fb3b19695aa8f204",
+          "size": 643835514,
+          "pointerSize": 134
+        }
+      }
+    },
+    {
+      "path": "models/multilingual/prep/checkpoint/rl_agent_config.json",
+      "url": "https://huggingface.co/convaiinnovations/laya-multilingual/resolve/052592a15d198d9ad47da779604259b10b47b7aa/rl_agent_config.json",
+      "bytes": 472,
+      "sha256": "25061739243b617ad88d1219ba6f8a9c86c5881ca28df024fa2d9b3b2fcc30c6",
+      "publisher": {
+        "rfilename": "rl_agent_config.json",
+        "blobId": "00e35f88bb731bb9126a914666ab1cdac8a204c8",
+        "size": 472
+      }
+    },
+    {
+      "path": "models/multilingual/prep/checkpoint/tokenizer/tokenizer.json",
+      "url": "https://huggingface.co/convaiinnovations/laya-multilingual/resolve/052592a15d198d9ad47da779604259b10b47b7aa/tokenizer/tokenizer.json",
+      "bytes": 34363188,
+      "sha256": "609d8f4c067cd3950f88594c5a802616cea245823836ef5848ee4fc40aab5b6f",
+      "publisher": {
+        "rfilename": "tokenizer/tokenizer.json",
+        "blobId": "56d765858ed38eaabd35cd90759cbb1f89b0baa4",
+        "size": 34363188,
+        "lfs": {
+          "sha256": "609d8f4c067cd3950f88594c5a802616cea245823836ef5848ee4fc40aab5b6f",
+          "size": 34363188,
+          "pointerSize": 133
+        }
+      }
+    },
+    {
+      "path": "models/multilingual/prep/checkpoint/tokenizer/tokenizer_config.json",
+      "url": "https://huggingface.co/convaiinnovations/laya-multilingual/resolve/052592a15d198d9ad47da779604259b10b47b7aa/tokenizer/tokenizer_config.json",
+      "bytes": 502,
+      "sha256": "424b69444bf7b5809dc2cd2e36d0bd71b8055124dd24274d6db3c655d38205e7",
+      "publisher": {
+        "rfilename": "tokenizer/tokenizer_config.json",
+        "blobId": "eea1ed61121530d74c1722dc2aab6ec917a75909",
+        "size": 502
+      }
+    },
+    {
+      "path": "models/multilingual/prep/source/rl_common.py",
+      "url": "https://raw.githubusercontent.com/he-jev/laya/c5d78730f3493e4fe16d61507ef4b78eef7318cf/rl_common.py",
+      "bytes": 19139,
+      "sha256": "8d83611d480c971d640a7b7d3aa2f2219c5e8455e9cc2329fd073681bd8be23e"
+    },
+    {
+      "path": "models/multilingual/prep/source/official-README.md",
+      "url": "https://raw.githubusercontent.com/he-jev/laya/c5d78730f3493e4fe16d61507ef4b78eef7318cf/README.md",
+      "bytes": 10217,
+      "sha256": "575cb8fb4fd82465036a9d265c283fec9448b78067e6045afac8cfa113dde98f"
+    },
+    {
+      "path": "models/multilingual/prep/source/export_onnx.py",
+      "url": "https://raw.githubusercontent.com/receptron/laya/6478649e723122ca24bbf5fb69ed1010023c9750/export/export_onnx.py",
+      "bytes": 3475,
+      "sha256": "a4da86abfe118779f8f0d5ac25d6213844f405d8feb1d222338fc98170d56b4b"
+    },
+    {
+      "path": "models/multilingual/prep/source/receptron-LICENSE",
+      "url": "https://raw.githubusercontent.com/receptron/laya/6478649e723122ca24bbf5fb69ed1010023c9750/LICENSE",
+      "bytes": 1066,
+      "sha256": "c07ddef02172ce4162a2aae8ebddd5c2b84d8374da865c592afea5710e2acc0c"
+    }
+  ],
+  "tools": [
+    {
+      "path": "tools/model-prep/export.py",
+      "bytes": 2897,
+      "sha256": "a38f87598241290d7ae2afd716ca147a8ac49fcbe6f1f6b92e74a691d40838b9"
+    },
+    {
+      "path": "tools/model-prep/prepare.py",
+      "bytes": 4099,
+      "sha256": "7fed378100d4e4c6489d43868353b3e4b9eb7ec0eae910b0422a9856467ac14e"
+    },
+    {
+      "path": "tools/model-prep/record.py",
+      "bytes": 2753,
+      "sha256": "f13f772555e1ae5f39b197ac51bb1e564da026425839b1e7e46233ae9ce20a76"
+    },
+    {
+      "path": "tools/model-prep/verify.py",
+      "bytes": 8894,
+      "sha256": "8f77220915afd936613f66d5c00816d65110c6316f5bf45e142e70697e4ba00a"
+    },
+    {
+      "path": "tools/model-prep/requirements.lock",
+      "bytes": 720,
+      "sha256": "0253a755baa9cb1c11e3ca2feb99a8b04e67819fdb40b5b0cb9c9cca1f39d191"
+    },
+    {
+      "path": "tools/model-prep/NOTICE.md",
+      "bytes": 2043,
+      "sha256": "bd0b93d7c933bb96b7457de588f5c79e83bf3bde8eb527e5d6030d163c0bc047"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/validation/model-prep/environment.log",
+      "bytes": 923,
+      "sha256": "cfacf3c0816a2883b6d1fa2dbd3712b5daeaf1228353e07105765510ee948e8f"
+    },
+    {
+      "path": "docs/validation/model-prep/export.log",
+      "bytes": 1622,
+      "sha256": "6a4a3940834baaf22712a842cebc1ea5d055f952a9ec0ecf20a4a2ff38df28e1"
+    },
+    {
+      "path": "docs/validation/model-prep/prepare.log",
+      "bytes": 659,
+      "sha256": "919e5358b738cc137ca86e0967aabe312416b2c5e1a3a434303da30348af6f5d"
+    },
+    {
+      "path": "docs/validation/model-prep/validation.json",
+      "bytes": 36078,
+      "sha256": "fe96570053279187efe39a8431ef55b3b23a866097f832ed8ae4630912f9a389"
+    },
+    {
+      "path": "docs/validation/model-prep/verify.log",
+      "bytes": 17206,
+      "sha256": "95b126d7ac2884dfd028e3b9d20a1134a5004bdb3e6379d5e046be51fe0c6a2f"
+    }
+  ],
+  "versions": {
+    "torch": "2.10.0",
+    "transformers": "5.0.0",
+    "onnx": "1.20.1",
+    "onnxscript": "0.5.4",
+    "onnxruntime": "1.28.0",
+    "numpy": "2.3.3",
+    "safetensors": "0.7.0",
+    "tokenizers": "0.22.2"
+  },
+  "python": "3.11.16 (main, Sep 19 2026, 01:11:36) [GCC 12.2.0]",
+  "graph": {
+    "ir_version": 10,
+    "opsets": {
+      "": 18
+    },
+    "initializer_types": {
+      "FLOAT": 180,
+      "INT64": 21
+    },
+    "external_data": [
+      "laya.onnx.data"
+    ]
+  },
+  "session": [
+    {
+      "name": "input_ids",
+      "dtype": "tensor(int64)",
+      "shape": [
+        "batch",
+        "seq"
+      ]
+    },
+    {
+      "name": "attention_mask",
+      "dtype": "tensor(int64)",
+      "shape": [
+        "batch",
+        "seq"
+      ]
+    },
+    {
+      "name": "marker_pos",
+      "dtype": "tensor(int64)",
+      "shape": [
+        "batch",
+        "options"
+      ]
+    },
+    {
+      "name": "marker_mask",
+      "dtype": "tensor(bool)",
+      "shape": [
+        "batch",
+        "options"
+      ]
+    },
+    {
+      "name": "qtype",
+      "dtype": "tensor(int64)",
+      "shape": [
+        "batch"
+      ]
+    },
+    {
+      "name": "logits",
+      "dtype": "tensor(float)",
+      "shape": [
+        "batch",
+        "options"
+      ]
+    },
+    {
+      "name": "act_probs",
+      "dtype": "tensor(float)",
+      "shape": [
+        "batch",
+        2
+      ]
+    }
+  ],
+  "special_tokens": {
+    "cls_token_id": 2,
+    "sep_token_id": 1,
+    "mask_token_id": 4,
+    "pad_token_id": 0
+  },
+  "validation": {
+    "cases": 19,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "max_logit_error": 1.6927719116210938e-05,
+    "max_act_error": 0.0
+  },
+  "reproduction": "tools/model-prep/README.md"
+}
