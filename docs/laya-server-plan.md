@@ -1,9 +1,10 @@
 # Laya Rust HTTP Server 方案
 
 状态：CLI、固定 bundle 加载、Rust CPU 张量探针、System One 类型、输入规范化与 Python JSON 文本渲染已实现；
-Sequence Builder 与五个批处理输入已实现并通过固定 tokenizer 对照；后处理已通过固定 logits 对照；HTTP 待实现。
+Sequence Builder 与五个批处理输入已实现并通过固定 tokenizer 对照；后处理已通过固定 logits 对照，同步 engine 入口已贯通；HTTP 待实现。
 已通过 #8 固定张量验收；#13 已修复 LayerNorm 数值差异，21 个固定请求的 Rust 真实推理
-与完整答案在 Linux ARM64 CPU 通过对照，见[后处理验收](validation/postprocess.md)。HTTP 尚待验收。
+与完整答案在 Linux ARM64 CPU 通过对照，见[后处理验收](validation/postprocess.md)。
+#14 已把该链路接入可复用 engine，失败恢复与运行记录见[engine 验收](validation/engine.md)。HTTP 尚待验收。
 版本日期：2026-09-23。
 
 字段、序列、校准、HTTP 错误、资源限制和验收阈值以

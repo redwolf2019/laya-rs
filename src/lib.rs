@@ -1,5 +1,6 @@
-//! System One protocol, sequence and postprocessing; no native runtime initialization.
+//! System One protocol and CPU engine; native initialization belongs to the loader.
 
+pub mod engine;
 pub mod postprocess;
 pub mod sequence;
 pub mod system_one;

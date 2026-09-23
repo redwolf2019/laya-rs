@@ -54,9 +54,15 @@ Tokenizer 或模型。验证覆盖列出的样例，不能据此宣称所有 bin
 `052592a15d198d9ad47da779604259b10b47b7aa`。官方源码未修改，来源许可沿用
 [model-prep NOTICE](../../tools/model-prep/NOTICE.md)。
 
+#14 的 [真实 engine 专项](../../src/model/tests/parity.rs) 让全部固定请求经过生产
+`engine::system_one`，并精确比较五个序列缓冲区、shape 和 usage。另用 441 字节的
+[engine-probe.onnx](engine-probe.onnx) 人工接口图触发坏 shape / NaN；它只含常量，
+不含训练权重，不是模型兼容 oracle。生成器为 [engine_probe.py](../../tools/model-prep/engine_probe.py)，
+命令和真实模型失败恢复记录见[engine 验收](../../docs/validation/engine.md)。
+
 ## 覆盖与格式
 
-所有文件均为 UTF-8 严格 JSON，`schema_version=1`。文件 digest 位于
+`system-one/` 下的参考文件均为 UTF-8 严格 JSON，`schema_version=1`。文件 digest 位于
 [manifest.json](system-one/manifest.json)，独立的 Rust [消费测试](../fixtures.rs)
 验证 SHA-256、必需字段和张量/请求约束，不调用 Python、Node 或模型。
 

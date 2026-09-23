@@ -1,0 +1,33 @@
+   Compiling laya-server v0.1.0 (/work)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.22s
+     Running unittests src/main.rs (/target/debug/deps/laya_server-afb554ae63eedbdb)
+
+running 1 test
+onnxruntime cpuid_info warning: Unknown CPU vendor. cpuinfo_vendor value: 0
+PASS: en-choice.json, slot=0
+PASS: en-noul.json, slot=1
+PASS: en-score.json, slot=0
+PASS: huge-integer.json, slot=1
+PASS: json-order-numbers.json, slot=0
+PASS: long-padding.json, slot=1
+PASS: marker.json, slot=0
+PASS: mixed-16.json, slot=1
+PASS: mixed-6.json, slot=0
+PASS: normalization.json, slot=1
+PASS: options-10.json, slot=0
+PASS: options-11.json, slot=1
+PASS: options-2.json, slot=0
+PASS: options-3.json, slot=1
+PASS: options-32.json, slot=0
+PASS: options-5.json, slot=1
+PASS: options-6.json, slot=0
+PASS: scalars.json, slot=1
+PASS: zh-choice.json, slot=0
+PASS: zh-noul.json, slot=1
+PASS: zh-score.json, slot=0
+PASS: artificial native shape/NaN outputs rejected; same probe Session recovers
+2026-09-23 13:03:30.394226344 [E:onnxruntime:, sequential_executor.cc:671 ExecuteKernel] Non-zero status code returned while running Gather node. Name:'node_embedding' Status Message: indices element out of data bounds, idx=256000 must be within the inclusive range [-256000,255999]
+PASS: typed sequence/native failures; same real Session recovers without reloading
+test model::tests::parity::linux_system_one_model_parity ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 10 filtered out; finished in 18.44s

@@ -30,6 +30,11 @@ CPU 输入缓冲区及 shape/usage，复用加载器的 tokenizer 和真实任�
 [后处理验收](docs/validation/postprocess.md)。离线导出中的 LayerNorm 展开已修复 long-padding
 Score 差异；21 个固定请求经 Rust 真实推理通过完整答案门槛（Linux ARM64 CPU）。
 
+#14 的 [`engine::system_one`](src/engine.rs) 是同步生产入口：借用已加载的 Sequence Builder、
+一个独占 CPU Session 和校准配置，从规范化请求返回完整 `Response`。连续请求复用模型，
+错误保留内部来源，对外使用静态类型化错误。21 个固定样例及失败恢复已通过 Linux CPU 对照，
+从零准备、专项命令和实际哈希见 [engine 验收](docs/validation/engine.md)。
+
 ## 文档
 
 - [服务方案与验收条件](docs/laya-server-plan.md)

@@ -1,7 +1,7 @@
 //! Real Linux CPU regression: fixed requests -> Rust sequence -> ORT -> typed answers.
 use super::*;
 use laya_server::{
-    postprocess::Outputs,
+    engine,
     sequence::Batch,
     system_one::{Limits, Request},
 };
@@ -35,6 +35,153 @@ fn linux_system_one_model_parity() {
         count += 1;
     }
     assert_eq!(count, 21);
+    check_failures_and_reuse(&mut model);
+}
+
+fn check_failures_and_reuse(model: &mut Model) {
+    use laya_server::system_one::RequestError;
+    let valid = choice_request(2);
+    let mut invalid = choice_request(2);
+    invalid.questions.clear();
+    let error = engine::system_one(
+        &invalid,
+        &model.sequence,
+        &mut model.sessions[0],
+        &model.config.calibration,
+    )
+    .unwrap_err();
+    assert!(matches!(
+        error,
+        engine::Error::Sequence(laya_server::sequence::Error::Request(
+            RequestError::QuestionCount
+        ))
+    ));
+    assert!(error.source().is_some());
+    check_output_failures(model, &valid);
+    check_native_failure(model, &valid);
+}
+
+fn sequence_with_untrained_token(model: &Model) -> SequenceBuilder {
+    let mut tokenizer = model.sequence.tokenizer().clone();
+    assert_eq!(
+        tokenizer
+            .add_tokens([tokenizers::AddedToken::from(
+                "engine_probe_untrained_token",
+                false
+            )])
+            .unwrap(),
+        1
+    );
+    SequenceBuilder::new(
+        tokenizer,
+        &std::fs::read(
+            Path::new(&std::env::var_os("LAYA_TEST_MODEL").unwrap())
+                .join("tokenizer/tokenizer_config.json"),
+        )
+        .unwrap(),
+        model.config.max_len,
+        model.config.head_max_len,
+    )
+    .unwrap()
+}
+
+fn check_native_failure(model: &mut Model, valid: &Request) {
+    let sequence = sequence_with_untrained_token(model);
+    let bad = Request::from_slice(br#"{"state":"engine_probe_untrained_token","questions":{"q":{"type":"noul","instructions":""}}}"#, &Limits::default()).unwrap();
+    let before = serde_json::to_value(
+        engine::system_one(
+            valid,
+            &model.sequence,
+            &mut model.sessions[0],
+            &model.config.calibration,
+        )
+        .unwrap(),
+    )
+    .unwrap();
+    let error = engine::system_one(
+        &bad,
+        &sequence,
+        &mut model.sessions[0],
+        &model.config.calibration,
+    )
+    .unwrap_err();
+    assert!(matches!(error, engine::Error::Runtime(_)));
+    assert!(
+        error
+            .source()
+            .unwrap()
+            .downcast_ref::<ort::Error>()
+            .is_some()
+    );
+    assert_eq!(error.envelope().error.code, "inference_failed");
+    let after = serde_json::to_value(
+        engine::system_one(
+            valid,
+            &model.sequence,
+            &mut model.sessions[0],
+            &model.config.calibration,
+        )
+        .unwrap(),
+    )
+    .unwrap();
+    assert!(
+        before == after,
+        "normal request differs after a real ORT failure"
+    );
+    println!("PASS: typed sequence/native failures; same real Session recovers without reloading");
+}
+
+fn choice_request(options: usize) -> Request {
+    let raw = serde_json::json!({"state":"", "questions":{"q":{"type":"choice","instructions":"", "criteria": (0..options).map(|i| i.to_string()).collect::<Vec<_>>()}}});
+    Request::from_slice(&serde_json::to_vec(&raw).unwrap(), &Limits::default()).unwrap()
+}
+
+fn check_output_failures(model: &Model, valid: &Request) {
+    // Artificial graph: constant width=2; qtype=Noul emits NaN. No learned weights.
+    let mut session = Session::builder()
+        .unwrap()
+        .with_execution_providers([ort::ep::CPU::default().build().error_on_failure()])
+        .unwrap()
+        .commit_from_memory(include_bytes!("../../../tests/fixtures/engine-probe.onnx"))
+        .unwrap();
+    let noul = Request::from_slice(
+        br#"{"state":"","questions":{"q":{"type":"noul","instructions":""}}}"#,
+        &Limits::default(),
+    )
+    .unwrap();
+    for (request, expected) in [
+        (choice_request(3), laya_server::postprocess::Error::Shape),
+        (noul, laya_server::postprocess::Error::NonFinite),
+    ] {
+        let error = engine::system_one(
+            &request,
+            &model.sequence,
+            &mut session,
+            &model.config.calibration,
+        )
+        .unwrap_err();
+        assert!(matches!(error, engine::Error::Output(e) if e == expected));
+        assert_eq!(
+            error
+                .source()
+                .unwrap()
+                .downcast_ref::<laya_server::postprocess::Error>(),
+            Some(&expected)
+        );
+        assert_eq!(error.status(), 500);
+        let result = engine::system_one(
+            valid,
+            &model.sequence,
+            &mut session,
+            &model.config.calibration,
+        )
+        .unwrap();
+        assert_eq!(
+            serde_json::to_value(result).unwrap()["answers"]["q"]["probabilities"]["0"],
+            0.5
+        );
+    }
+    println!("PASS: artificial native shape/NaN outputs rejected; same probe Session recovers");
 }
 
 fn check_case(model: &mut Model, data: &Value, name: &str, slot: usize) {
@@ -44,8 +191,8 @@ fn check_case(model: &mut Model, data: &Value, name: &str, slot: usize) {
     )
     .unwrap();
     let batch = model.sequence.build(&request).unwrap();
-    let tokens = batch.usage.input_tokens;
-    let (shape, logits, action) = run(&mut model.sessions[slot], batch);
+    check_sequence(&batch, data, name);
+    let (logits, action) = run(&mut model.sessions[slot], batch);
     check_probabilities(
         &model.config.calibration,
         &request,
@@ -54,20 +201,13 @@ fn check_case(model: &mut Model, data: &Value, name: &str, slot: usize) {
         &action,
         name,
     );
-    let actual = model
-        .config
-        .calibration
-        .response(
-            &request,
-            Outputs {
-                logits_shape: &shape,
-                logits: &logits,
-                act_probs_shape: &[shape[0], 2],
-                act_probs: &action,
-            },
-            tokens,
-        )
-        .unwrap();
+    let actual = engine::system_one(
+        &request,
+        &model.sequence,
+        &mut model.sessions[slot],
+        &model.config.calibration,
+    )
+    .unwrap();
     check_answers(
         serde_json::to_value(actual).unwrap(),
         data["response"].clone(),
@@ -75,7 +215,7 @@ fn check_case(model: &mut Model, data: &Value, name: &str, slot: usize) {
     );
 }
 
-fn run(session: &mut Session, batch: Batch) -> (Vec<i64>, Vec<f32>, Vec<f32>) {
+fn run(session: &mut Session, batch: Batch) -> (Vec<f32>, Vec<f32>) {
     let outputs = session.run(ort::inputs! {
         "input_ids" => Tensor::from_array((batch.token_shape, batch.input_ids)).unwrap(),
         "attention_mask" => Tensor::from_array((batch.token_shape, batch.attention_mask)).unwrap(),
@@ -95,7 +235,68 @@ fn run(session: &mut Session, batch: Batch) -> (Vec<i64>, Vec<f32>, Vec<f32>) {
         .unwrap();
     assert_eq!(shape.as_ref(), batch.marker_shape.map(|v| v as i64));
     assert_eq!(act_shape.as_ref(), [shape[0], 2]);
-    (shape.to_vec(), logits.to_vec(), action.to_vec())
+    (logits.to_vec(), action.to_vec())
+}
+
+fn check_sequence(batch: &Batch, data: &Value, name: &str) {
+    let tensors = &data["tensors"];
+    assert_eq!(
+        batch.token_shape,
+        [
+            tensors["input_ids"].as_array().unwrap().len(),
+            tensors["input_ids"][0].as_array().unwrap().len()
+        ]
+    );
+    assert_eq!(
+        batch.marker_shape,
+        [
+            tensors["marker_pos"].as_array().unwrap().len(),
+            tensors["marker_pos"][0].as_array().unwrap().len()
+        ]
+    );
+    assert_eq!(
+        batch.usage.input_tokens,
+        data["response"]["usage"]["input_tokens"].as_u64().unwrap() as usize
+    );
+    for (field, actual) in [
+        ("input_ids", serde_json::to_value(&batch.input_ids).unwrap()),
+        (
+            "attention_mask",
+            serde_json::to_value(&batch.attention_mask).unwrap(),
+        ),
+        (
+            "marker_pos",
+            serde_json::to_value(&batch.marker_pos).unwrap(),
+        ),
+        (
+            "marker_mask",
+            serde_json::to_value(&batch.marker_mask).unwrap(),
+        ),
+        ("qtype", serde_json::to_value(&batch.qtype).unwrap()),
+    ] {
+        check_buffer(&actual, &tensors[field], name, field);
+    }
+}
+
+fn check_buffer(actual: &Value, expected: &Value, name: &str, field: &str) {
+    let expected: Vec<_> = if field == "qtype" {
+        expected.as_array().unwrap().iter().collect()
+    } else {
+        expected
+            .as_array()
+            .unwrap()
+            .iter()
+            .flat_map(|row| row.as_array().unwrap())
+            .collect()
+    };
+    assert_eq!(
+        actual.as_array().unwrap().len(),
+        expected.len(),
+        "{name}/{field}/length"
+    );
+    for (i, (a, b)) in actual.as_array().unwrap().iter().zip(expected).enumerate() {
+        assert!(a == b, "{name}/{field}[{i}]: tensor mismatch");
+    }
 }
 
 fn close(actual: f64, expected: f64, atol: f64, rtol: f64, location: &str) {

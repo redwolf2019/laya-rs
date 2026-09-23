@@ -27,7 +27,7 @@ pub(crate) struct ModelConfig {
         not(test),
         expect(
             dead_code,
-            reason = "validated at startup; execution entry point is tracked in #14"
+            reason = "retained for engine calls; the CLI only initializes resources"
         )
     )]
     pub calibration: Calibration,

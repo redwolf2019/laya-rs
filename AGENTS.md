@@ -1,7 +1,7 @@
 # laya-rs
 
 Laya System-1 模型的 Rust 推理运行时与 HTTP 服务。当前可校验 CLI、加载固定 bundle 并运行 CPU 张量探针，
-Sequence Builder 已通过固定 tokenizer 对照，答案后处理及 21 个固定请求的 Linux CPU 真实推理已通过对照，尚未实现 HTTP；功能范围与验收条件见 [服务方案](docs/laya-server-plan.md)。
+Sequence Builder 已通过固定 tokenizer 对照，统一 engine 入口及 21 个固定请求的 Linux CPU 真实推理已通过对照，尚未实现 HTTP；功能范围与验收条件见 [服务方案](docs/laya-server-plan.md)。
 
 ## 核心边界
 

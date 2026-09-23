@@ -1,0 +1,19 @@
+   Compiling laya-server v0.1.0 (/work)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.21s
+     Running unittests src/main.rs (/target/debug/deps/laya_server-afb554ae63eedbdb)
+
+running 1 test
+
+thread 'model::tests::parity::linux_system_one_model_parity' (2268) panicked at src/model/tests/parity.rs:20:6:
+called `Result::unwrap()` on an `Err` value: "--model must name an existing local directory"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test model::tests::parity::linux_system_one_model_parity ... FAILED
+
+failures:
+
+failures:
+    model::tests::parity::linux_system_one_model_parity
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--bin laya-server`
