@@ -1,0 +1,22 @@
+Linux f2b724c6a4b1 6.12.76-linuxkit #1 SMP Tue Jul 21 14:38:37 UTC 2026 aarch64 GNU/Linux
+PRETTY_NAME="Debian GNU/Linux 12 (bookworm)"
+NAME="Debian GNU/Linux"
+VERSION_ID="12"
+VERSION="12 (bookworm)"
+VERSION_CODENAME=bookworm
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
+rustc 1.98.1 (48a229cea 2026-09-01)
+cargo 1.98.1 (797e8a9bc 2026-08-05)
+800000 100000
+12884901888
+0
+f1ec1a08eb99bd6e5401340f0a2b101381bf4694415480291dc13bcaa30f9ec7  /ort/lib/libonnxruntime.so.1.28.0
+	linux-vdso.so.1 (0x0000ffff823dc000)
+	libc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffff81dc0000)
+	libm.so.6 => /lib/aarch64-linux-gnu/libm.so.6 (0x0000ffff81d10000)
+	libgcc_s.so.1 => /lib/aarch64-linux-gnu/libgcc_s.so.1 (0x0000ffff81cd0000)
+	/lib/ld-linux-aarch64.so.1 (0x0000ffff823a0000)
+6079080

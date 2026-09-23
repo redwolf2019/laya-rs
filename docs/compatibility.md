@@ -216,6 +216,12 @@ CPU ORT 对照；最终文件、动态接口、特殊 token ID 与验证范围�
 [manifest](model-manifest.json)、[模型准备记录](../tools/model-prep/README.md)。
 上段的“目前”描述 #4 冻结时状态；#7 不替代 Rust 推理、完整响应 golden 或 HTTP 验收。
 
+2026-09-23 #8 补充：Rust 启动加载器内嵌上述 manifest，校验全部文件内容后加载 JSON、
+Tokenizer 和独立 CPU Sessions，并逐槽执行固定 `tensor-L2` 探针。目录须保持只读且不可变；
+图的精确 SHA-256 同时锁定 #7 已检查的 external-data 引用。任何文件（含配置）变化都须
+先更新 manifest 并重新验收。加载成功尚不启动 HTTP；[Linux 记录](validation/model-loader.md)
+仅证明固定张量加载和推理，不代表完整响应兼容。
+
 `[已验证/HIGH，所选 ort 源码范围，见运行库报告]` `Session::run` 要求可变借用。
 实际并发 2 使用两个独立可运行 Session/执行槽，复用同一磁盘 bundle；
 单个 Mutex Session 外的 semaphore=2 不构成并发 2。输出借用结束后才归还槽；
@@ -229,6 +235,8 @@ CPU ORT 对照；最终文件、动态接口、特殊 token ID 与验证范围�
 
 CLI 是唯一运行配置入口，不实现第二套 YAML。`--model` 必须提供本地 bundle 目录；
 `--listen` 默认 `0.0.0.0:8080`，必须可解析为 IP 和非零端口。
+`--ort-library` 指定本地 ORT CPU 动态库文件，默认 `libonnxruntime.so`；建议使用绝对路径。
+这是 #8 加载器新增的 CLI 路径参数；不从环境变量选择运行库，不在启动时下载。
 
 | CLI 参数 | 默认 | 有效性 / 计量边界 |
 | --- | ---: | --- |

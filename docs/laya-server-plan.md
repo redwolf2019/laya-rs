@@ -1,6 +1,7 @@
 # Laya Rust HTTP Server 方案
 
-状态：CLI 配置校验可运行，HTTP 服务待实现，MVP 行为契约已冻结，尚未通过真实模型验收。
+状态：CLI、固定 bundle 加载与 Rust CPU 张量探针可运行；HTTP、序列及后处理待实现。
+已通过 #8 固定张量验收，尚未通过完整 System One 模型兼容验收。
 版本日期：2026-09-23。
 
 字段、序列、校准、HTTP 错误、资源限制和验收阈值以
@@ -79,7 +80,7 @@ Tower / tower-http 以及 ndarray 按实际使用需要引入，不为目录完�
 
 候选组合为 Rust 1.98.1、ort 2.0.0-rc.13、ONNX Runtime CPU 1.28.0、tokenizers 0.23.2，
 依据为[固定运行库研究](https://github.com/redwolf2019/laya-rs/blob/ab20013f6b37a3d3a84368c1cfb464a9fdb619d6/docs/research/mvp-runtime.md)。
-这些是选型线索，不是已经验证的依赖组合。
+这些版本已由 #8 在 Linux ARM64 完成构建和固定张量 smoke，见[加载记录](validation/model-loader.md)。
 实施时确认 `ort` 实际发布版本、对应 ONNX Runtime ABI 和 Linux CPU 支持，
 选择兼容组合并提交 `Cargo.lock`。只启用所需的 CPU 与库功能。
 
@@ -281,12 +282,13 @@ MVP 首轮部署验收与 benchmark 使用本机 Docker Desktop 的 Linux ARM64 
 记录实际 CPU、内存配额及虚拟化环境；结果不代表 16 核 / 32 GB 裸机或 Linux amd64。
 其他平台的可用性和性能需在对应环境另行验证。
 
-CLI 已可执行，以下参数可用于配置校验；模型目录存在时仍报告服务未实现并非零退出。
+CLI 已可执行；启动先校验 bundle、加载 CPU 资源并跑探针，成功后仍报告 HTTP 未实现并非零退出。
 构建和当前可执行检查见 [README](../README.md#构建与-cli)：
 
 ```sh
 ./target/debug/laya-server \
   --model ./models/multilingual \
+  --ort-library /opt/onnxruntime/lib/libonnxruntime.so \
   --listen 0.0.0.0:8080 \
   --threads 8 \
   --max-concurrency 2

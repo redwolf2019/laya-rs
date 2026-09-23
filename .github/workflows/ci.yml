@@ -1,4 +1,4 @@
-name: Rust CLI (no model)
+name: Rust checks (no model)
 
 on:
   push:
@@ -20,5 +20,5 @@ jobs:
       - name: Real model validation — NOT RUN
         if: always()
         run: |
-          echo '::notice::NOT RUN: tokenizer/model inference validation is not implemented; no model weights are installed.'
-          echo 'CLI checks only. Real multilingual model validation: **NOT RUN**. Green CI does not establish inference or Jev compatibility.' >> "$GITHUB_STEP_SUMMARY"
+          echo '::notice::NOT RUN: Linux real-model smoke is ignored; no model weights or native runtime are installed.'
+          echo 'CLI and loader failure checks only. Real multilingual model validation: **NOT RUN**. Green CI does not establish inference or Jev compatibility.' >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,16 @@
+PASS: no Python/Node/GPU tools; network disabled by docker run
+onnxruntime cpuid_info warning: Unknown CPU vendor. cpuinfo_vendor value: 0
+CPU model initialized: 2 sessions, 256000 vocabulary entries, max_len=1024
+Service not implemented: HTTP serving is unavailable
+CPU model initialized: 2 sessions, 256000 vocabulary entries, max_len=1024
+Service not implemented: HTTP serving is unavailable
+exit=1 library=/ort/lib/libonnxruntime.so
+Model initialization failed: native ONNX Runtime load or ABI check failed
+Model initialization failed: native ONNX Runtime load or ABI check failed
+exit=1 library=/missing/private-secret
+Model initialization failed: native ONNX Runtime load or ABI check failed
+Model initialization failed: native ONNX Runtime load or ABI check failed
+exit=1 library=/lib/aarch64-linux-gnu/libc.so.6
+Model initialization failed: native ONNX Runtime load or ABI check failed
+Model initialization failed: native ONNX Runtime load or ABI check failed
+exit=1 library=/target/liboldort.so

@@ -1,6 +1,6 @@
 //! The CLI is the only configuration source (docs/compatibility.md §7.1).
 //! Values are validated without echoing input. Only directory existence is checked;
-//! bundle contents and resource compatibility must be checked by the future loader.
+//! bundle contents and resource compatibility are checked by the startup loader.
 
 use std::{
     ffi::{OsStr, OsString},
@@ -12,6 +12,7 @@ use std::{
 #[derive(Debug)]
 pub(crate) struct Config {
     pub model: PathBuf,
+    pub ort_library: PathBuf,
     pub listen: SocketAddr,
     pub threads: usize,
     pub inter_op_threads: usize,
@@ -31,6 +32,7 @@ impl Config {
     pub fn from_args(args: impl IntoIterator<Item = OsString>) -> Result<Self, &'static str> {
         let mut config = Self {
             model: PathBuf::new(),
+            ort_library: PathBuf::from("libonnxruntime.so"),
             listen: SocketAddr::from((Ipv4Addr::UNSPECIFIED, 8080)),
             threads: 8,
             inter_op_threads: 1,
@@ -60,6 +62,7 @@ impl Config {
     fn set(&mut self, option: &OsStr, value: &OsStr) -> Result<(), &'static str> {
         match option.to_str() {
             Some("--model") => self.model = PathBuf::from(value),
+            Some("--ort-library") => self.ort_library = PathBuf::from(value),
             Some("--listen") => {
                 self.listen = value
                     .to_str()
@@ -122,6 +125,7 @@ mod tests {
     fn defaults_match_the_frozen_cli_contract() {
         let config = parse(&["--model", "."]);
         assert_eq!(config.model, PathBuf::from("."));
+        assert_eq!(config.ort_library, PathBuf::from("libonnxruntime.so"));
         assert_eq!(config.listen.to_string(), "0.0.0.0:8080");
         assert_eq!(config.threads, 8);
         assert_eq!(config.inter_op_threads, 1);
@@ -141,6 +145,8 @@ mod tests {
         let config = parse(&[
             "--model",
             "src",
+            "--ort-library",
+            "/local/libonnxruntime.so",
             "--listen",
             "[::1]:1",
             "--threads",
@@ -167,6 +173,10 @@ mod tests {
             "1",
         ]);
         assert_eq!(config.model, PathBuf::from("src"));
+        assert_eq!(
+            config.ort_library,
+            PathBuf::from("/local/libonnxruntime.so")
+        );
         assert_eq!(config.listen.to_string(), "[::1]:1");
         assert_eq!(config.threads, 1);
         assert_eq!(config.inter_op_threads, 1);

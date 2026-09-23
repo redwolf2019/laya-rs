@@ -1,15 +1,17 @@
-//! CLI entry point. HTTP serving and model inference are not implemented yet.
+//! CLI entry point. Validate and warm CPU resources before the future HTTP server.
 
 use std::process::ExitCode;
 
 mod config;
+mod model;
 
-const HELP: &str = "laya-server — CLI baseline; HTTP and inference are not implemented
+const HELP: &str = "laya-server — local CPU model loading; HTTP is not implemented
 
 Usage: laya-server --model DIR [OPTIONS]
 Pass each option and its value as separate arguments.
 
   --model DIR               Required local multilingual bundle directory
+  --ort-library FILE        Local ORT 1.28 CPU library [default: libonnxruntime.so]
   --listen IP:PORT          Listen address [default: 0.0.0.0:8080]; nonzero port
   --threads N               ORT intra-op threads [default: 8]; 1..=2147483647
   --inter-op-threads N      ORT inter-op threads [default: 1]; 1..=2147483647
@@ -33,10 +35,26 @@ fn main() -> ExitCode {
         println!("{HELP}");
         return ExitCode::SUCCESS;
     }
-    if let Err(error) = config::Config::from_args(args) {
-        eprintln!("Invalid configuration: {error}");
-        return ExitCode::from(2);
-    }
-    eprintln!("Service not implemented: HTTP serving and model inference are unavailable");
+    let config = match config::Config::from_args(args) {
+        Ok(config) => config,
+        Err(error) => {
+            eprintln!("Invalid configuration: {error}");
+            return ExitCode::from(2);
+        }
+    };
+    let model = match model::Model::load(&config) {
+        Ok(model) => model,
+        Err(error) => {
+            eprintln!("Model initialization failed: {error}");
+            return ExitCode::FAILURE;
+        }
+    };
+    eprintln!(
+        "CPU model initialized: {} sessions, {} vocabulary entries, max_len={}",
+        model.sessions.len(),
+        model.tokenizer.get_vocab_size(true),
+        model.config.max_len
+    );
+    eprintln!("Service not implemented: HTTP serving is unavailable");
     ExitCode::FAILURE
 }

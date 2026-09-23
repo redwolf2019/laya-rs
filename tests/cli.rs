@@ -17,6 +17,7 @@ fn help_runs_without_model_and_lists_the_frozen_options() {
     let help = String::from_utf8(output.stdout).unwrap();
     for flag in [
         "--model",
+        "--ort-library",
         "--listen",
         "--threads",
         "--inter-op-threads",
@@ -57,7 +58,7 @@ fn invalid_input_fails_without_echoing_values() {
 }
 
 #[test]
-fn valid_configuration_still_cannot_start_an_unimplemented_service() {
+fn missing_bundle_fails_before_native_loading_or_listening() {
     let output = run(&[
         "--model",
         ".",
@@ -71,7 +72,7 @@ fn valid_configuration_still_cannot_start_an_unimplemented_service() {
     assert!(
         String::from_utf8(output.stderr)
             .unwrap()
-            .contains("Service not implemented")
+            .contains("Model initialization failed: bundle file is missing or unreadable")
     );
 }
 
