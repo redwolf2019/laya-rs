@@ -1,0 +1,24 @@
+name: Rust CLI (no model)
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  cli:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Install the repository toolchain
+        run: rustup show active-toolchain
+      - run: cargo fmt --check
+      - run: cargo clippy --locked --all-targets -- -D warnings
+      - run: cargo test --locked
+      - name: Real model validation — NOT RUN
+        if: always()
+        run: |
+          echo '::notice::NOT RUN: tokenizer/model inference validation is not implemented; no model weights are installed.'
+          echo 'CLI checks only. Real multilingual model validation: **NOT RUN**. Green CI does not establish inference or Jev compatibility.' >> "$GITHUB_STEP_SUMMARY"

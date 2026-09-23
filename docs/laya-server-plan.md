@@ -1,6 +1,6 @@
 # Laya Rust HTTP Server 方案
 
-状态：服务待实现，MVP 行为契约已冻结，尚未通过真实模型验收。
+状态：CLI 配置校验可运行，HTTP 服务待实现，MVP 行为契约已冻结，尚未通过真实模型验收。
 版本日期：2026-09-23。
 
 字段、序列、校准、HTTP 错误、资源限制和验收阈值以
@@ -281,23 +281,24 @@ MVP 首轮部署验收与 benchmark 使用本机 Docker Desktop 的 Linux ARM64 
 记录实际 CPU、内存配额及虚拟化环境；结果不代表 16 核 / 32 GB 裸机或 Linux amd64。
 其他平台的可用性和性能需在对应环境另行验证。
 
-以下命令是目标接口，当前尚不可执行：
+CLI 已可执行，以下参数可用于配置校验；模型目录存在时仍报告服务未实现并非零退出。
+构建和当前可执行检查见 [README](../README.md#构建与-cli)：
 
 ```sh
-./laya-server \
+./target/debug/laya-server \
   --model ./models/multilingual \
   --listen 0.0.0.0:8080 \
   --threads 8 \
   --max-concurrency 2
 ```
 
-优先完成命令行配置。YAML 是后续按需扩展，不与命令行并行实现两套配置来源。
+命令行配置是唯一入口，MVP 不引入 YAML 第二套配置来源。
 线程数和并发数必须大于零，输入/队列/时间参数按[兼容契约第 7 节](compatibility.md)校验；
 模型路径及监听参数错误在启动时明确报告，不开始监听。
 
 使用多阶段 Docker 构建，最终镜像包含服务二进制、所需原生运行库及证书等基础文件。
 模型和 tokenizer 通过只读目录挂载；不在镜像中安装 Python、Node.js、PyTorch
-或 GPU 运行时。示例部署目标：
+或 GPU 运行时。以下仅是未来部署目标，当前尚无该镜像：
 
 ```sh
 docker run --cpus=8 --memory=8g -p 8080:8080 \

@@ -1,7 +1,7 @@
 # laya-rs
 
-Laya System-1 模型的 Rust 推理运行时与 HTTP 服务。当前仅完成工程约定和方案文档初始化，
-尚未实现服务或推理；功能范围与验收条件见 [服务方案](docs/laya-server-plan.md)。
+Laya System-1 模型的 Rust 推理运行时与 HTTP 服务。当前可编译并校验 CLI 配置，
+尚未实现 HTTP 服务或推理；功能范围与验收条件见 [服务方案](docs/laya-server-plan.md)。
 
 ## 核心边界
 
