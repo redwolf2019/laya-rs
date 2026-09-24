@@ -1,6 +1,7 @@
 //! HTTP transport for System One; see docs/compatibility.md §7.
 //!
-//! Validate readiness, JSON media type, streaming byte limit, then the complete
+//! Authenticate System One/metrics; probes remain public. Validate readiness,
+//! JSON media type, streaming byte limit, then the complete
 //! protocol before submitting to the shared scheduler. No request text is logged.
 //! Dropping a route future cancels its wait only; CPU work remains scheduler-owned.
 //! GET routes also support HEAD. Axum returns empty 404/405 with Allow for a known
@@ -14,20 +15,71 @@ use axum::{
     Json, Router,
     body::to_bytes,
     extract::{Request, State},
-    http::{StatusCode, header},
+    http::{HeaderMap, StatusCode, header},
     response::{IntoResponse, Response},
     routing::{get, post},
 };
+use sha2::{Digest, Sha256};
 use std::error::Error as _;
+use subtle::ConstantTimeEq;
+
+/// Validated shared credential. Retain only its digest; deliberately no Debug/Serialize.
+#[derive(Clone)]
+pub struct ApiToken([u8; 32]);
+
+impl ApiToken {
+    /// Read the mandatory credential once, before loading models or listening.
+    /// # Errors
+    /// Missing/non-Unicode environment value or invalid Bearer token syntax.
+    pub fn from_env() -> Result<Self, &'static str> {
+        let token = std::env::var("LAYA_API_TOKEN")
+            .map_err(|_| "LAYA_API_TOKEN must contain a valid Bearer token")?;
+        Self::parse(&token)
+    }
+
+    /// Validate RFC 6750 b64token syntax without trimming or echoing the value.
+    /// # Errors
+    /// Empty value, whitespace, non-ASCII or characters outside b64token.
+    pub fn parse(token: &str) -> Result<Self, &'static str> {
+        let unpadded = token.trim_end_matches('=');
+        if unpadded.is_empty()
+            || !unpadded.bytes().all(|b| {
+                b.is_ascii_alphanumeric() || matches!(b, b'-' | b'.' | b'_' | b'~' | b'+' | b'/')
+            })
+        {
+            return Err("LAYA_API_TOKEN must contain a valid Bearer token");
+        }
+        Ok(Self(Sha256::digest(token.as_bytes()).into()))
+    }
+
+    fn accepts(&self, headers: &HeaderMap) -> bool {
+        let mut values = headers.get_all(header::AUTHORIZATION).iter();
+        let Some(value) = values.next().and_then(|v| v.to_str().ok()) else {
+            return false;
+        };
+        if values.next().is_some() {
+            return false;
+        }
+        let Some((scheme, token)) = value.split_once(' ') else {
+            return false;
+        };
+        if !scheme.eq_ignore_ascii_case("Bearer") {
+            return false;
+        }
+        let digest = Sha256::digest(token.trim_start_matches(' ').as_bytes());
+        bool::from(self.0.as_slice().ct_eq(digest.as_slice()))
+    }
+}
 
 #[derive(Clone)]
 struct AppState {
     client: scheduler::Client,
     limits: Limits,
+    api_token: ApiToken,
 }
 
 /// Build routes from fully initialized resources; keep driving the scheduler owner.
-pub fn router(client: scheduler::Client, limits: Limits) -> Router {
+pub fn router(client: scheduler::Client, limits: Limits, api_token: ApiToken) -> Router {
     Router::new()
         .route("/v1/system-one", post(system_one))
         .route(
@@ -36,10 +88,17 @@ pub fn router(client: scheduler::Client, limits: Limits) -> Router {
         )
         .route("/readyz", get(ready))
         .route("/metrics", get(metrics))
-        .with_state(AppState { client, limits })
+        .with_state(AppState {
+            client,
+            limits,
+            api_token,
+        })
 }
 
-async fn metrics(State(state): State<AppState>) -> Response {
+async fn metrics(State(state): State<AppState>, request: Request) -> Response {
+    if !state.api_token.accepts(request.headers()) {
+        return unauthorized();
+    }
     let text = match state.client.metrics().encode(state.client.snapshot()) {
         Ok(text) => text,
         Err(_) => return scheduler::Error::Unavailable.into_response(),
@@ -65,6 +124,9 @@ async fn system_one(State(state): State<AppState>, request: Request) -> Response
 }
 
 async fn respond(state: AppState, request: Request) -> Response {
+    if !state.api_token.accepts(request.headers()) {
+        return unauthorized();
+    }
     if !state.client.snapshot().accepting {
         return scheduler::Error::Unavailable.into_response();
     }
@@ -130,6 +192,15 @@ fn static_error(status: StatusCode, code: &'static str, message: &'static str) -
             error: ErrorBody { code, message },
         },
     )
+}
+
+fn unauthorized() -> Response {
+    let mut response = static_error(StatusCode::UNAUTHORIZED, "unauthorized", "Unauthorized");
+    response.headers_mut().insert(
+        header::WWW_AUTHENTICATE,
+        axum::http::HeaderValue::from_static("Bearer"),
+    );
+    response
 }
 
 #[derive(Clone, Copy)]

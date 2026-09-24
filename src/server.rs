@@ -39,6 +39,7 @@ pub async fn serve(
     scheduler: &mut Scheduler,
     limits: Limits,
     grace: Duration,
+    api_token: crate::api::ApiToken,
 ) -> Result<(), ServiceError> {
     use std::future::IntoFuture;
     use tokio::signal::unix::{SignalKind, signal};
@@ -49,13 +50,16 @@ pub async fn serve(
     let client = scheduler.client();
     let (stop, stopped) = tokio::sync::oneshot::channel::<()>();
     let mut http = std::pin::pin!(
-        axum::serve(listener, crate::api::router(client.clone(), limits))
-            .with_graceful_shutdown(async {
-                if stopped.await.is_err() {
-                    tracing::warn!(event = "http_stop_sender_closed");
-                }
-            })
-            .into_future()
+        axum::serve(
+            listener,
+            crate::api::router(client.clone(), limits, api_token)
+        )
+        .with_graceful_shutdown(async {
+            if stopped.await.is_err() {
+                tracing::warn!(event = "http_stop_sender_closed");
+            }
+        })
+        .into_future()
     );
     tracing::info!(event = "http_started");
     let mut http_done = false;

@@ -119,7 +119,11 @@ async fn check_http(mut scheduler: Scheduler, fixtures: Vec<Value>) {
     let client = scheduler.client();
     let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
     let address = listener.local_addr().unwrap();
-    let app = api::router(client.clone(), Limits::default());
+    let app = api::router(
+        client.clone(),
+        Limits::default(),
+        api::ApiToken::parse(wire::TOKEN).unwrap(),
+    );
     let (stop, stopped) = oneshot::channel();
     let server = tokio::spawn(async move {
         axum::serve(listener, app)
@@ -233,7 +237,8 @@ async fn check_response(address: SocketAddr, data: &Value) {
 async fn chunked_overflow(address: SocketAddr) {
     let limit = Limits::default().max_body_bytes;
     let wire = format!(
-        "POST /v1/system-one HTTP/1.1\r\nHost: localhost\r\nContent-Type: application/json\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n{:x}\r\n{}\r\n1\r\nx\r\n",
+        "POST /v1/system-one HTTP/1.1\r\nHost: localhost\r\nAuthorization: {}\r\nContent-Type: application/json\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n{:x}\r\n{}\r\n1\r\nx\r\n",
+        wire::AUTHORIZATION,
         limit,
         "x".repeat(limit)
     );

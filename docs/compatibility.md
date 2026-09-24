@@ -251,7 +251,8 @@ Tokenizer 和独立 CPU Sessions，并逐槽执行固定 `tensor-L2` 探针。�
 
 ### 7.1 CLI 与限制
 
-CLI 是唯一运行配置入口，不实现第二套 YAML。`--model` 必须提供本地 bundle 目录；
+除鉴权密钥从 `LAYA_API_TOKEN` 环境变量读取外，运行配置使用 CLI，不实现第二套 YAML。
+`--model` 必须提供本地 bundle 目录；
 `--listen` 默认 `0.0.0.0:8080`，必须可解析为 IP 和非零端口。
 `--ort-library` 指定本地 ORT CPU 动态库文件，默认 `libonnxruntime.so`；建议使用绝对路径。
 这是 #8 加载器新增的 CLI 路径参数；不从环境变量选择运行库，不在启动时下载。
@@ -275,6 +276,27 @@ CLI 是唯一运行配置入口，不实现第二套 YAML。`--model` 必须提�
 允许显式减小部署限制用于测试；调高配置不能跳过模型/资源验收，提高默认上限须另有资源证据。
 模型预算读取固定 bundle，不能用 CLI 的问题/选项上限修改模型配置。
 
+#### 客户端鉴权
+
+所有受控后端/内部脚本共享一个静态 token；不提供客户端身份、自动过期或在线撤销。
+启动时读取 `LAYA_API_TOKEN`，在模型加载和监听前校验；缺失、非 UTF-8、空值或格式非法
+以配置错误退出（码 2），不回显输入。`--help` 无需 token。更换后须重启服务。
+token 使用 [RFC 6750 §2.1](https://www.rfc-editor.org/rfc/rfc6750#section-2.1) 的
+`b64token` 字符语法：至少一个 ASCII 字母、数字或 `-._~+/`，末尾可附 `=`；
+不修剪配置中的空白。部署时应生成至少 32 字节的随机值，编码为 hex 或 base64。
+
+`POST /v1/system-one`、`GET /metrics`（含 HEAD）必须携带唯一一个
+`Authorization: Bearer <token>`。scheme 忽略 ASCII 大小写，后接一个或多个 ASCII 空格；
+token 按原值匹配。重复 Authorization、缺失/错误 token、其他 scheme 或非法格式
+均为静态 401 `unauthorized`，附 `WWW-Authenticate: Bearer`；不从 URL、Cookie 或 body 读取凭证。
+`/healthz`、`/readyz`（含 HEAD）免鉴权；未知路由/错误方法保持原有 404/405。
+在就绪检查、媒体类型、body 读取、排队及推理前完成鉴权；即使排空中也先返回 401。
+服务保留 token 的 SHA-256 摘要并使用 `subtle` 常量时间比较固定长度摘要；
+凭证和摘要均不得写入日志、错误响应或指标标签。
+
+反向代理/网关终止 HTTPS，Rust 服务继续提供 HTTP；部署限制直接访问为网关或受控内网。
+token 不下发到浏览器或外部用户程序，网关日志也须屏蔽 Authorization。
+
 ### 7.2 错误表与校验顺序
 
 所有表内错误返回 JSON `{"error":{"code":"...","message":"..."}}`，
@@ -283,6 +305,7 @@ CLI 是唯一运行配置入口，不实现第二套 YAML。`--model` 必须提�
 
 | HTTP | code | 条件 | message |
 | --- | --- | --- | --- |
+| 401 | `unauthorized` | 受保护接口凭证缺失、错误或非法 | `Unauthorized` |
 | 400 | `invalid_request` | 非法 JSON/Unicode、字段或 criteria 类型、未知 type、问题/选项/深度越界、marker 丢失 | `Invalid request` |
 | 413 | `payload_too_large` | body 字节超限 | `Request body too large` |
 | 415 | `unsupported_media_type` | 媒体类型缺失或不符 | `Unsupported media type` |
@@ -292,7 +315,7 @@ CLI 是唯一运行配置入口，不实现第二套 YAML。`--model` 必须提�
 | 504 | `inference_timeout` | 获得槽后 HTTP 执行等待超时 | `Inference wait timeout` |
 | 500 | `inference_failed` | 模型执行、tokenizer 内部故障、张量或数值输出失败 | `Inference failed` |
 
-校验次序：路由进入时检查就绪/退出 → 媒体类型 → 有界读取 body → JSON/深度/Unicode →
+校验次序：路由进入时鉴权 → 检查就绪/退出 → 媒体类型 → 有界读取 body → JSON/深度/Unicode →
 必需字段及各问题（questions 顺序）类型、规范化数量 → 再检查准入状态 → 获取槽或入队。
 前面阶段失败即返回，不继续消费完整 body 或调用模型；读取中一旦超字节上限即 413。
 序列构造在获得槽后、模型调用前完成；marker 不足仍为输入拒绝。
@@ -336,7 +359,7 @@ grace 到期记录未完成工作数量，以非零码退出整个进程，不�
 ## 8. 指标与日志
 
 所有时间使用单调时钟。以下计数只针对匹配 `POST /v1/system-one` 的请求，
-包括解码、资源与准入失败；其他路由不加入这些请求/错误计数。
+包括鉴权、解码、资源与准入失败；其他路由（含 metrics 鉴权失败）不加入这些请求/错误计数。
 
 | 名称 | 类型、观测边界 |
 | --- | --- |
@@ -345,7 +368,7 @@ grace 到期记录未完成工作数量，以非零码退出整个进程，不�
 | `laya_inference_duration_seconds` | histogram；每次实际 Session run 开始到结束（成功或错误）一次，不含排队、分词或后处理；HTTP 超时/断开后仍记录真实结束 |
 | `laya_queue_size` | gauge；成功入队加 1，获槽/超时/取消/退出移出时减 1；不含已占槽请求 |
 | `laya_inference_inflight` | gauge；取得执行槽加 1，实际阻塞工作结束并归还槽时减 1；包含该槽中的序列/输出处理，HTTP 等待结束不提前减 |
-| `laya_errors_total{reason}` | counter；每个失败请求恰好一次，reason 为错误表八个 code 或 `client_cancelled` |
+| `laya_errors_total{reason}` | counter；每个失败请求恰好一次，reason 为错误表九个 code 或 `client_cancelled` |
 
 除 errors 的固定 reason 外，不加问题名、任意路径、模型输入等动态标签。
 首个终态确定计数归属：HTTP 失败按其 code，检测到断开且此前未确定响应则为 client_cancelled；
@@ -357,7 +380,7 @@ grace 到期记录未完成工作数量，以非零码退出整个进程，不�
 Tracing 记录静态结果类别、耗时和资源数量；默认不记录 state、instructions、问题名或候选正文。
 实现使用 JSON 行写入 stderr；直方图桶上界为 0.005、0.01、0.025、0.05、0.1、0.25、0.5、
 1、2.5、5、10、30、60、120 秒及 +Inf。`/metrics` 返回 OpenMetrics 1.0 文本。
-退出排空期间继续提供 health/ready/metrics，System One 新请求为 503；实际任务回收后关闭 HTTP，
+退出排空期间继续提供 health/ready/metrics，已通过鉴权的 System One 新请求为 503；实际任务回收后关闭 HTTP，
 整个排空流程受 grace 限制。子进程与真实模型验证见[观测与退出验收](validation/observability.md)。
 HTTP 响应和日志不输出密钥、凭证、原始异常中的敏感内容。
 
@@ -396,7 +419,8 @@ logits 的 padding 槽只验 shape、mask 与有限性，不作为真实候选�
 | 温度 | 三类型，k=2/3/5/6/10/11/32，覆盖/缺桶/缺表/缺类型数组 | 选桶和回退；0、负、NaN、Infinity、null、错形启动失败 |
 | 数值 | 等 logits、近并列、极大/极小、非有限、零概率、均匀概率 | 稳定 softmax、熵、Score 期望、tie、有限性检查 |
 | 舍入/action | 0.03125 及两侧、概率舍入和不为 1、act_probs 多于四位 | 官方 round 精确值，不重复 softmax action、不额外归一化 |
-| HTTP/资源 | 四路由、八错误；body 上限与+1、深度 64/65、问题 0/1/16/17、选项 1/2/32/33 | 状态/code/envelope；Choice 按折叠后计数；未知字段、分块 body 不能绕过限制 |
+| 鉴权 | 环境变量缺失/空/非法/非 UTF-8；正确/错误/重复凭证；GET/HEAD；未发送正文；排空中 | 配置错误退出 2；受保护接口先返回 401、不读 body/不占槽；探针免鉴权；错误计数且凭证不泄露 |
+| HTTP/资源 | 四路由、九错误；body 上限与+1、深度 64/65、问题 0/1/16/17、选项 1/2/32/33 | 状态/code/envelope；Choice 按折叠后计数；未知字段、分块 body 不能绕过限制 |
 | 队列与取消 | 小配置下 FIFO、满队列、queue timeout、排队取消、在途取消/504、重复请求 | 未获槽不执行；真实结束前不超并发；slot/queue/inflight 生命周期与一次错误计数 |
 | 晚到与竞态 | 超时/断开后成功或失败、期限与获槽/结果同时可见 | 一个终态、一次请求/错误计数；后台结果被接收，实际 run 耗时仍记录 |
 | 启动/退出 | 文件/哈希/原生库/tokenizer/Session 失败；退出时排队及在途、grace 到期 | 监听前失败；readyz 503；等待项 unavailable；到期整个进程非零退出并记录数量 |

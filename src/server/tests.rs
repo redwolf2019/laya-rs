@@ -52,6 +52,7 @@ fn process_fixture() {
             &mut scheduler,
             Limits::default(),
             Duration::from_millis(500),
+            crate::api::ApiToken::parse(http::TOKEN).unwrap(),
         )
         .await
         .unwrap();
@@ -263,6 +264,7 @@ async fn check_exit(process: &mut Process, force: bool) {
     let log = std::fs::read_to_string(&process.log).unwrap();
     assert!(!log.contains("secret"), "{log}");
     assert!(!log.contains("/private/model"), "{log}");
+    assert!(!log.contains(http::TOKEN));
     let events: Vec<serde_json::Value> = log
         .lines()
         .map(|line| serde_json::from_str(line).unwrap())

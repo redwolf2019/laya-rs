@@ -8,6 +8,28 @@ import pathlib
 import subprocess
 import sys
 import tempfile
+from unittest import mock
+
+smoke = runpy.run_path(str(pathlib.Path(__file__).with_name('docker-smoke.py')))
+token = smoke['API_TOKEN']
+with mock.patch.dict(smoke['inspect'].__globals__, docker=lambda *_: json.dumps([
+        {'Config': {'Env': ['PATH=/bin', 'LAYA_API_TOKEN=' + token]}}
+])):
+    state = smoke['inspect']('fixture')
+    assert state['Config']['Env'] == ['PATH=/bin'] and token not in json.dumps(state)
+with mock.patch('subprocess.run') as run:
+    run.return_value.returncode = 0
+    smoke['docker']('create', '--env', 'LAYA_API_TOKEN', 'fixture')
+    assert run.call_args.kwargs['env']['LAYA_API_TOKEN'] == token
+    assert token not in str(run.call_args.args)
+with mock.patch('urllib.request.urlopen') as open_url:
+    response = open_url.return_value.__enter__.return_value
+    response.status, response.read.return_value = 200, b'{}'
+    for path in ['/v1/system-one', '/metrics', '/healthz', '/readyz']:
+        smoke['request']('http://localhost', path)
+        auth = open_url.call_args.args[0].get_header('Authorization')
+        assert auth == ('Bearer ' + token if path in ('/v1/system-one', '/metrics') else None)
+print('PASS: validation credentials reach Docker/HTTP but not recorded container metadata')
 
 script = pathlib.Path(__file__).with_name('benchmark.py')
 with tempfile.TemporaryDirectory() as directory:

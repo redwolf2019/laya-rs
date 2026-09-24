@@ -4,14 +4,42 @@ use std::process::{Command, Output};
 
 fn run(args: &[&str]) -> Output {
     Command::new(env!("CARGO_BIN_EXE_laya-server"))
+        .env("LAYA_API_TOKEN", "test-only-api-token")
         .args(args)
         .output()
         .expect("CLI process must run")
 }
 
 #[test]
+fn missing_or_invalid_token_fails_before_model_loading_without_echo() {
+    for token in [
+        None,
+        Some(""),
+        Some("private-secret token"),
+        Some("private-secret\n"),
+    ] {
+        let mut command = Command::new(env!("CARGO_BIN_EXE_laya-server"));
+        command.args(["--model", "."]).env_remove("LAYA_API_TOKEN");
+        if let Some(token) = token {
+            command.env("LAYA_API_TOKEN", token);
+        }
+        let output = command.output().unwrap();
+        assert_eq!(output.status.code(), Some(2));
+        assert!(output.stdout.is_empty());
+        let error = String::from_utf8(output.stderr).unwrap();
+        assert!(error.contains("LAYA_API_TOKEN"));
+        assert!(!error.contains("private-secret"));
+        assert!(!error.contains("Model initialization"));
+    }
+}
+
+#[test]
 fn help_runs_without_model_and_lists_the_frozen_options() {
-    let output = run(&["--help"]);
+    let output = Command::new(env!("CARGO_BIN_EXE_laya-server"))
+        .arg("--help")
+        .env_remove("LAYA_API_TOKEN")
+        .output()
+        .unwrap();
     assert!(output.status.success());
     assert!(output.stderr.is_empty());
     let help = String::from_utf8(output.stdout).unwrap();
@@ -30,9 +58,26 @@ fn help_runs_without_model_and_lists_the_frozen_options() {
         "--queue-timeout",
         "--inference-timeout",
         "--shutdown-grace",
+        "LAYA_API_TOKEN",
     ] {
         assert!(help.contains(flag), "missing {flag}");
     }
+}
+
+#[cfg(unix)]
+#[test]
+fn non_unicode_token_is_a_sanitized_configuration_error() {
+    use std::{ffi::OsString, os::unix::ffi::OsStringExt};
+    let output = Command::new(env!("CARGO_BIN_EXE_laya-server"))
+        .args(["--model", "."])
+        .env("LAYA_API_TOKEN", OsString::from_vec(vec![0xff]))
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(2));
+    assert_eq!(
+        String::from_utf8(output.stderr).unwrap(),
+        "Invalid configuration: LAYA_API_TOKEN must contain a valid Bearer token\n"
+    );
 }
 
 #[test]

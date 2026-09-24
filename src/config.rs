@@ -1,4 +1,4 @@
-//! The CLI is the only configuration source (docs/compatibility.md §7.1).
+//! CLI configuration (docs/compatibility.md §7.1); main also loads LAYA_API_TOKEN.
 //! Values are validated without echoing input. Only directory existence is checked;
 //! bundle contents and resource compatibility are checked by the startup loader.
 

@@ -9,7 +9,9 @@ import contextlib
 import hashlib
 import json
 import math
+import os
 import pathlib
+import secrets
 import subprocess
 import sys
 import tempfile
@@ -17,10 +19,13 @@ import time
 import urllib.error
 import urllib.request
 
+API_TOKEN = secrets.token_hex(32)
+
 
 def docker(*args, timeout=180):
     result = subprocess.run(["docker", *map(str, args)], capture_output=True,
-                            text=True, timeout=timeout)
+                            text=True, timeout=timeout,
+                            env={**os.environ, "LAYA_API_TOKEN": API_TOKEN})
     if result.returncode:
         print(result.stderr, file=sys.stderr, flush=True)
         result.check_returncode()
@@ -28,13 +33,19 @@ def docker(*args, timeout=180):
 
 
 def inspect(container):
-    return json.loads(docker("inspect", container))[0]
+    state = json.loads(docker("inspect", container))[0]
+    state["Config"]["Env"] = [value for value in state["Config"]["Env"]
+                              if not value.startswith("LAYA_API_TOKEN=")]
+    return state
 
 
 def request(base, path, body=None):
     data = None if body is None else body.encode()
+    headers = {"Content-Type": "application/json"}
+    if path in ("/v1/system-one", "/metrics"):
+        headers["Authorization"] = "Bearer " + API_TOKEN
     req = urllib.request.Request(base + path, data=data,
-                                 headers={"Content-Type": "application/json"})
+                                 headers=headers)
     try:
         response = urllib.request.urlopen(req, timeout=150)
     except urllib.error.HTTPError as error:
@@ -70,7 +81,7 @@ def container(image, bundle, *options, mounts=()):
     args = ["create", "--label", "laya.validation=18", "--platform", "linux/arm64", "--cpus", "8",
             "--memory", "12g", "--memory-swap", "12g", "--read-only",
             "--cap-drop", "ALL", "--security-opt", "no-new-privileges",
-            "-p", "127.0.0.1::8080"]
+            "--env", "LAYA_API_TOKEN", "-p", "127.0.0.1::8080"]
     if bundle:
         args += ["--mount", f"type=bind,source={bundle},target=/models/multilingual,readonly"]
     for mount in mounts:

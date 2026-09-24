@@ -52,8 +52,10 @@ models/multilingual/
 在仓库根目录执行。构建需要联网下载依赖，不会下载模型：
 
 ```sh
+export LAYA_API_TOKEN="$(openssl rand -hex 32)"
 docker build --platform linux/arm64 -t laya-rs:local .
 docker run -d --name laya-server --platform linux/arm64 \
+  --env LAYA_API_TOKEN \
   --cpus 8 --memory 12g --memory-swap 12g \
   --read-only --cap-drop ALL --security-opt no-new-privileges \
   --mount "type=bind,source=$PWD/models/multilingual,target=/models/multilingual,readonly" \
@@ -81,12 +83,18 @@ docker rm laya-server
 
 `--timeout` 应大于服务的 `--shutdown-grace`（默认 120 秒）。
 
+`LAYA_API_TOKEN` 是所有受控客户端共享的密钥；将其通过部署密钥管理分发给后端服务或内部脚本。
+缺失、为空或格式非法时服务拒绝启动；不设置自动过期，更换后须用新环境变量重建容器
+（直接运行二进制时重启进程）。不要在源码、日志或浏览器前端保存密钥。
+生产入口由网关提供 HTTPS，服务 HTTP 端口只允许网关或受控内网访问。
+
 ## 调用 API
 
 服务启动后，发送一条包含三种问题的请求：
 
 ```sh
 curl -fsS http://127.0.0.1:8080/v1/system-one \
+  -H "Authorization: Bearer $LAYA_API_TOKEN" \
   -H 'Content-Type: application/json' \
   --data '{
     "state": "客户说重复扣款，希望立即退款。",
@@ -120,10 +128,18 @@ curl -fsS http://127.0.0.1:8080/v1/system-one \
 
 | 路由 | 用途 |
 | --- | --- |
-| `POST /v1/system-one` | 提交状态与问题，返回推理结果 |
-| `GET /healthz` | 检查进程存活 |
-| `GET /readyz` | 检查服务是否可接收推理请求 |
-| `GET /metrics` | 获取 Prometheus/OpenMetrics 指标 |
+| `POST /v1/system-one` | 需要 Bearer token；提交状态与问题，返回推理结果 |
+| `GET /healthz` | 免鉴权；检查进程存活 |
+| `GET /readyz` | 免鉴权；检查服务是否可接收推理请求 |
+| `GET /metrics` | 需要 Bearer token；获取 Prometheus/OpenMetrics 指标 |
+
+缺少、错误或重复的 Authorization 返回 `401`，响应为
+`{"error":{"code":"unauthorized","message":"Unauthorized"}}`。
+Prometheus 抓取也须配置 Bearer 凭证；手动检查：
+
+```sh
+curl -fsS http://127.0.0.1:8080/metrics -H "Authorization: Bearer $LAYA_API_TOKEN"
+```
 
 ## 构建与 CLI
 
@@ -134,6 +150,7 @@ curl -fsS http://127.0.0.1:8080/v1/system-one \
 ```sh
 cargo build --release --locked
 ./target/release/laya-server --help
+# 已配置 LAYA_API_TOKEN；首次本地试用可用 openssl rand -hex 32 生成后 export。
 ./target/release/laya-server --model ./models/multilingual \
   --ort-library /opt/onnxruntime/lib/libonnxruntime.so --threads 2 --max-concurrency 1
 ```

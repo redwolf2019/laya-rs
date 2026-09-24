@@ -39,7 +39,7 @@ Laya 的职责是有限答案空间上的判断，不是聊天或文本生成，
 
 ```text
 HTTP 客户端
-  → Axum：解析与校验请求
+  → Axum：Bearer 鉴权、解析与校验请求
   → 并发准入与排队
   → Sequence Builder：按参考格式构造每个问题的输入
   → HuggingFace Tokenizers
@@ -121,6 +121,10 @@ Tower / tower-http 以及 ndarray 按实际使用需要引入，不为目录完�
 | `GET /metrics` | Prometheus 文本指标 |
 
 `/v1/system-one` 是本项目约定路径，MVP 不新增未经证实的 Jev 路径别名。
+`/v1/system-one` 和 `/metrics` 使用共享 `Authorization: Bearer <token>` 鉴权，
+`/healthz`、`/readyz` 免鉴权。服务从 `LAYA_API_TOKEN` 环境变量读取静态密钥，
+缺失或非法则拒绝启动；更换后重启。先鉴权再处理正文、排队和推理，失败统一返回 401。
+范围、格式与部署边界见[兼容契约第 7.1 节](compatibility.md#71-cli-与限制)。
 一次请求原子返回全部答案或错误；不返回部分答案，不自动重试。
 成功响应的 `model` 固定为官方值 `"rl-agent"`。
 
@@ -184,6 +188,7 @@ state/instructions 接受任意 JSON 类型；以 CPython 3.11.16 为解码/渲�
 
 | HTTP | code | 条件 |
 | --- | --- | --- |
+| 401 | `unauthorized` | 受保护接口凭证缺失、错误或非法 |
 | 400 | `invalid_request` | JSON/字段/问题非法，数量或深度越界 |
 | 413 | `payload_too_large` | body 超限 |
 | 415 | `unsupported_media_type` | 媒体类型不符 |
@@ -293,11 +298,12 @@ MVP 首轮部署验收与 benchmark 使用本机 Docker Desktop 的 Linux ARM64 
 记录实际 CPU、内存配额及虚拟化环境；结果不代表 16 核 / 32 GB 裸机或 Linux amd64。
 其他平台的可用性和性能需在对应环境另行验证。
 
-CLI 启动先校验 bundle、加载 CPU 资源并跑探针，成功后才监听 HTTP。
+CLI 启动先校验配置和鉴权密钥，再校验 bundle、加载 CPU 资源并跑探针，成功后才监听 HTTP。
 #17 已接入六个真实指标、结构化请求日志，以及 SIGTERM/SIGINT 的关闭准入、排空和 grace 到期非零退出。
 构建和当前可执行检查见 [README](../README.md#构建与-cli)：
 
 ```sh
+export LAYA_API_TOKEN="$(openssl rand -hex 32)"
 ./target/debug/laya-server \
   --model ./models/multilingual \
   --ort-library /opt/onnxruntime/lib/libonnxruntime.so \
@@ -306,7 +312,7 @@ CLI 启动先校验 bundle、加载 CPU 资源并跑探针，成功后才监听 
   --max-concurrency 2
 ```
 
-命令行配置是唯一入口，MVP 不引入 YAML 第二套配置来源。
+鉴权密钥通过环境变量读取，其余配置使用命令行，MVP 不引入 YAML 第二套配置来源。
 线程数和并发数必须大于零，输入/队列/时间参数按[兼容契约第 7 节](compatibility.md)校验；
 模型路径及监听参数错误在启动时明确报告，不开始监听。
 
@@ -317,12 +323,13 @@ CLI 启动先校验 bundle、加载 CPU 资源并跑探针，成功后才监听 
 
 ```sh
 docker run --cpus=8 --memory=12g --memory-swap=12g -p 127.0.0.1:8080:8080 \
+  --env LAYA_API_TOKEN \
   --read-only -v "$PWD/models/multilingual:/models/multilingual:ro" laya-rs:local \
   --model /models/multilingual --listen 0.0.0.0:8080 \
   --threads 1 --max-concurrency 1
 ```
 
-需要 HTTPS、访问控制或多实例时，可在前面部署 Nginx / Envoy。
+生产入口由 Nginx / Envoy 等网关终止 HTTPS；服务 HTTP 端口限制为网关或受控内网访问。
 每个服务实例独立测量 CPU 与内存，不假设跨进程共享模型内存。
 
 ## 11. 实施顺序与验收

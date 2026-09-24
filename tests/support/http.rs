@@ -6,6 +6,10 @@ use tokio::{
     time::{Duration, timeout},
 };
 
+// Public fixture credential, never used by production configuration.
+pub const TOKEN: &str = "test-only-api-token";
+pub const AUTHORIZATION: &str = "Bearer test-only-api-token";
+
 pub async fn send(address: SocketAddr, wire: &[u8]) -> TcpStream {
     let mut socket = TcpStream::connect(address).await.unwrap();
     socket.write_all(wire).await.unwrap();
@@ -14,7 +18,7 @@ pub async fn send(address: SocketAddr, wire: &[u8]) -> TcpStream {
 
 pub async fn post(address: SocketAddr, body: &str) -> TcpStream {
     send(address, format!(
-        "POST /v1/system-one HTTP/1.1\r\nHost: localhost\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}", body.len()
+        "POST /v1/system-one HTTP/1.1\r\nHost: localhost\r\nAuthorization: {AUTHORIZATION}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}", body.len()
     ).as_bytes()).await
 }
 
@@ -31,10 +35,15 @@ pub async fn receive(mut socket: TcpStream) -> (u16, String, Vec<u8>) {
 }
 
 pub async fn get(address: SocketAddr, path: &str) -> (u16, String, Vec<u8>) {
+    let auth = if path == "/metrics" {
+        format!("Authorization: {AUTHORIZATION}\r\n")
+    } else {
+        String::new()
+    };
     receive(
         send(
             address,
-            format!("GET {path} HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n")
+            format!("GET {path} HTTP/1.1\r\nHost: localhost\r\n{auth}Connection: close\r\n\r\n")
                 .as_bytes(),
         )
         .await,

@@ -1,6 +1,6 @@
 //! Validate and warm all CPU resources before listening; drive the task owner.
 
-use laya_server::server::ServiceError;
+use laya_server::{api::ApiToken, server::ServiceError};
 use std::process::ExitCode;
 
 mod config;
@@ -27,6 +27,8 @@ Pass each option and its value as separate arguments.
   --shutdown-grace SECONDS  Shutdown deadline [default: 120]; positive seconds
   -h, --help                Print help without loading a model
 
+Environment: LAYA_API_TOKEN is required (shared Bearer token; no default).
+Protects /v1/system-one and /metrics. Probes require no token. Restart to rotate.
 Integers must fit the platform; timeout deadlines must be representable.
 All model resources are validated before the HTTP listener starts.";
 
@@ -38,6 +40,13 @@ fn main() -> ExitCode {
     }
     let config = match config::Config::from_args(args) {
         Ok(config) => config,
+        Err(error) => {
+            eprintln!("Invalid configuration: {error}");
+            return ExitCode::from(2);
+        }
+    };
+    let api_token = match ApiToken::from_env() {
+        Ok(token) => token,
         Err(error) => {
             eprintln!("Invalid configuration: {error}");
             return ExitCode::from(2);
@@ -60,14 +69,18 @@ fn main() -> ExitCode {
         model.sequence.tokenizer().get_vocab_size(true),
         model.config.max_len
     );
-    if let Err(error) = serve(model, &config) {
+    if let Err(error) = serve(model, &config, api_token) {
         eprintln!("Service failed: {error}");
         return ExitCode::FAILURE;
     }
     ExitCode::SUCCESS
 }
 
-fn serve(model: model::Model, config: &config::Config) -> Result<(), ServiceError> {
+fn serve(
+    model: model::Model,
+    config: &config::Config,
+    api_token: ApiToken,
+) -> Result<(), ServiceError> {
     let mut scheduler = laya_server::scheduler::Scheduler::new(
         model.sessions,
         model.sequence,
@@ -81,12 +94,13 @@ fn serve(model: model::Model, config: &config::Config) -> Result<(), ServiceErro
         .enable_all()
         .build()
         .map_err(|error| ServiceError::Io("cannot create async runtime", error))?;
-    runtime.block_on(serve_http(&mut scheduler, config))
+    runtime.block_on(serve_http(&mut scheduler, config, api_token))
 }
 
 async fn serve_http(
     scheduler: &mut laya_server::scheduler::Scheduler,
     config: &config::Config,
+    api_token: ApiToken,
 ) -> Result<(), ServiceError> {
     let listener = tokio::net::TcpListener::bind(config.listen)
         .await
@@ -101,6 +115,7 @@ async fn serve_http(
             max_json_depth: config.max_json_depth,
         },
         config.shutdown_grace,
+        api_token,
     )
     .await
 }

@@ -18,6 +18,146 @@ mod network;
 
 const VALID: &str = r#"{"state":"private-secret","questions":{"q":{"type":"noul","instructions":"private-question"}}}"#;
 
+fn router(client: scheduler::Client, limits: Limits) -> Router {
+    super::router(client, limits, ApiToken::parse(http::TOKEN).unwrap())
+}
+
+#[test]
+fn token_syntax_and_header_matching_are_strict() {
+    for token in [
+        "", "=", "a=b", " secret", "secret ", "secret\t", "secret\n", "秘密", "a,b",
+    ] {
+        assert!(ApiToken::parse(token).is_err());
+    }
+    for token in [http::TOKEN, "AZaz09-._~+/=="] {
+        let credential = ApiToken::parse(token).unwrap();
+        for scheme in ["Bearer ", "bearer ", "BEARER   "] {
+            let mut headers = HeaderMap::new();
+            headers.insert(
+                header::AUTHORIZATION,
+                format!("{scheme}{token}").parse().unwrap(),
+            );
+            assert!(credential.accepts(&headers));
+        }
+    }
+}
+
+const INVALID_AUTHORIZATION: &[&[&str]] = &[
+    &[],
+    &[""],
+    &["Bearer"],
+    &["Bearer "],
+    &["Basic test-only-api-token"],
+    &["Bearer wrong-secret"],
+    &["Bearer TEST-ONLY-API-TOKEN"],
+    &["Bearer test-only-api-toke"],
+    &["Bearer test-only-api-tokenx"],
+    &["Bearer test-only-api-token "],
+    &["Bearer\ttest-only-api-token"],
+    &["Bearer test-only-api-token,wrong"],
+    &[http::AUTHORIZATION, http::AUTHORIZATION],
+    &[http::AUTHORIZATION, "Bearer wrong-secret"],
+    &["Bearer wrong-secret", http::AUTHORIZATION],
+];
+
+#[tokio::test]
+async fn invalid_credentials_are_rejected_before_readiness_and_never_leak() {
+    let mut scheduler = Scheduler::test_worker(1, 0, |_| unreachable!());
+    let client = scheduler.client();
+    let app = router(client.clone(), Limits::default());
+    client.close();
+    for (method, path) in [("POST", "/v1/system-one"), ("GET", "/metrics")] {
+        for &values in INVALID_AUTHORIZATION {
+            let mut request = Request::builder()
+                .method(method)
+                .uri(format!("{path}?access_token={}", http::TOKEN))
+                .header("cookie", format!("token={}", http::TOKEN));
+            for value in values {
+                request = request.header("authorization", *value);
+            }
+            let response = app
+                .clone()
+                .oneshot(request.body(Body::from(VALID)).unwrap())
+                .await
+                .unwrap();
+            error(response, 401, "unauthorized", "Unauthorized").await;
+        }
+    }
+    let metrics = scrape(&app).await;
+    assert!(metrics.contains("laya_errors_total{reason=\"unauthorized\"} 15\n"));
+    assert!(metrics.contains("laya_requests_total 15\n"));
+    assert!(metrics.contains("laya_request_duration_seconds_count 15\n"));
+    assert!(!metrics.contains(http::TOKEN));
+    assert_eq!(
+        (client.snapshot().inflight, client.snapshot().waiting),
+        (0, 0)
+    );
+    scheduler.run().await.unwrap();
+}
+
+#[tokio::test]
+async fn metrics_head_requires_auth_and_probe_head_is_public() {
+    let mut scheduler = Scheduler::test_worker(1, 0, |_| unreachable!());
+    let client = scheduler.client();
+    let app = router(client.clone(), Limits::default());
+    for (path, auth, status) in [
+        ("/metrics", None, 401),
+        ("/metrics", Some(http::AUTHORIZATION), 200),
+        ("/healthz", None, 200),
+        ("/readyz", None, 200),
+    ] {
+        let mut request = Request::builder().method("HEAD").uri(path);
+        if let Some(auth) = auth {
+            request = request.header("authorization", auth);
+        }
+        let response = app
+            .clone()
+            .oneshot(request.body(Body::empty()).unwrap())
+            .await
+            .unwrap();
+        assert_eq!(response.status(), status);
+        if status == 401 {
+            assert_eq!(response.headers()["www-authenticate"], "Bearer");
+        }
+        assert!(
+            to_bytes(response.into_body(), 1024)
+                .await
+                .unwrap()
+                .is_empty()
+        );
+    }
+    client.close();
+    scheduler.run().await.unwrap();
+}
+
+#[tokio::test]
+async fn unauthorized_requests_never_read_body_or_submit_work() {
+    let mut scheduler = Scheduler::test_worker(1, 0, |_| unreachable!());
+    let client = scheduler.client();
+    let app = router(client.clone(), Limits::default());
+    for (method, path) in [("POST", "/v1/system-one"), ("GET", "/metrics")] {
+        let request = Request::builder()
+            .method(method)
+            .uri(path)
+            .body(Body::from_stream(futures_util::stream::poll_fn(
+                |_| -> Poll<Option<Result<String, std::io::Error>>> {
+                    panic!("unauthorized body was polled")
+                },
+            )))
+            .unwrap();
+        let response = app.clone().oneshot(request).await.unwrap();
+        assert_eq!(response.status(), 401);
+        assert_eq!(response.headers()["www-authenticate"], "Bearer");
+        error(response, 401, "unauthorized", "Unauthorized").await;
+    }
+    assert_eq!(
+        (client.snapshot().inflight, client.snapshot().waiting),
+        (0, 0)
+    );
+    client.close();
+    scheduler.run().await.unwrap();
+}
+
 fn answer(_: system_one::Request) -> Result<system_one::Response, scheduler::Error> {
     Ok(system_one::Response::new(
         vec![(
@@ -308,7 +448,12 @@ async fn metrics_and_unknown_routes_use_documented_transport_responses() {
     let app = router(client.clone(), Limits::default());
     let metrics = app
         .clone()
-        .oneshot(Request::get("/metrics").body(Body::empty()).unwrap())
+        .oneshot(
+            Request::get("/metrics")
+                .header("authorization", http::AUTHORIZATION)
+                .body(Body::empty())
+                .unwrap(),
+        )
         .await
         .unwrap();
     assert_eq!(metrics.status(), 200);
@@ -374,6 +519,7 @@ async fn error(response: axum::response::Response, status: u16, code: &str, mess
 
 fn post(body: impl Into<Body>) -> Request<Body> {
     Request::post("/v1/system-one")
+        .header("authorization", http::AUTHORIZATION)
         .header("content-type", "application/json")
         .body(body.into())
         .unwrap()
@@ -392,6 +538,7 @@ async fn rejects_media_stream_overflow_and_json_before_inference() {
         },
     );
     let request = Request::post("/v1/system-one")
+        .header("authorization", http::AUTHORIZATION)
         .body(Body::from_stream(stream::pending::<
             Result<String, std::io::Error>,
         >()))
@@ -442,6 +589,7 @@ async fn unavailable_precedes_media_and_body_validation() {
     let app = router(client.clone(), Limits::default());
     client.close();
     let request = Request::post("/v1/system-one")
+        .header("authorization", http::AUTHORIZATION)
         .body(Body::from_stream(futures_util::stream::pending::<
             Result<String, std::io::Error>,
         >()))
@@ -553,7 +701,12 @@ async fn health_and_readiness_follow_resource_admission() {
 async fn scrape(app: &Router) -> String {
     let response = app
         .clone()
-        .oneshot(Request::get("/metrics").body(Body::empty()).unwrap())
+        .oneshot(
+            Request::get("/metrics")
+                .header("authorization", http::AUTHORIZATION)
+                .body(Body::empty())
+                .unwrap(),
+        )
         .await
         .unwrap();
     String::from_utf8(
@@ -618,6 +771,7 @@ async fn metrics_count_success_and_all_validation_failures_without_client_labels
         );
     }
     let request = Request::post("/v1/system-one")
+        .header("authorization", http::AUTHORIZATION)
         .body(Body::from(VALID))
         .unwrap();
     assert_eq!(app.clone().oneshot(request).await.unwrap().status(), 415);
