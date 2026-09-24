@@ -43,8 +43,10 @@ Score 差异；21 个固定请求经 Rust 真实推理通过完整答案门槛�
 #16 的 [`api`](src/api.rs) 提供 `POST /v1/system-one`、`GET /healthz`、`GET /readyz`、
 `GET /metrics`。请求按就绪、媒体类型、有界 body、JSON/字段限制、调度准入的顺序校验；
 HTTP 错误复用静态 envelope，真实工作在调用方断开或超时后仍由调度器回收。
-Metrics 当前编码空的 OpenMetrics registry，不生成计数占位。完整指标、结构化请求日志和
-信号/grace 退出属于 #17；当前操作系统终止信号会直接结束进程，不能视为优雅退出。
+#17 已接入六个 OpenMetrics 指标及 Tracing JSON 日志：请求终态只计一次，推理耗时只覆盖
+实际 Session run；超时/断连不提前降低 inflight。SIGTERM/SIGINT 停止准入并清空等待项，
+在途工作最多等待 `--shutdown-grace`；到期记录剩余任务并以退出码 1 终止整个进程。
+状态转换、脱敏和 Linux 进程信号验证见[观测与退出验收](docs/validation/observability.md)。
 
 ## 文档
 

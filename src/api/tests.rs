@@ -13,8 +13,7 @@ use std::{
 };
 use tower::ServiceExt;
 
-#[path = "../../tests/support/http.rs"]
-mod http;
+use crate::test_http as http;
 mod network;
 
 const VALID: &str = r#"{"state":"private-secret","questions":{"q":{"type":"noul","instructions":"private-question"}}}"#;
@@ -229,6 +228,7 @@ async fn queue_full_queue_timeout_and_execution_timeout_keep_cpu_slot() {
         (client.snapshot().inflight, client.snapshot().waiting),
         (1, 0)
     );
+    assert_timeout_metrics(&app).await;
     assert!(starts.try_recv().is_err());
     client.close();
     release.send(()).unwrap();
@@ -237,6 +237,28 @@ async fn queue_full_queue_timeout_and_execution_timeout_keep_cpu_slot() {
         (client.snapshot().inflight, client.snapshot().tracked_tasks),
         (0, 0)
     );
+    let metrics = scrape(&app).await;
+    assert!(metrics.contains("laya_request_duration_seconds_count 3\n"));
+    assert!(metrics.contains("laya_inference_inflight 0\n"));
+}
+
+async fn assert_timeout_metrics(app: &Router) {
+    let metrics = scrape(app).await;
+    for sample in [
+        "laya_requests_total 3",
+        "laya_request_duration_seconds_count 3",
+        "laya_request_duration_seconds_sum 8.0",
+        "laya_inference_inflight 1",
+        "laya_queue_size 0",
+        "laya_errors_total{reason=\"queue_full\"} 1",
+        "laya_errors_total{reason=\"queue_timeout\"} 1",
+        "laya_errors_total{reason=\"inference_timeout\"} 1",
+    ] {
+        assert!(
+            metrics.lines().any(|line| line == sample),
+            "missing {sample}: {metrics}"
+        );
+    }
 }
 
 #[tokio::test]
@@ -294,10 +316,21 @@ async fn metrics_and_unknown_routes_use_documented_transport_responses() {
         metrics.headers()["content-type"],
         "application/openmetrics-text; version=1.0.0; charset=utf-8"
     );
-    assert_eq!(
-        to_bytes(metrics.into_body(), 1024).await.unwrap(),
-        "# EOF\n"
-    );
+    let text =
+        String::from_utf8(to_bytes(metrics.into_body(), 16384).await.unwrap().to_vec()).unwrap();
+    assert!(text.contains("# TYPE laya_requests counter\n"));
+    assert!(text.contains("laya_requests_total 0\n"));
+    assert!(text.contains("# TYPE laya_request_duration_seconds histogram\n"));
+    assert!(text.contains("# TYPE laya_inference_duration_seconds histogram\n"));
+    assert!(text.contains("laya_queue_size 0\n"));
+    assert!(text.contains("laya_inference_inflight 0\n"));
+    assert!(text.ends_with("# EOF\n"));
+    assert_unknown_routes(&app).await;
+    client.close();
+    scheduler.run().await.unwrap();
+}
+
+async fn assert_unknown_routes(app: &Router) {
     for (method, path, status, allow) in [
         ("GET", "/private-secret", 404, None),
         ("POST", "/healthz", 405, Some("GET,HEAD")),
@@ -327,8 +360,6 @@ async fn metrics_and_unknown_routes_use_documented_transport_responses() {
                 .is_empty()
         );
     }
-    client.close();
-    scheduler.run().await.unwrap();
 }
 
 async fn error(response: axum::response::Response, status: u16, code: &str, message: &str) {
@@ -517,4 +548,130 @@ async fn health_and_readiness_follow_resource_admission() {
         r#"{"error":{"code":"unavailable","message":"Service unavailable"}}"#
     );
     scheduler.run().await.unwrap();
+}
+
+async fn scrape(app: &Router) -> String {
+    let response = app
+        .clone()
+        .oneshot(Request::get("/metrics").body(Body::empty()).unwrap())
+        .await
+        .unwrap();
+    String::from_utf8(
+        to_bytes(response.into_body(), 32768)
+            .await
+            .unwrap()
+            .to_vec(),
+    )
+    .unwrap()
+}
+
+#[tokio::test]
+async fn metrics_count_request_terminals_once_and_follow_real_slots() {
+    let (mut scheduler, release, mut starts) = blocked_worker(1);
+    let client = scheduler.client();
+    let app = router(client.clone(), Limits::default());
+    let mut running = Box::pin(app.clone().oneshot(post(VALID)));
+    pending(running.as_mut()).await;
+    starts.recv().await.unwrap();
+    let mut queued = Box::pin(app.clone().oneshot(post(VALID)));
+    pending(queued.as_mut()).await;
+    let text = scrape(&app).await;
+    assert!(text.contains("laya_requests_total 2\n"));
+    assert!(text.contains("laya_queue_size 1\n"));
+    assert!(text.contains("laya_inference_inflight 1\n"));
+    drop(queued);
+    drop(running);
+    let text = scrape(&app).await;
+    assert!(text.contains("laya_errors_total{reason=\"client_cancelled\"} 2\n"));
+    assert!(text.contains("laya_request_duration_seconds_count 2\n"));
+    assert!(text.contains("laya_queue_size 0\n"));
+    assert!(text.contains("laya_inference_inflight 1\n"));
+    release.send(()).unwrap();
+    client.close();
+    scheduler.run().await.unwrap();
+    let text = scrape(&app).await;
+    assert!(text.contains("laya_inference_inflight 0\n"));
+    // Controlled CPU work isn't a Session run; never invent native observations.
+    assert!(text.contains("laya_inference_duration_seconds_count 0\n"));
+    assert!(text.contains("laya_errors_total{reason=\"client_cancelled\"} 2\n"));
+}
+
+#[tokio::test]
+async fn metrics_count_success_and_all_validation_failures_without_client_labels() {
+    let mut scheduler = Scheduler::test_worker(1, 0, answer);
+    let client = scheduler.client();
+    let app = router(
+        client.clone(),
+        Limits {
+            max_body_bytes: VALID.len(),
+            ..Limits::default()
+        },
+    );
+    for (body, status) in [
+        (VALID.to_owned(), 200),
+        ("secret-malformed".into(), 400),
+        (format!("{VALID} "), 413),
+    ] {
+        assert_eq!(
+            app.clone().oneshot(post(body)).await.unwrap().status(),
+            status
+        );
+    }
+    let request = Request::post("/v1/system-one")
+        .body(Body::from(VALID))
+        .unwrap();
+    assert_eq!(app.clone().oneshot(request).await.unwrap().status(), 415);
+    client.close();
+    assert_eq!(
+        app.clone().oneshot(post(VALID)).await.unwrap().status(),
+        503
+    );
+    scheduler.run().await.unwrap();
+    let text = scrape(&app).await;
+    for reason in [
+        "invalid_request",
+        "payload_too_large",
+        "unsupported_media_type",
+        "unavailable",
+    ] {
+        assert!(
+            text.contains(&format!("laya_errors_total{{reason=\"{reason}\"}} 1\n")),
+            "{text}"
+        );
+    }
+    assert!(text.contains("laya_requests_total 5\n"));
+    assert!(text.contains("laya_request_duration_seconds_count 5\n"));
+    assert!(!text.contains("secret"));
+    assert!(!text.contains("reason=\"success\""));
+}
+
+#[tokio::test(start_paused = true)]
+async fn late_inference_failure_cannot_count_a_second_http_error() {
+    let (release, gate) = mpsc::channel();
+    let gate = Mutex::new(gate);
+    let (started, mut starts) = tokio::sync::mpsc::unbounded_channel();
+    let mut scheduler = Scheduler::test_worker(1, 0, move |_| {
+        started.send(()).unwrap();
+        gate.lock().unwrap().recv().unwrap();
+        Err(scheduler::Error::Inference(
+            crate::engine::Error::MissingOutput,
+        ))
+    });
+    let client = scheduler.client();
+    let app = router(client.clone(), Limits::default());
+    let mut request = Box::pin(app.clone().oneshot(post(VALID)));
+    pending(request.as_mut()).await;
+    starts.recv().await.unwrap();
+    tokio::time::advance(Duration::from_secs(5)).await;
+    assert_eq!(request.await.unwrap().status(), 504);
+    let before = scrape(&app).await;
+    assert!(before.contains("laya_inference_inflight 1\n"));
+    release.send(()).unwrap();
+    client.close();
+    scheduler.run().await.unwrap();
+    let after = scrape(&app).await;
+    assert!(after.contains("laya_errors_total{reason=\"inference_timeout\"} 1\n"));
+    assert!(!after.contains("reason=\"inference_failed\""));
+    assert!(after.contains("laya_request_duration_seconds_count 1\n"));
+    assert!(after.contains("laya_inference_inflight 0\n"));
 }

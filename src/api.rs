@@ -4,7 +4,7 @@
 //! protocol before submitting to the shared scheduler. No request text is logged.
 //! Dropping a route future cancels its wait only; CPU work remains scheduler-owned.
 //! GET routes also support HEAD. Axum returns empty 404/405 with Allow for a known
-//! path's unsupported method. Metrics encodes an empty registry until #17.
+//! path's unsupported method. Only POST System One contributes HTTP observations.
 
 use crate::{
     scheduler,
@@ -18,14 +18,12 @@ use axum::{
     response::{IntoResponse, Response},
     routing::{get, post},
 };
-use prometheus_client::{encoding::text::encode, registry::Registry};
-use std::{error::Error as _, sync::Arc};
+use std::error::Error as _;
 
 #[derive(Clone)]
 struct AppState {
     client: scheduler::Client,
     limits: Limits,
-    registry: Arc<Registry>,
 }
 
 /// Build routes from fully initialized resources; keep driving the scheduler owner.
@@ -38,22 +36,14 @@ pub fn router(client: scheduler::Client, limits: Limits) -> Router {
         )
         .route("/readyz", get(ready))
         .route("/metrics", get(metrics))
-        .with_state(AppState {
-            client,
-            limits,
-            registry: Arc::new(Registry::default()),
-        })
+        .with_state(AppState { client, limits })
 }
 
 async fn metrics(State(state): State<AppState>) -> Response {
-    let mut text = String::new();
-    if encode(&mut text, &state.registry).is_err() {
-        return static_error(
-            StatusCode::SERVICE_UNAVAILABLE,
-            "unavailable",
-            "Service unavailable",
-        );
-    }
+    let text = match state.client.metrics().encode(state.client.snapshot()) {
+        Ok(text) => text,
+        Err(_) => return scheduler::Error::Unavailable.into_response(),
+    };
     (
         [(
             header::CONTENT_TYPE,
@@ -65,6 +55,16 @@ async fn metrics(State(state): State<AppState>) -> Response {
 }
 
 async fn system_one(State(state): State<AppState>, request: Request) -> Response {
+    let mut observation = crate::metrics::RequestObservation::new(state.client.clone());
+    let response = respond(state, request).await;
+    observation.outcome = response
+        .extensions()
+        .get::<ErrorReason>()
+        .map_or("success", |reason| reason.0);
+    response
+}
+
+async fn respond(state: AppState, request: Request) -> Response {
     if !state.client.snapshot().accepting {
         return scheduler::Error::Unavailable.into_response();
     }
@@ -124,14 +124,16 @@ async fn ready(State(state): State<AppState>) -> Response {
 }
 
 fn static_error(status: StatusCode, code: &'static str, message: &'static str) -> Response {
-    (
-        status,
-        Json(ErrorEnvelope {
+    error_response(
+        status.as_u16(),
+        ErrorEnvelope {
             error: ErrorBody { code, message },
-        }),
+        },
     )
-        .into_response()
 }
+
+#[derive(Clone, Copy)]
+struct ErrorReason(&'static str);
 
 impl IntoResponse for RequestError {
     fn into_response(self) -> Response {
@@ -146,11 +148,14 @@ impl IntoResponse for scheduler::Error {
 }
 
 fn error_response(status: u16, envelope: ErrorEnvelope) -> Response {
-    (
+    let reason = ErrorReason(envelope.error.code);
+    let mut response = (
         StatusCode::from_u16(status).unwrap_or(StatusCode::INTERNAL_SERVER_ERROR),
         Json(envelope),
     )
-        .into_response()
+        .into_response();
+    response.extensions_mut().insert(reason);
+    response
 }
 
 #[cfg(test)]

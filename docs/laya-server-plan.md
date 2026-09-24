@@ -258,7 +258,7 @@ permit 必须覆盖真实 CPU 工作的整个生命周期：即使 HTTP 请求�
 
 当前 `scheduler::Client` 复用上述 Session，`Scheduler::run(&mut self)` 由服务所有者持续驱动，
 关闭准入后等待全部 JoinSet 结果；取消该驱动 future 不转移或丢弃句柄，须恢复驱动完成回收。
-CLI 已把 HTTP 服务与调度器所有者并行驱动；#17 的信号退出流程在 grace 到期时必须终止整个进程。
+CLI 已把 HTTP 服务与调度器所有者并行驱动；信号退出流程在 grace 到期时终止整个进程，见[观测与退出验收](validation/observability.md)。
 
 ## 9. 可观测性与生命周期
 
@@ -291,7 +291,7 @@ MVP 首轮部署验收与 benchmark 使用本机 Docker Desktop 的 Linux ARM64 
 其他平台的可用性和性能需在对应环境另行验证。
 
 CLI 启动先校验 bundle、加载 CPU 资源并跑探针，成功后才监听 HTTP。
-#16 的 metrics 仅编码空 registry；完整指标、结构化请求日志、信号与 grace 验收留在 #17。
+#17 已接入六个真实指标、结构化请求日志，以及 SIGTERM/SIGINT 的关闭准入、排空和 grace 到期非零退出。
 构建和当前可执行检查见 [README](../README.md#构建与-cli)：
 
 ```sh

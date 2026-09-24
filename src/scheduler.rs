@@ -162,6 +162,10 @@ impl Scheduler {
 }
 
 impl Client {
+    pub(crate) fn metrics(&self) -> Arc<crate::metrics::Metrics> {
+        self.shared.metrics.clone()
+    }
+
     /// Submit a request already normalized by `Request::from_slice`.
     /// # Errors
     /// Queue/availability/deadline errors or the unchanged engine failure. Dropping
@@ -176,11 +180,12 @@ impl Client {
                         shared.close();
                         Error::Unavailable
                     })?;
-                    let result = engine::system_one(
+                    let result = engine::system_one_observed(
                         &request,
                         &resources.sequence,
                         &mut session,
                         &resources.calibration,
+                        Some(&shared.metrics.inference_duration),
                     );
                     lock(&resources.sessions).push(session);
                     result.map_err(Error::Inference)
@@ -207,6 +212,7 @@ struct Dispatcher {
 }
 
 struct Shared {
+    metrics: Arc<crate::metrics::Metrics>,
     slots: Arc<Semaphore>,
     state: Mutex<State>,
     queue_capacity: usize,
@@ -247,6 +253,7 @@ impl Dispatcher {
         }
         Ok(Self {
             shared: Arc::new(Shared {
+                metrics: Arc::new(crate::metrics::Metrics::default()),
                 slots: Arc::new(Semaphore::new(slots)),
                 state: Mutex::new(State {
                     accepting: true,
@@ -460,13 +467,24 @@ impl Scheduler {
         queue_capacity: usize,
         work: impl Fn(Request) -> Result<Response, Error> + Send + Sync + 'static,
     ) -> Self {
-        let dispatcher = Dispatcher::new(
+        Self::test_worker_with_timeouts(
             slots,
             queue_capacity,
             Duration::from_secs(3),
             Duration::from_secs(5),
+            work,
         )
-        .unwrap();
+    }
+
+    pub(crate) fn test_worker_with_timeouts(
+        slots: usize,
+        queue_capacity: usize,
+        queue_timeout: Duration,
+        inference_timeout: Duration,
+        work: impl Fn(Request) -> Result<Response, Error> + Send + Sync + 'static,
+    ) -> Self {
+        let dispatcher =
+            Dispatcher::new(slots, queue_capacity, queue_timeout, inference_timeout).unwrap();
         let client = Client {
             shared: dispatcher.shared.clone(),
             worker: Worker::Controlled(Arc::new(work)),

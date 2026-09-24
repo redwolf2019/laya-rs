@@ -8,7 +8,7 @@
 其长选项 Score 四位舍入差异已在 #13 修复，历史失败证据保留。
 #15 的[调度层与验收](validation/scheduler.md)已实现本契约的排队、执行等待、取消及状态读取边界；
 #16 的 [HTTP 验收](validation/http.md) 覆盖四路由、错误响应及真实模型对照；
-metrics 当前只编码空 registry，完整观测与进程退出属于 #17。
+六个真实指标、结构化日志和信号/grace 退出已由 #17 接通，见[观测与退出验收](validation/observability.md)。
 
 ## 1. 固定依据与边界
 
@@ -355,6 +355,10 @@ grace 到期记录未完成工作数量，以非零码退出整个进程，不�
 强制进程退出前记录剩余数量，不把尚未结束的工作人为记成 gauge=0。
 
 Tracing 记录静态结果类别、耗时和资源数量；默认不记录 state、instructions、问题名或候选正文。
+实现使用 JSON 行写入 stderr；直方图桶上界为 0.005、0.01、0.025、0.05、0.1、0.25、0.5、
+1、2.5、5、10、30、60、120 秒及 +Inf。`/metrics` 返回 OpenMetrics 1.0 文本。
+退出排空期间继续提供 health/ready/metrics，System One 新请求为 503；实际任务回收后关闭 HTTP，
+整个排空流程受 grace 限制。子进程与真实模型验证见[观测与退出验收](validation/observability.md)。
 HTTP 响应和日志不输出密钥、凭证、原始异常中的敏感内容。
 
 ## 9. 验收阈值与场景矩阵

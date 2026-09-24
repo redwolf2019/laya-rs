@@ -84,6 +84,16 @@ pub fn system_one(
     session: &mut Session,
     calibration: &Calibration,
 ) -> Result<Response, Error> {
+    system_one_observed(request, sequence, session, calibration, None)
+}
+
+pub(crate) fn system_one_observed(
+    request: &Request,
+    sequence: &SequenceBuilder,
+    session: &mut Session,
+    calibration: &Calibration,
+    duration: Option<&prometheus_client::metrics::histogram::Histogram>,
+) -> Result<Response, Error> {
     let batch = sequence.build(request).map_err(Error::Sequence)?;
     let tokens = batch.usage.input_tokens;
     let make_inputs = || -> ort::Result<_> {
@@ -97,7 +107,24 @@ pub fn system_one(
     };
     let inputs = make_inputs().map_err(Error::Runtime)?;
     let outputs = tracing::info_span!("laya_session_run")
-        .in_scope(|| session.run(inputs))
+        .in_scope(|| {
+            let started = std::time::Instant::now();
+            let result = session.run(inputs);
+            let duration_seconds = started.elapsed().as_secs_f64();
+            if let Some(duration) = duration {
+                duration.observe(duration_seconds);
+            }
+            tracing::info!(
+                event = "session_completion",
+                outcome = if result.is_ok() {
+                    "success"
+                } else {
+                    "runtime_error"
+                },
+                duration_seconds
+            );
+            result
+        })
         .map_err(Error::Runtime)?;
     decode_outputs(
         request,

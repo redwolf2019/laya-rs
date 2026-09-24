@@ -1,0 +1,32 @@
+   Compiling laya-server v0.1.0 (/work)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.55s
+     Running unittests src/lib.rs (/target/debug/deps/laya_server-fe0981cc5e68c8ef)
+
+running 2 tests
+-TERM idle: ready=200 -> exit=0; listener closed
+exit=0; {"fields":{"event":"shutdown_complete","inflight":0,"tracked_tasks":0},"level":"INFO","target":"laya_server::server","timestamp":"2026-09-24T03:02:22.241773Z"}
+-TERM queued=false force=false timed=false: ready 200 -> 503, queue -> 0
+-INT idle: ready=200 -> exit=0; listener closed
+test server::tests::signals_drain_idle_process_and_allow_restart ... ok
+exit=0; {"fields":{"event":"shutdown_complete","inflight":0,"tracked_tasks":0},"level":"INFO","target":"laya_server::server","timestamp":"2026-09-24T03:02:22.261614Z"}
+-TERM queued=true force=false timed=false: ready 200 -> 503, queue -> 0
+exit=1; {"fields":{"event":"shutdown_grace_expired","inflight":1,"queue":0,"tracked_tasks":1},"level":"ERROR","target":"laya_server::server","timestamp":"2026-09-24T03:02:22.782002Z"}
+-TERM queued=true force=true timed=false: ready 200 -> 503, queue -> 0
+exit=0; {"fields":{"event":"shutdown_complete","inflight":0,"tracked_tasks":0},"level":"INFO","target":"laya_server::server","timestamp":"2026-09-24T03:02:22.903860Z"}
+-TERM queued=true force=false timed=true: ready 200 -> 503, queue -> 0
+exit=1; {"fields":{"event":"shutdown_grace_expired","inflight":1,"queue":0,"tracked_tasks":1},"level":"ERROR","target":"laya_server::server","timestamp":"2026-09-24T03:02:23.529393Z"}
+-TERM queued=true force=true timed=true: ready 200 -> 503, queue -> 0
+exit=0; {"fields":{"event":"shutdown_complete","inflight":0,"tracked_tasks":0},"level":"INFO","target":"laya_server::server","timestamp":"2026-09-24T03:02:23.545997Z"}
+-INT queued=false force=false timed=false: ready 200 -> 503, queue -> 0
+exit=0; {"fields":{"event":"shutdown_complete","inflight":0,"tracked_tasks":0},"level":"INFO","target":"laya_server::server","timestamp":"2026-09-24T03:02:23.567849Z"}
+-INT queued=true force=false timed=false: ready 200 -> 503, queue -> 0
+exit=1; {"fields":{"event":"shutdown_grace_expired","inflight":1,"queue":0,"tracked_tasks":1},"level":"ERROR","target":"laya_server::server","timestamp":"2026-09-24T03:02:24.090148Z"}
+-INT queued=true force=true timed=false: ready 200 -> 503, queue -> 0
+exit=0; {"fields":{"event":"shutdown_complete","inflight":0,"tracked_tasks":0},"level":"INFO","target":"laya_server::server","timestamp":"2026-09-24T03:02:24.213708Z"}
+-INT queued=true force=false timed=true: ready 200 -> 503, queue -> 0
+exit=1; {"fields":{"event":"shutdown_grace_expired","inflight":1,"queue":0,"tracked_tasks":1},"level":"ERROR","target":"laya_server::server","timestamp":"2026-09-24T03:02:24.837414Z"}
+-INT queued=true force=true timed=true: ready 200 -> 503, queue -> 0
+test server::tests::signals_drain_or_terminate_actual_work_and_clear_queue ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 28 filtered out; finished in 2.62s
+

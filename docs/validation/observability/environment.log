@@ -1,0 +1,8 @@
+image=rust:1.98.1-slim-bookworm memory=12884901888 nano_cpus=8000000000
+Linux aarch64
+rustc 1.98.1 (48a229cea 2026-09-01)
+11bf8d8c4e4b7d7b33a21c7cc25f7eb2495332bc7b7a480d7396b284e3763eb5  Cargo.lock
+5a028e8dac51de3c430514c47e047fc89911edaaa72762c3e880a3591cc0184c  models/multilingual/laya.onnx
+6ef993ee707fe1d6a75529f4a1f8347ff89966ff955d332ea3ebe4e5171a9ac1  models/multilingual/laya.onnx.data
+f1ec1a08eb99bd6e5401340f0a2b101381bf4694415480291dc13bcaa30f9ec7  /ort/lib/libonnxruntime.so
+98448384

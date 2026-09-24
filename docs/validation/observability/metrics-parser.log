@@ -1,0 +1,8 @@
+prometheus-client 0.25.0
+laya_requests counter 1 samples
+laya_request_duration_seconds histogram 17 samples
+laya_inference_duration_seconds histogram 17 samples
+laya_errors counter 3 samples
+laya_queue_size gauge 1 samples
+laya_inference_inflight gauge 1 samples
+PASS OpenMetrics parser: all six families and samples

@@ -1,6 +1,7 @@
 //! Validate and warm all CPU resources before listening; drive the task owner.
 
-use std::{error::Error, fmt, io, process::ExitCode};
+use laya_server::server::ServiceError;
+use std::process::ExitCode;
 
 mod config;
 mod model;
@@ -42,6 +43,10 @@ fn main() -> ExitCode {
             return ExitCode::from(2);
         }
     };
+    tracing_subscriber::fmt()
+        .json()
+        .with_writer(std::io::stderr)
+        .init();
     let model = match model::Model::load(&config) {
         Ok(model) => model,
         Err(error) => {
@@ -60,34 +65,6 @@ fn main() -> ExitCode {
         return ExitCode::FAILURE;
     }
     ExitCode::SUCCESS
-}
-
-#[derive(Debug)]
-enum ServiceError {
-    Configuration(&'static str),
-    Io(&'static str, io::Error),
-    Task(tokio::task::JoinError),
-    Stopped,
-}
-
-impl fmt::Display for ServiceError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.write_str(match self {
-            Self::Configuration(message) | Self::Io(message, _) => message,
-            Self::Task(_) => "blocking task failed",
-            Self::Stopped => "inference scheduler stopped",
-        })
-    }
-}
-
-impl Error for ServiceError {
-    fn source(&self) -> Option<&(dyn Error + 'static)> {
-        match self {
-            Self::Io(_, error) => Some(error),
-            Self::Task(error) => Some(error),
-            Self::Configuration(_) | Self::Stopped => None,
-        }
-    }
 }
 
 fn serve(model: model::Model, config: &config::Config) -> Result<(), ServiceError> {
@@ -114,26 +91,16 @@ async fn serve_http(
     let listener = tokio::net::TcpListener::bind(config.listen)
         .await
         .map_err(|error| ServiceError::Io("cannot bind HTTP listener", error))?;
-    let client = scheduler.client();
-    let app = laya_server::api::router(
-        client.clone(),
+    laya_server::server::serve(
+        listener,
+        scheduler,
         laya_server::system_one::Limits {
             max_body_bytes: config.max_body_bytes,
             max_questions: config.max_questions,
             max_options: config.max_options,
             max_json_depth: config.max_json_depth,
         },
-    );
-    eprintln!("HTTP listener started");
-    tokio::select! {
-        result = axum::serve(listener, app) => {
-            client.close();
-            scheduler.run().await.map_err(ServiceError::Task)?;
-            result.map_err(|error| ServiceError::Io("HTTP server failed", error))
-        }
-        result = scheduler.run() => {
-            result.map_err(ServiceError::Task)?;
-            Err(ServiceError::Stopped)
-        }
-    }
+        config.shutdown_grace,
+    )
+    .await
 }

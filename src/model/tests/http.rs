@@ -145,6 +145,16 @@ async fn check_http(mut scheduler: Scheduler, fixtures: Vec<Value>) {
     disconnect(address, &client, mixed).await;
     native_error(address).await;
     check_response(address, mixed).await;
+    let (_, _, metrics) = wire::get(address, "/metrics").await;
+    let metrics = std::str::from_utf8(&metrics).unwrap();
+    assert!(
+        metrics.contains("laya_inference_duration_seconds_count 28\n"),
+        "{metrics}"
+    );
+    assert!(metrics.contains("laya_requests_total 29\n"), "{metrics}");
+    assert!(metrics.contains("laya_errors_total{reason=\"inference_failed\"} 1\n"));
+    assert!(metrics.contains("laya_inference_inflight 0\n"));
+    println!("METRICS after real runs:\n{metrics}");
     client.close();
     assert_eq!(wire::get(address, "/readyz").await.0, 503);
     owner.await.unwrap();
@@ -196,7 +206,11 @@ async fn check_probes(address: SocketAddr) {
     let (status, headers, body) = wire::get(address, "/metrics").await;
     assert_eq!(status, 200);
     assert!(headers.contains("application/openmetrics-text"));
-    assert_eq!(body, b"# EOF\n");
+    assert!(
+        std::str::from_utf8(&body)
+            .unwrap()
+            .contains("laya_requests_total 0\n")
+    );
 }
 
 async fn check_response(address: SocketAddr, data: &Value) {
