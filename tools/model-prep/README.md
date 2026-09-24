@@ -5,7 +5,8 @@
 完整官方 API fixture 生成入口为 `fixtures.py`，覆盖、格式、复现与已知失败见
 [#10 fixtures](../../tests/fixtures/README.md)。
 最终运行文件及许可位于忽略目录 `models/multilingual/`，输入 checkpoint、下载元数据和
-中间日志位于其 `prep/` 子目录。权重不入 Git，没有上传到第三方模型仓库。
+中间日志位于其 `prep/` 子目录。权重不入 Git。供安装器使用的固定模型包通过本项目
+GitHub Releases 独立分发，打包时重新校验全部文件；见[发布步骤](../../docs/installation.md#维护者发布步骤)。
 
 #13 当前 bundle 在原图上将 50 处 LayerNorm 展开为中心化方差与倒数乘法，保持 FP32、
 原始权重和全部容差。导出脚本已接入 [normalize.py](normalize.py)。旧 #7 导出验收记录

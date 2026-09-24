@@ -294,6 +294,13 @@ HTTP 等待结束后，run 耗时仍观测到真实工作结束。完整边界�
 
 ## 10. 启动与部署目标
 
+原生安装采用预编译程序、私有 ONNX Runtime/动态运行库和独立固定模型包，通过 GitHub
+Releases 分发；完整安装、升级、卸载契约见[原生安装教程](installation.md)。安装需要
+root/sudo，推理使用专用非 root 用户，默认监听 `0.0.0.0:8080`，不修改防火墙。
+原生安装默认 threads=2、inter-op=1、max-concurrency=1，沿用 CLI 的退出契约；
+这不改变 CLI 默认值。成功门槛包括服务托管、开机自启及鉴权后的三类型真实推理。
+发行版覆盖是持续验证目标，当前验证范围以[安装验收](validation/installer.md)为准。
+
 MVP 首轮部署验收与 benchmark 使用本机 Docker Desktop 的 Linux ARM64 容器，
 记录实际 CPU、内存配额及虚拟化环境；结果不代表 16 核 / 32 GB 裸机或 Linux amd64。
 其他平台的可用性和性能需在对应环境另行验证。

@@ -7,6 +7,33 @@ Laya System-1 模型的 Rust 推理运行时与 HTTP 服务。在 Linux CPU 上�
 模型常驻内存，多个客户端通过 HTTP 共享推理资源。服务使用 ONNX Runtime，
 运行时不需要 Python、Node.js、PyTorch 或 GPU。
 
+## 一键安装 / 卸载（Linux x86_64、ARM64）
+
+在有交互终端的 Linux 宿主机或虚拟机执行，需要 root 或 sudo。安装器自动下载并校验
+程序、运行库和固定模型，配置后台服务及开机自启。回车使用默认配置，输入 `e` 修改配置。
+**默认监听 `0.0.0.0:8080`，API 必须使用密钥；安装器不修改防火墙。**
+
+安装或升级（先完整下载再执行，交互从终端读取）：
+
+```sh
+( script=$(mktemp) || exit; trap 'rm -f "$script"' EXIT; curl -fsSL --proto '=https' --tlsv1.2 https://github.com/redwolf2019/laya-rs/releases/latest/download/install.sh -o "$script" && sh "$script" install )
+```
+
+卸载：
+
+```sh
+( script=$(mktemp) || exit; trap 'rm -f "$script"' EXIT; curl -fsSL --proto '=https' --tlsv1.2 https://github.com/redwolf2019/laya-rs/releases/latest/download/install.sh -o "$script" && sh "$script" uninstall )
+```
+
+默认卸载保留模型和配置；交互选择彻底删除后还需输入 `DELETE`。升级保留配置与密钥，
+复用有效模型，验收失败回退旧版本。成功安装须通过带鉴权的中文三类型真实推理检查。
+
+密钥仅 root 可读，保存在 `/etc/laya-server/token.env`，读取命令为
+`sudo cat /etc/laya-server/token.env`。就绪检查：`curl -fsS http://127.0.0.1:8080/readyz`。
+完整的配置、鉴权调用、服务管理、升级和卸载说明见 **[原生安装教程](docs/installation.md)**。
+目前适配 systemd、OpenRC、runit 和 dinit，未知环境明确拒绝；
+各发行版、架构及服务管理器的实际验证范围见 [安装验收](docs/validation/installer.md)。
+
 ## 能做什么
 
 提交一份 `state` 和一组 `questions`，服务按问题名返回答案：
@@ -27,9 +54,10 @@ Laya System-1 模型的 Rust 推理运行时与 HTTP 服务。在 Linux CPU 上�
 
 ### 1. 准备模型
 
-**本项目目前没有可直接下载的模型包。** 请按[模型准备教程](tools/model-prep/README.md)
-完成一次性导出与对照，或取得已准备好的模型包。导出需要独立的 Python/PyTorch 环境，
-Docker 镜像构建和服务运行不需要它们。
+可从 [GitHub Releases](https://github.com/redwolf2019/laya-rs/releases) 下载固定的
+`model-<id>.tar.gz`，解压到 `models/multilingual/`。原生安装器会自动完成这一步。
+如需自行导出，按[模型准备教程](tools/model-prep/README.md)完成一次性导出与对照；
+仅导出需要独立的 Python/PyTorch 环境，Docker 镜像构建和服务运行不需要它们。
 
 在仓库根目录准备以下文件，内容须与[固定模型清单](docs/model-manifest.json)一致：
 

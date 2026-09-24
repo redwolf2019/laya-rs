@@ -1,0 +1,89 @@
+name: Build and validate native release (draft)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Existing source tag, for example v0.1.0'
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            arch: x86_64
+          - runner: ubuntu-24.04-arm
+            arch: aarch64
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ inputs.version }}
+      - name: Check input and installer
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          [[ "$VERSION" =~ ^v[0-9]+[A-Za-z0-9.+-]*$ ]]
+          test "$(git describe --tags --exact-match)" = "$VERSION"
+          shellcheck scripts/install.sh tools/release/*.sh
+          python3 scripts/test-install.py
+      - name: Build program, private libraries and corresponding sources
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          mkdir -p dist
+          docker run --rm -v "$PWD:/work:ro" -v "$PWD/dist:/out" -w /work \
+            rust:1.98.1-slim-bookworm@sha256:ff521445a372125ed4f76e1453a1f8098f2d05332d1601d30db1c1f62757e730 \
+            sh tools/release/build.sh "$VERSION" /out
+      - name: Download fixed published model
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          id=$(python3 tools/release/package.py id)
+          gh release download "model-$id" --pattern "model-$id.tar.gz" --dir dist
+          mkdir -p /tmp/laya-model /tmp/laya-package
+          python3 -c 'import sys,tarfile; tarfile.open(sys.argv[1]).extractall(sys.argv[2], filter="data")' "dist/model-$id.tar.gz" /tmp/laya-model
+          python3 -c 'import sys,tarfile; tarfile.open(sys.argv[1]).extractall(sys.argv[2], filter="data")' "dist/laya-server-linux-${{ matrix.arch }}.tar.gz" /tmp/laya-package
+          (cd /tmp/laya-model && sha256sum -c /tmp/laya-package/model-files.sha256)
+      - name: Native CPU real inference (required)
+        run: sh tools/release/smoke.sh /tmp/laya-package /tmp/laya-model
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: native-${{ matrix.arch }}
+          path: |
+            dist/laya-server-linux-*.tar.gz
+            dist/runtime-sources-*.tar.gz
+          if-no-files-found: error
+
+  draft:
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ inputs.version }}
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: native-*
+          path: dist
+          merge-multiple: true
+      - name: Assemble verified release metadata and create draft
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          id=$(python3 tools/release/package.py id)
+          gh release download "model-$id" --pattern "model-$id.tar.gz" --dir dist
+          python3 tools/release/package.py release --version "$VERSION"
+          gh release create "$VERSION" --verify-tag --draft --title "$VERSION" \
+            --notes-file tools/release/RELEASE-NOTES.md \
+            dist/install.sh dist/release.env dist/SHA256SUMS \
+            dist/laya-server-linux-*.tar.gz dist/runtime-sources-*.tar.gz

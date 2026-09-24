@@ -1,0 +1,1 @@
+{"state":"客户说重复扣款，希望立即退款。","questions":{"department":{"type":"choice","instructions":"应该由哪个部门处理？","criteria":{"billing":"支付、退款、账单","technical":"技术问题","sales":"销售问题"}},"priority":{"type":"score","instructions":"处理优先级如何？","criteria":["低","中","高","紧急"]},"urgent":{"type":"noul","instructions":"这个请求是否紧急？"}}}

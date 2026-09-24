@@ -17,6 +17,10 @@ jobs:
       - run: cargo fmt --check
       - run: cargo clippy --locked --all-targets -- -D warnings
       - run: cargo test --locked
+      - name: Installer boundaries (no deployment or model)
+        run: |
+          shellcheck scripts/install.sh tools/release/*.sh
+          python3 scripts/test-install.py
       - name: Real model validation — NOT RUN
         if: always()
         run: |
