@@ -2,6 +2,7 @@
 /models/
 *.onnx
 *.onnx.data
+!/tests/fixtures/engine-probe.onnx
 
 .env
 .env.*
