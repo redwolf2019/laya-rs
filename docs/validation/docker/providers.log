@@ -1,0 +1,5 @@
+onnxruntime cpuid_info warning: Unknown CPU vendor. cpuinfo_vendor value: 0
+ORT version: 1.28.0; requested C API: 28
+Provider count: 1
+CPUExecutionProvider
+PASS: native ORT load, API 28, CPU-only provider, environment creation

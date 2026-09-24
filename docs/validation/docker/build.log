@@ -1,0 +1,375 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 2.45kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/debian:bookworm-slim@sha256:3783cc01769c7b2b1b83a5c5ad96c815348e28ed7da68e2e3687004faa906251
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/rust:1.98.1-slim-bookworm@sha256:ff521445a372125ed4f76e1453a1f8098f2d05332d1601d30db1c1f62757e730
+#3 DONE 0.0s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 172B done
+#4 DONE 0.0s
+
+#5 [build  1/10] FROM docker.io/library/rust:1.98.1-slim-bookworm@sha256:ff521445a372125ed4f76e1453a1f8098f2d05332d1601d30db1c1f62757e730
+#5 DONE 0.0s
+
+#6 [stage-1 1/8] FROM docker.io/library/debian:bookworm-slim@sha256:3783cc01769c7b2b1b83a5c5ad96c815348e28ed7da68e2e3687004faa906251
+#6 DONE 0.0s
+
+#7 [build  2/10] RUN test "arm64" = arm64 || { echo 'Only linux/arm64 is validated and supported by this Dockerfile' >&2; exit 1; }
+#7 CACHED
+
+#8 [build  3/10] RUN apt-get update && apt-get install -y --no-install-recommends     g++ libc6-dev pkg-config ca-certificates curl     && rm -rf /var/lib/apt/lists/*
+#8 CACHED
+
+#9 [internal] load build context
+#9 transferring context: 1.28kB done
+#9 DONE 0.0s
+
+#10 [build  4/10] RUN curl -fL --retry 3     https://github.com/microsoft/onnxruntime/releases/download/v1.28.0/onnxruntime-linux-aarch64-1.28.0.tgz     -o /tmp/ort.tgz     && echo 'e15ff8b5d85afe6c144d97c6fd432254bf76a219daaf17658087d6ecb3e8f0bb  /tmp/ort.tgz' | sha256sum -c -     && mkdir /ort && tar -xzf /tmp/ort.tgz -C /ort --strip-components=1     && rm /tmp/ort.tgz && rm -rf /ort/lib/cmake /ort/lib/pkgconfig
+#10 0.098   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+#10 0.098                                  Dload  Upload   Total   Spent    Left  Speed
+#10 0.098
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0
+#10 3.314
+  0     0    0     0    0     0      0      0 --:--:--  0:00:03 --:--:--     0
+  0 7926k    0 15450    0     0   4073      0  0:33:12  0:00:03  0:33:09 26730
+  6 7926k    6  540k    0     0   115k      0  0:01:08  0:00:04  0:01:04  363k
+ 59 7926k   59 4732k    0     0   736k      0  0:00:10  0:00:06  0:00:04 1472k
+ 96 7926k   96 7676k    0     0  1148k      0  0:00:06  0:00:06 --:--:-- 2213k
+100 7926k  100 7926k    0     0  1179k      0  0:00:06  0:00:06 --:--:-- 2260k
+#10 6.851 /tmp/ort.tgz: OK
+#10 DONE 7.0s
+
+#11 [build  5/10] WORKDIR /build
+#11 DONE 0.0s
+
+#12 [build  6/10] COPY Cargo.toml Cargo.lock ./
+#12 DONE 0.0s
+
+#13 [build  7/10] COPY src ./src
+#13 DONE 0.0s
+
+#14 [build  8/10] COPY docs/model-manifest.json ./docs/model-manifest.json
+#14 DONE 0.0s
+
+#15 [build  9/10] RUN cargo build --locked --release --bin laya-server && strip target/release/laya-server
+#15 0.127     Updating crates.io index
+#15 11.43  Downloading crates ...
+#15 14.65   Downloaded darling_macro v0.20.11
+#15 15.04   Downloaded atomic-waker v1.1.2
+#15 15.04   Downloaded cpufeatures v0.3.1
+#15 15.04   Downloaded digest v0.11.3
+#15 15.51   Downloaded strsim v0.11.1
+#15 15.58   Downloaded block-buffer v0.12.1
+#15 15.59   Downloaded cfg-if v1.0.5
+#15 15.59   Downloaded crypto-common v0.2.2
+#15 15.77   Downloaded castaway v0.2.4
+#15 15.83   Downloaded ident_case v1.0.1
+#15 15.98   Downloaded mime v0.3.17
+#15 15.98   Downloaded rayon-cond v0.4.0
+#15 15.98   Downloaded prometheus-client-derive-encode v0.5.1
+#15 15.98   Downloaded axum-core v0.5.6
+#15 16.01   Downloaded dary_heap v0.3.9
+#15 16.02   Downloaded autocfg v1.5.1
+#15 16.03   Downloaded ahash v0.8.12
+#15 16.05   Downloaded tracing-serde v0.2.0
+#15 16.05   Downloaded serde_json v1.0.151
+#15 16.06   Downloaded slab v0.4.12
+#15 16.14   Downloaded ryu v1.0.23
+#15 16.16   Downloaded version_check v0.9.5
+#15 16.17   Downloaded lazy_static v1.5.0
+#15 16.17   Downloaded crossbeam-deque v0.8.8
+#15 16.18   Downloaded tower-layer v0.3.3
+#15 16.23   Downloaded rawpointer v0.2.1
+#15 16.24   Downloaded derive_builder_macro v0.20.2
+#15 16.24   Downloaded errno v0.3.14
+#15 16.24   Downloaded macro_rules_attribute-proc_macro v0.2.3
+#15 16.24   Downloaded monostate-impl v0.1.18
+#15 16.24   Downloaded percent-encoding v2.3.2
+#15 16.24   Downloaded futures-core v0.3.34
+#15 16.25   Downloaded fnv v1.0.7
+#15 16.25   Downloaded either v1.18.0
+#15 16.28   Downloaded futures-task v0.3.34
+#15 16.28   Downloaded http-body v1.1.0
+#15 16.31   Downloaded httpdate v1.0.3
+#15 16.32   Downloaded itoa v1.0.18
+#15 16.33   Downloaded monostate v0.1.18
+#15 16.34   Downloaded macro_rules_attribute v0.2.3
+#15 16.36   Downloaded num-integer v0.1.47
+#15 16.36   Downloaded pastey v0.2.3
+#15 16.36   Downloaded ppv-lite86 v0.2.21
+#15 16.43   Downloaded onig v6.5.3
+#15 16.46   Downloaded lock_api v0.4.14
+#15 16.47   Downloaded derive_builder_core v0.20.2
+#15 16.47   Downloaded rand_chacha v0.9.0
+#15 16.48   Downloaded dtoa v1.0.11
+#15 16.49   Downloaded find-msvc-tools v0.1.13
+#15 16.75   Downloaded serde_path_to_error v0.1.20
+#15 16.95   Downloaded tower-service v0.3.3
+#15 16.98   Downloaded signal-hook-registry v1.4.8
+#15 16.99   Downloaded static_assertions v1.1.0
+#15 16.99   Downloaded thiserror-impl v2.0.20
+#15 17.69   Downloaded crossbeam-utils v0.8.23
+#15 17.69   Downloaded num-complex v0.4.6
+#15 17.70   Downloaded bitflags v2.13.2
+#15 17.70   Downloaded base64 v0.13.1
+#15 17.70   Downloaded crossbeam-epoch v0.9.21
+#15 17.71   Downloaded paste v1.0.15
+#15 17.71   Downloaded pkg-config v0.3.34
+#15 17.71   Downloaded rand_core v0.9.5
+#15 17.71   Downloaded rustversion v1.0.23
+#15 17.71   Downloaded darling v0.20.11
+#15 17.72   Downloaded http-body-util v0.1.5
+#15 17.72   Downloaded derive_builder v0.20.2
+#15 17.72   Downloaded once_cell v1.21.4
+#15 17.72   Downloaded parking_lot v0.12.5
+#15 17.72   Downloaded parking_lot_core v0.9.12
+#15 17.72   Downloaded httparse v1.10.1
+#15 17.73   Downloaded libloading v0.9.0
+#15 17.73   Downloaded matchit v0.8.4
+#15 17.73   Downloaded bytes v1.12.1
+#15 17.73   Downloaded const-oid v0.10.2
+#15 17.73   Downloaded quote v1.0.47
+#15 17.73   Downloaded futures-channel v0.3.34
+#15 17.73   Downloaded hybrid-array v0.4.15
+#15 17.74   Downloaded darling_core v0.20.11
+#15 17.74   Downloaded getrandom v0.3.4
+#15 17.74   Downloaded log v0.4.34
+#15 17.74   Downloaded ort-sys v2.0.0-rc.13
+#15 17.74   Downloaded scopeguard v1.2.0
+#15 17.74   Downloaded mediatype v0.23.0
+#15 17.74   Downloaded matrixmultiply v0.3.11
+#15 17.75   Downloaded proc-macro2 v1.0.107
+#15 17.75   Downloaded num-traits v0.2.19
+#15 17.75   Downloaded rayon-core v1.13.0
+#15 17.75   Downloaded cc v1.4.7
+#15 17.75   Downloaded compact_str v0.9.1
+#15 17.75   Downloaded pin-project-lite v0.2.17
+#15 17.76   Downloaded daachorse v3.0.3
+#15 17.76   Downloaded minimal-lexical v0.2.1
+#15 17.76   Downloaded hyper-util v0.1.20
+#15 17.76   Downloaded memchr v2.8.3
+#15 17.77   Downloaded mio v1.2.3
+#15 17.77   Downloaded prometheus-client v0.25.0
+#15 17.77   Downloaded rand v0.9.5
+#15 17.77   Downloaded nom v7.1.3
+#15 17.77   Downloaded ort v2.0.0-rc.13
+#15 17.78   Downloaded sync_wrapper v1.0.2
+#15 17.78   Downloaded sha2 v0.11.0
+#15 17.78   Downloaded socket2 v0.6.5
+#15 17.78   Downloaded shlex v2.0.1
+#15 17.78   Downloaded unicode-ident v1.0.26
+#15 17.78   Downloaded serde v1.0.229
+#15 17.78   Downloaded serde_core v1.0.229
+#15 17.82   Downloaded axum v0.8.9
+#15 17.83   Downloaded http v1.5.0
+#15 17.83   Downloaded rayon v1.12.0
+#15 17.84   Downloaded aho-corasick v1.1.5
+#15 17.85   Downloaded itertools v0.14.0
+#15 18.17   Downloaded thread_local v1.1.10
+#15 18.18   Downloaded typenum v1.20.1
+#15 18.19   Downloaded tokio-macros v2.7.2
+#15 18.19   Downloaded unicode_categories v0.1.1
+#15 18.32   Downloaded smallvec v1.16.1
+#15 18.32   Downloaded thiserror v2.0.20
+#15 18.33   Downloaded serde_derive v1.0.229
+#15 18.33   Downloaded zmij v1.0.23
+#15 18.33   Downloaded sharded-slab v0.1.7
+#15 18.33   Downloaded regex v1.13.1
+#15 18.34   Downloaded esaxx-rs v0.1.10
+#15 18.34   Downloaded futures-util v0.3.34
+#15 18.35   Downloaded hyper v1.11.1
+#15 18.41   Downloaded ndarray v0.17.2
+#15 18.42   Downloaded regex-syntax v0.8.11
+#15 18.58   Downloaded regex-automata v0.4.18
+#15 18.60   Downloaded onig_sys v69.9.3
+#15 18.62   Downloaded libc v0.2.189
+#15 18.79   Downloaded tracing-core v0.1.36
+#15 18.79   Downloaded unicode-normalization-alignments v0.1.12
+#15 18.95   Downloaded tracing-subscriber v0.3.23
+#15 18.96   Downloaded unicode-segmentation v1.13.3
+#15 19.32   Downloaded tower v0.5.3
+#15 19.47   Downloaded zerocopy v0.8.57
+#15 19.49   Downloaded syn v3.0.6
+#15 19.50   Downloaded tokenizers v0.23.2
+#15 19.96   Downloaded syn v2.0.119
+#15 20.04   Downloaded tracing v0.1.44
+#15 20.13   Downloaded spm_precompiled v0.1.4
+#15 20.28   Downloaded tokio v1.53.1
+#15 20.36    Compiling proc-macro2 v1.0.107
+#15 20.36    Compiling unicode-ident v1.0.26
+#15 20.36    Compiling quote v1.0.47
+#15 20.36    Compiling libc v0.2.189
+#15 20.36    Compiling cfg-if v1.0.5
+#15 20.36    Compiling serde_core v1.0.229
+#15 20.36    Compiling itoa v1.0.18
+#15 20.36    Compiling pin-project-lite v0.2.17
+#15 20.38    Compiling smallvec v1.16.1
+#15 20.38    Compiling serde v1.0.229
+#15 20.39    Compiling memchr v2.8.3
+#15 20.45    Compiling crossbeam-utils v0.8.23
+#15 20.45    Compiling futures-core v0.3.34
+#15 20.46    Compiling getrandom v0.3.4
+#15 20.49    Compiling zerocopy v0.8.57
+#15 20.50    Compiling once_cell v1.21.4
+#15 20.54    Compiling ident_case v1.0.1
+#15 20.56    Compiling bytes v1.12.1
+#15 20.57    Compiling fnv v1.0.7
+#15 20.57    Compiling crossbeam-epoch v0.9.21
+#15 20.58    Compiling strsim v0.11.1
+#15 20.69    Compiling crossbeam-deque v0.8.8
+#15 20.72    Compiling syn v3.0.6
+#15 20.76    Compiling syn v2.0.119
+#15 20.77    Compiling http v1.5.0
+#15 20.78    Compiling find-msvc-tools v0.1.13
+#15 20.84    Compiling errno v0.3.14
+#15 20.86    Compiling shlex v2.0.1
+#15 20.86    Compiling zmij v1.0.23
+#15 20.91    Compiling signal-hook-registry v1.4.8
+#15 20.91    Compiling cc v1.4.7
+#15 20.93    Compiling socket2 v0.6.5
+#15 20.95    Compiling mio v1.2.3
+#15 21.08    Compiling http-body v1.1.0
+#15 21.33    Compiling typenum v1.20.1
+#15 21.34    Compiling rustversion v1.0.23
+#15 21.36    Compiling httparse v1.10.1
+#15 21.44    Compiling pkg-config v0.3.34
+#15 21.48    Compiling rayon-core v1.13.0
+#15 21.51    Compiling serde_json v1.0.151
+#15 21.62    Compiling parking_lot_core v0.9.12
+#15 21.63    Compiling onig_sys v69.9.3
+#15 21.64    Compiling tower-service v0.3.3
+#15 21.67    Compiling either v1.18.0
+#15 21.69    Compiling hybrid-array v0.4.15
+#15 21.70    Compiling version_check v0.9.5
+#15 21.78    Compiling darling_core v0.20.11
+#15 21.81    Compiling ahash v0.8.12
+#15 22.10    Compiling serde_derive v1.0.229
+#15 22.25    Compiling tokio-macros v2.7.2
+#15 22.47    Compiling rand_core v0.9.5
+#15 22.54    Compiling aho-corasick v1.1.5
+#15 22.56    Compiling tracing-core v0.1.36
+#15 22.57    Compiling tokio v1.53.1
+#15 22.63    Compiling darling_macro v0.20.11
+#15 22.65    Compiling ppv-lite86 v0.2.21
+#15 22.75    Compiling futures-channel v0.3.34
+#15 22.84    Compiling atomic-waker v1.1.2
+#15 22.87    Compiling sync_wrapper v1.0.2
+#15 22.87    Compiling darling v0.20.11
+#15 22.89    Compiling derive_builder_core v0.20.2
+#15 22.89    Compiling tower-layer v0.3.3
+#15 22.97    Compiling futures-task v0.3.34
+#15 22.98    Compiling httpdate v1.0.3
+#15 23.01    Compiling regex-syntax v0.8.11
+#15 23.10    Compiling paste v1.0.15
+#15 23.14    Compiling ort-sys v2.0.0-rc.13
+#15 23.19    Compiling thiserror v2.0.20
+#15 23.24    Compiling scopeguard v1.2.0
+#15 23.25    Compiling esaxx-rs v0.1.10
+#15 23.26    Compiling minimal-lexical v0.2.1
+#15 23.30    Compiling slab v0.4.12
+#15 23.33    Compiling lock_api v0.4.14
+#15 23.35    Compiling futures-util v0.3.34
+#15 23.37    Compiling nom v7.1.3
+#15 23.40    Compiling derive_builder_macro v0.20.2
+#15 23.62    Compiling rand_chacha v0.9.0
+#15 23.68    Compiling monostate-impl v0.1.18
+#15 23.83    Compiling hyper v1.11.1
+#15 24.02    Compiling regex-automata v0.4.18
+#15 24.20    Compiling thiserror-impl v2.0.20
+#15 24.21    Compiling castaway v0.2.4
+#15 24.23    Compiling rayon v1.12.0
+#15 24.76    Compiling crypto-common v0.2.2
+#15 24.83    Compiling block-buffer v0.12.1
+#15 24.90    Compiling itertools v0.14.0
+#15 25.29    Compiling http-body-util v0.1.5
+#15 25.30    Compiling bitflags v2.13.2
+#15 25.39    Compiling const-oid v0.10.2
+#15 25.45    Compiling static_assertions v1.1.0
+#15 25.47    Compiling pastey v0.2.3
+#15 25.51    Compiling ryu v1.0.23
+#15 25.52    Compiling mime v0.3.17
+#15 25.54    Compiling prometheus-client v0.25.0
+#15 25.60    Compiling lazy_static v1.5.0
+#15 25.62    Compiling unicode-segmentation v1.13.3
+#15 25.62    Compiling macro_rules_attribute-proc_macro v0.2.3
+#15 25.66    Compiling base64 v0.13.1
+#15 25.71    Compiling sharded-slab v0.1.7
+#15 25.77    Compiling macro_rules_attribute v0.2.3
+#15 25.78    Compiling spm_precompiled v0.1.4
+#15 25.79    Compiling axum-core v0.5.6
+#15 25.85    Compiling compact_str v0.9.1
+#15 25.94    Compiling rayon-cond v0.4.0
+#15 25.99    Compiling digest v0.11.3
+#15 26.04    Compiling parking_lot v0.12.5
+#15 26.04    Compiling regex v1.13.1
+#15 26.40    Compiling hyper-util v0.1.20
+#15 26.42    Compiling onig v6.5.3
+#15 26.45    Compiling tower v0.5.3
+#15 26.55    Compiling monostate v0.1.18
+#15 26.62    Compiling rand v0.9.5
+#15 26.74    Compiling derive_builder v0.20.2
+#15 26.74    Compiling dary_heap v0.3.9
+#15 26.75    Compiling tracing-serde v0.2.0
+#15 26.79    Compiling prometheus-client-derive-encode v0.5.1
+#15 26.80    Compiling serde_path_to_error v0.1.20
+#15 26.82    Compiling cpufeatures v0.3.1
+#15 26.85    Compiling unicode-normalization-alignments v0.1.12
+#15 26.86    Compiling libloading v0.9.0
+#15 26.89    Compiling thread_local v1.1.10
+#15 26.94    Compiling unicode_categories v0.1.1
+#15 26.95    Compiling percent-encoding v2.3.2
+#15 26.96    Compiling dtoa v1.0.11
+#15 27.00    Compiling log v0.4.34
+#15 27.00    Compiling matchit v0.8.4
+#15 27.00    Compiling daachorse v3.0.3
+#15 27.01    Compiling tracing-subscriber v0.3.23
+#15 27.05    Compiling ort v2.0.0-rc.13
+#15 27.07    Compiling sha2 v0.11.0
+#15 27.14    Compiling axum v0.8.9
+#15 27.25    Compiling tokenizers v0.23.2
+#15 27.37    Compiling tracing v0.1.44
+#15 27.51    Compiling mediatype v0.23.0
+#15 29.14    Compiling laya-server v0.1.0 (/build)
+#15 34.05     Finished `release` profile [optimized] target(s) in 33.93s
+#15 DONE 34.2s
+
+#16 [build 10/10] RUN mkdir -p /licenses/crates /licenses/rust     && cd /usr/local/cargo/registry/src && find . -type f     ( -iname '*license*' -o -iname '*copying*' -o -iname '*copyright*'     -o -iname '*notice*' -o -name Cargo.toml ) -exec cp --parents -t /licenses/crates {} +     && cp -r /usr/local/rustup/toolchains/*/share/doc/rust/licenses /licenses/rust/     && cp /usr/local/rustup/toolchains/*/share/doc/rust/COPYRIGHT*.html /licenses/rust/
+#16 DONE 0.2s
+
+#17 [stage-1 2/8] RUN apt-get update && apt-get install -y --no-install-recommends     ca-certificates libstdc++6 libgcc-s1     && rm -rf /var/lib/apt/lists/*
+#17 CACHED
+
+#18 [stage-1 3/8] COPY --from=build /build/target/release/laya-server /usr/local/bin/laya-server
+#18 CACHED
+
+#19 [stage-1 4/8] COPY --from=build /ort/lib/ /opt/onnxruntime/lib/
+#19 DONE 0.0s
+
+#20 [stage-1 5/8] COPY --from=build /ort/LICENSE /ort/ThirdPartyNotices.txt /usr/share/doc/onnxruntime/
+#20 DONE 0.0s
+
+#21 [stage-1 6/8] COPY --from=build /licenses/ /usr/share/doc/laya-server/dependencies/
+#21 DONE 0.1s
+
+#22 [stage-1 7/8] COPY LICENSE NOTICE.md Cargo.lock /usr/share/doc/laya-server/
+#22 DONE 0.0s
+
+#23 [stage-1 8/8] COPY licenses/ /usr/share/doc/laya-server/licenses/
+#23 DONE 0.0s
+
+#24 exporting to image
+#24 exporting layers 0.1s done
+#24 writing image sha256:56128072f8b929ae37afe02ea1e3ce13505313908a23e76556ab80f5a4e26564 done
+#24 naming to docker.io/library/laya-rs:18 done
+#24 DONE 0.1s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/pd0skfuomkhumcc474ueyslj4

@@ -1,0 +1,101 @@
+[
+    {
+        "Id": "sha256:674e0a5deec4899e1d4d8120c4193a265fab757742413115f887267ce616a06d",
+        "RepoTags": [
+            "laya-rs:18"
+        ],
+        "RepoDigests": [],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-09-24T03:10:57.81081567Z",
+        "Config": {
+            "User": "65532:65532",
+            "ExposedPorts": {
+                "8080/tcp": {}
+            },
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "LD_LIBRARY_PATH=/opt/onnxruntime/lib"
+            ],
+            "Entrypoint": [
+                "/usr/local/bin/laya-server"
+            ],
+            "Cmd": [
+                "--model",
+                "/models/multilingual",
+                "--threads",
+                "4",
+                "--max-concurrency",
+                "1"
+            ],
+            "StopSignal": "SIGTERM",
+            "ArgsEscaped": true
+        },
+        "Architecture": "arm64",
+        "Os": "linux",
+        "Size": 151898172,
+        "GraphDriver": {
+            "Data": {
+                "LowerDir": "/var/lib/docker/overlay2/70o0vhufi9nn883fw0x3akcl8/diff:/var/lib/docker/overlay2/ibrgrb2ticox3fwjl3prl08tk/diff:/var/lib/docker/overlay2/ox5u8ie1m63y21jzl7tylxpes/diff:/var/lib/docker/overlay2/lczavyc1qta1sqlbm4eiwko3m/diff:/var/lib/docker/overlay2/d9lcz3es8ym5ojrjhffplea9v/diff:/var/lib/docker/overlay2/prixf00w0626uol88lgrj503c/diff:/var/lib/docker/overlay2/5077c34ddc7233be6b3ab79f423eeceb9e6a50365d77f03ec55e94a132743d71/diff",
+                "MergedDir": "/var/lib/docker/overlay2/6psb63uy1emffzenfaegr03r2/merged",
+                "UpperDir": "/var/lib/docker/overlay2/6psb63uy1emffzenfaegr03r2/diff",
+                "WorkDir": "/var/lib/docker/overlay2/6psb63uy1emffzenfaegr03r2/work"
+            },
+            "Name": "overlay2"
+        },
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:055ab12bd547e17a0630037f06a186cf405e3f61bb03a614562ca8f5ab52a8be",
+                "sha256:5e16c168f39b5069db7505ed252775a958daf7459873a78e86dfe39265c980b7",
+                "sha256:de5c2dc66992c93fcc50aadae7f0229cca8d610e591a3dbf57f08478b6eac9ae",
+                "sha256:d2fc029f938ab66007c8e5becfe67983d8a11b9dcdc0df1a6148267381bc2706",
+                "sha256:9fe162a91cb6eaaab0dea5bb0ba925e82e0d9b76342cf30a645f1e8475b88151",
+                "sha256:ccc3d5c5576669d5b9db4eea6f08b1d714ccc41ca91de9a407b5d5ce91ff230c",
+                "sha256:c2d84393d78306efed96cf62c30ae4c92951793c438f7ba086501a59f81be57f",
+                "sha256:f337af2f7262d72b9a0929b64481906cdc9b4c0e38425e25dabb945c768d6d59"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-09-24T03:10:57.874687629Z"
+        }
+    }
+]
+11bf8d8c4e4b7d7b33a21c7cc25f7eb2495332bc7b7a480d7396b284e3763eb5 Cargo.lock
+3bff67d421ae27d4f68a3904c3fe73074509d38e85417025bd51e703b11d8359 model-manifest.json
+5a028e8dac51de3c430514c47e047fc89911edaaa72762c3e880a3591cc0184c laya.onnx
+6ef993ee707fe1d6a75529f4a1f8347ff89966ff955d332ea3ebe4e5171a9ac1 laya.onnx.data
+PASS exit=2, OOMKilled=false
+PASS startup failure missing-directory
+Invalid configuration: --model must name an existing local directory
+CONTAINER STATE {"Status": "exited", "Running": false, "Paused": false, "Restarting": false, "OOMKilled": false, "Dead": false, "Pid": 0, "ExitCode": 2, "Error": "", "StartedAt": "2026-09-24T03:12:18.073014972Z", "FinishedAt": "2026-09-24T03:12:18.14383118Z"}
+PASS exit=1, OOMKilled=false
+PASS startup failure abi
+Model initialization failed: native ONNX Runtime load or ABI check failed
+CONTAINER STATE {"Status": "exited", "Running": false, "Paused": false, "Restarting": false, "OOMKilled": false, "Dead": false, "Pid": 0, "ExitCode": 1, "Error": "", "StartedAt": "2026-09-24T03:12:18.421031472Z", "FinishedAt": "2026-09-24T03:12:19.746386208Z"}
+PASS exit=1, OOMKilled=false
+PASS startup failure missing-file
+Model initialization failed: bundle file is missing or unreadable
+CONTAINER STATE {"Status": "exited", "Running": false, "Paused": false, "Restarting": false, "OOMKilled": false, "Dead": false, "Pid": 0, "ExitCode": 1, "Error": "", "StartedAt": "2026-09-24T03:12:20.018046375Z", "FinishedAt": "2026-09-24T03:12:20.069151042Z"}
+PASS exit=1, OOMKilled=false
+PASS startup failure corrupt
+Model initialization failed: bundle file SHA-256 differs from manifest
+CONTAINER STATE {"Status": "exited", "Running": false, "Paused": false, "Restarting": false, "OOMKilled": false, "Dead": false, "Pid": 0, "ExitCode": 1, "Error": "", "StartedAt": "2026-09-24T03:12:20.392553792Z", "FinishedAt": "2026-09-24T03:12:20.449466917Z"}
+Traceback (most recent call last):
+  File "/Users/redwolf/MyProjects/laya-rs/docs/validation/docker-smoke.py", line 249, in <module>
+    main()
+  File "/Users/redwolf/MyProjects/laya-rs/docs/validation/docker-smoke.py", line 235, in main
+    failures(image, bundle)
+  File "/Users/redwolf/MyProjects/laya-rs/docs/validation/docker-smoke.py", line 189, in failures
+    with container(image, model, *args, mounts=mounts) as cid:
+  File "/opt/homebrew/Cellar/python@3.11/3.11.16/Frameworks/Python.framework/Versions/3.11/lib/python3.11/contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "/Users/redwolf/MyProjects/laya-rs/docs/validation/docker-smoke.py", line 75, in container
+    cid = docker(*args, image, "--model", "/models/multilingual",
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/redwolf/MyProjects/laya-rs/docs/validation/docker-smoke.py", line 22, in docker
+    result = subprocess.run(["docker", *map(str, args)], capture_output=True,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.16/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['docker', 'run', '-d', '--platform', 'linux/arm64', '--cpus', '8', '--memory', '12g', '--memory-swap', '12g', '--read-only', '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges', '-p', '127.0.0.1::8080', '--mount', 'type=bind,source=/Users/redwolf/MyProjects/laya-rs/models/multilingual,target=/models/multilingual,readonly', '--mount', 'type=bind,source=/var/folders/h4/5y0pwrpx593f9pb693jnjq500000gn/T/laya-docker-c4vxm8el/laya.onnx,target=/models/multilingual/laya.onnx,readonly', 'laya-rs:18', '--model', '/models/multilingual', '--threads', '1', '--max-concurrency', '1']' returned non-zero exit status 126.

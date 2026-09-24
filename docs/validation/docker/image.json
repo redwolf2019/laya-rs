@@ -1,0 +1,10 @@
+{
+  "Id": "sha256:56128072f8b929ae37afe02ea1e3ce13505313908a23e76556ab80f5a4e26564",
+  "RepoDigests": [],
+  "Architecture": "arm64",
+  "Os": "linux",
+  "Size": 151889042,
+  "archive_sha256": "ec639bda6aa25f1556f50c0499365c185d440c54c01ed866a8043c240d869acf",
+  "clean_checkout_image_id": "sha256:56128072f8b929ae37afe02ea1e3ce13505313908a23e76556ab80f5a4e26564",
+  "oci_manifest_digest": "sha256:e3df4c8b3864440240bf034daee4adbb8f8ff1a0a0ca4aefaa8b1567dd980c17"
+}

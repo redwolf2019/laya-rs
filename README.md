@@ -7,7 +7,8 @@ Noul 判断能力，通过 HTTP 为多个客户端共享模型。
 
 **当前状态：Rust 已加载并校验固定 bundle、Tokenizer 和 CPU Session，启动时执行真实张量探针。**
 Sequence Builder、答案后处理和统一 engine 已通过固定样例对照；四个 HTTP 路由已接入共享调度器。
-全部资源加载成功后才监听端口；当前没有服务 Docker 镜像。HTTP 验收见 [#16 记录](docs/validation/http.md)。
+全部资源加载成功后才监听端口；已提供 Linux ARM64 CPU 多阶段 Docker 镜像构建。
+HTTP 验收见 [#16 记录](docs/validation/http.md)，镜像验收见 [#18 记录](docs/validation/docker.md)。
 
 #9 已提供[模型无关的 System One 类型与校验](src/system_one.rs)：请求规范化、
 完整响应 DTO、静态类型化错误，以及数字词法/嵌套顺序保留。
@@ -129,6 +130,83 @@ curl -fsS http://127.0.0.1:8080/v1/system-one \
   -H 'Content-Type: application/json' \
   --data '{"state":"客户要求退款。","questions":{"urgent":{"type":"noul","instructions":"是否紧急？"}}}'
 ```
+
+## Docker 部署（Linux ARM64 CPU）
+
+需要 Docker 和已经准备好的固定 bundle。普通镜像构建、启动及以下 curl 检查均不需要
+Python、Node.js、PyTorch 或 GPU。Dockerfile 固定 Rust / Debian 基础镜像 digest，
+按 SHA-256 校验官方 ORT 1.28.0 CPU 包，并使用 `Cargo.lock` 编译 release 二进制；
+构建时需要访问镜像仓库、Debian 软件源、crates.io 和 GitHub，不下载或导出模型。
+当前只支持 `linux/arm64`，其他架构在构建时明确拒绝；未做 amd64 或裸机性能认证。
+
+先从模型交付者取得与 [manifest 的 files 清单](docs/model-manifest.json) 完全匹配的文件，
+放在 `models/multilingual/`：
+
+```text
+laya.onnx
+laya.onnx.data
+laya_config.json
+tokenizer/tokenizer.json
+tokenizer/tokenizer_config.json
+licenses/（manifest 中列出的五个许可文件）
+```
+
+本项目未发布可直接下载的 bundle。若没有交付物，由开发者在独立环境按
+[一次性离线导出说明](tools/model-prep/README.md)准备并完成对照，再交给部署者。
+导出环境使用 Python/PyTorch；它不参与 Docker 构建或服务运行。不要挂载准备目录 `prep/`，
+不要将权重写入镜像或 Git。启动器自动核验每个文件的大小与 SHA-256，不接受其他版本的图或配置。
+UID/GID `65532:65532` 必须能遍历模型目录并读取文件；保持宿主文件不变，只读挂载不能阻止宿主改写。
+
+```sh
+rtk proxy docker build --platform linux/arm64 -t laya-rs:local .
+rtk proxy docker run -d --name laya-server --platform linux/arm64 \
+  --cpus 8 --memory 12g --memory-swap 12g \
+  --read-only --cap-drop ALL --security-opt no-new-privileges \
+  --mount "type=bind,source=$PWD/models/multilingual,target=/models/multilingual,readonly" \
+  -p 127.0.0.1:8080:8080 laya-rs:local \
+  --model /models/multilingual --threads 1 --inter-op-threads 1 \
+  --max-concurrency 1 --queue-capacity 32 --queue-timeout 30 \
+  --inference-timeout 120 --shutdown-grace 120
+rtk proxy docker logs laya-server
+rtk proxy curl -fsS http://127.0.0.1:8080/healthz
+rtk proxy curl -fsS http://127.0.0.1:8080/readyz
+rtk proxy curl -fsS http://127.0.0.1:8080/metrics
+rtk proxy curl -fsS http://127.0.0.1:8080/v1/system-one \
+  -H 'Content-Type: application/json' \
+  --data '{"state":"客户要求退款。","questions":{"urgent":{"type":"noul","instructions":"是否紧急？"}}}'
+```
+
+模型校验与预热完成前端口尚未监听，等日志出现 `CPU model initialized` 后重试探活。
+`/healthz` 只表示存活，`/readyz` 的 200 才表示可接收推理；镜像不内置额外探活客户端，
+由宿主或编排器检查 HTTP。容器内原生库位于 `/opt/onnxruntime/lib`，通过
+`LD_LIBRARY_PATH` 提供默认 `libonnxruntime.so`；也可显式传 `--ort-library`。
+服务直接作为 PID 1 接收信号，没有 shell 启动包装器。
+
+上面的 8 vCPU / 12 GiB、intra=1、inter=1、concurrency=1 是本票实测配置，不是最优性能建议。
+未传命令参数时镜像 CMD 使用 model=/models/multilingual、threads=4、concurrency=1；
+自行追加参数会替换整个 CMD，因此须同时传 `--model`，其余未指定值使用 CLI 默认值。
+并发槽各自持有一个 Session，增加并发会增加内存。Docker Desktop VM 需留出对应资源；
+资源不足时检查容器退出码、`OOMKilled`、日志和实际配额，不用缩小或替换模型冒充通过。
+
+```sh
+rtk proxy docker stats --no-stream laya-server
+rtk proxy docker inspect laya-server --format '{{json .State}} {{json .HostConfig.Memory}} {{json .HostConfig.NanoCpus}}'
+rtk proxy docker stop --timeout 130 laya-server
+rtk proxy docker inspect laya-server --format '{{.State.ExitCode}} {{.State.OOMKilled}}'
+rtk proxy docker logs laya-server
+rtk proxy docker rm laya-server
+```
+
+Docker stop 发 SIGTERM：停止准入、ready=503、等待请求返回 unavailable，在途工作完成后退出 0；
+超过 `--shutdown-grace` 时记录剩余任务并退出 1。Docker 的 stop timeout 必须大于服务 grace，
+否则它可能先发 SIGKILL，无法验证服务自身的退出语义（[Docker stop 文档](https://docs.docker.com/reference/cli/docker/container/stop/)）。
+模型目录缺失为退出码 2；文件缺失、哈希错误、不可读或 ORT 加载/ABI 不匹配为退出码 1，
+日志提供静态失败类别，不回显模型路径或正文。
+
+服务与 Rust/crate 许可保存在 `/usr/share/doc/laya-server/`，ORT 许可及 ThirdPartyNotices
+在 `/usr/share/doc/onnxruntime/`，Debian 许可在 `/usr/share/doc/*/copyright`；模型许可随 bundle 挂载。
+实际镜像摘要、动态链接、provider、21 个固定 HTTP 请求和 stop 结果见
+[镜像验收及复现命令](docs/validation/docker.md)。
 
 ## CPU 原生依赖基线
 

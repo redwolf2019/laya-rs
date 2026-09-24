@@ -1,0 +1,81 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 2.45kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/debian:bookworm-slim@sha256:3783cc01769c7b2b1b83a5c5ad96c815348e28ed7da68e2e3687004faa906251
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/rust:1.98.1-slim-bookworm@sha256:ff521445a372125ed4f76e1453a1f8098f2d05332d1601d30db1c1f62757e730
+#3 DONE 0.0s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 172B done
+#4 DONE 0.0s
+
+#5 [build  1/10] FROM docker.io/library/rust:1.98.1-slim-bookworm@sha256:ff521445a372125ed4f76e1453a1f8098f2d05332d1601d30db1c1f62757e730
+#5 DONE 0.0s
+
+#6 [stage-1 1/8] FROM docker.io/library/debian:bookworm-slim@sha256:3783cc01769c7b2b1b83a5c5ad96c815348e28ed7da68e2e3687004faa906251
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 253.16kB done
+#7 DONE 0.0s
+
+#8 [stage-1 4/8] COPY --from=build /ort/lib/ /opt/onnxruntime/lib/
+#8 CACHED
+
+#9 [stage-1 5/8] COPY --from=build /ort/LICENSE /ort/ThirdPartyNotices.txt /usr/share/doc/onnxruntime/
+#9 CACHED
+
+#10 [build 10/10] RUN mkdir -p /licenses/crates /licenses/rust     && cd /usr/local/cargo/registry/src && find . -type f     ( -iname '*license*' -o -iname '*copying*' -o -iname '*copyright*'     -o -iname '*notice*' -o -name Cargo.toml ) -exec cp --parents -t /licenses/crates {} +     && cp -r /usr/local/rustup/toolchains/*/share/doc/rust/licenses /licenses/rust/     && cp /usr/local/rustup/toolchains/*/share/doc/rust/COPYRIGHT*.html /licenses/rust/
+#10 CACHED
+
+#11 [build  6/10] COPY Cargo.toml Cargo.lock ./
+#11 CACHED
+
+#12 [stage-1 7/8] COPY LICENSE NOTICE.md Cargo.lock /usr/share/doc/laya-server/
+#12 CACHED
+
+#13 [stage-1 2/8] RUN apt-get update && apt-get install -y --no-install-recommends     ca-certificates libstdc++6 libgcc-s1     && rm -rf /var/lib/apt/lists/*
+#13 CACHED
+
+#14 [build  2/10] RUN test "arm64" = arm64 || { echo 'Only linux/arm64 is validated and supported by this Dockerfile' >&2; exit 1; }
+#14 CACHED
+
+#15 [build  4/10] RUN curl -fL --retry 3     https://github.com/microsoft/onnxruntime/releases/download/v1.28.0/onnxruntime-linux-aarch64-1.28.0.tgz     -o /tmp/ort.tgz     && echo 'e15ff8b5d85afe6c144d97c6fd432254bf76a219daaf17658087d6ecb3e8f0bb  /tmp/ort.tgz' | sha256sum -c -     && mkdir /ort && tar -xzf /tmp/ort.tgz -C /ort --strip-components=1     && rm /tmp/ort.tgz && rm -rf /ort/lib/cmake /ort/lib/pkgconfig
+#15 CACHED
+
+#16 [stage-1 3/8] COPY --from=build /build/target/release/laya-server /usr/local/bin/laya-server
+#16 CACHED
+
+#17 [stage-1 6/8] COPY --from=build /licenses/ /usr/share/doc/laya-server/dependencies/
+#17 CACHED
+
+#18 [build  8/10] COPY docs/model-manifest.json ./docs/model-manifest.json
+#18 CACHED
+
+#19 [build  5/10] WORKDIR /build
+#19 CACHED
+
+#20 [build  9/10] RUN cargo build --locked --release --bin laya-server && strip target/release/laya-server
+#20 CACHED
+
+#21 [build  7/10] COPY src ./src
+#21 CACHED
+
+#22 [build  3/10] RUN apt-get update && apt-get install -y --no-install-recommends     g++ libc6-dev pkg-config ca-certificates curl     && rm -rf /var/lib/apt/lists/*
+#22 CACHED
+
+#23 [stage-1 8/8] COPY licenses/ /usr/share/doc/laya-server/licenses/
+#23 CACHED
+
+#24 exporting to image
+#24 exporting layers done
+#24 writing image sha256:56128072f8b929ae37afe02ea1e3ce13505313908a23e76556ab80f5a4e26564 done
+#24 naming to docker.io/library/laya-rs:18-clean done
+#24 DONE 0.0s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/zbwoo2gbcw2i0d193p7rl1gaa

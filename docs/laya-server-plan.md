@@ -309,13 +309,14 @@ CLI 启动先校验 bundle、加载 CPU 资源并跑探针，成功后才监听 
 
 使用多阶段 Docker 构建，最终镜像包含服务二进制、所需原生运行库及证书等基础文件。
 模型和 tokenizer 通过只读目录挂载；不在镜像中安装 Python、Node.js、PyTorch
-或 GPU 运行时。以下仅是未来部署目标，当前尚无该镜像：
+或 GPU 运行时。已交付 Linux ARM64 Dockerfile，运行参数和模型准备步骤见
+[README 部署说明](../README.md#docker-部署linux-arm64-cpu)，实际验收见[镜像记录](validation/docker.md)：
 
 ```sh
-docker run --cpus=8 --memory=8g -p 8080:8080 \
-  -v ./models:/models:ro laya-rs \
+docker run --cpus=8 --memory=12g --memory-swap=12g -p 127.0.0.1:8080:8080 \
+  --read-only -v "$PWD/models/multilingual:/models/multilingual:ro" laya-rs:local \
   --model /models/multilingual --listen 0.0.0.0:8080 \
-  --threads 4 --max-concurrency 2
+  --threads 1 --max-concurrency 1
 ```
 
 需要 HTTPS、访问控制或多实例时，可在前面部署 Nginx / Envoy。

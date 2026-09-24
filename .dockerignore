@@ -1,0 +1,12 @@
+**
+!Dockerfile
+!Cargo.toml
+!Cargo.lock
+!src/
+!src/**
+!docs/
+!docs/model-manifest.json
+!LICENSE
+!NOTICE.md
+!licenses/
+!licenses/**
