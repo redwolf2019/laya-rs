@@ -1,0 +1,24 @@
+/healthz
+HTTP/1.1 200 OK
+content-type: application/json
+content-length: 15
+date: Thu, 24 Sep 2026 02:30:04 GMT
+
+{"status":"ok"}
+/readyz
+HTTP/1.1 200 OK
+content-type: application/json
+content-length: 18
+date: Thu, 24 Sep 2026 02:30:04 GMT
+
+{"status":"ready"}
+/metrics
+HTTP/1.1 200 OK
+content-type: application/openmetrics-text; version=1.0.0; charset=utf-8
+content-length: 6
+date: Thu, 24 Sep 2026 02:30:04 GMT
+
+# EOF
+
+PASS CLI curl mixed-6 request 1: full fields/usage exact, action within frozen tolerance
+PASS CLI curl mixed-6 request 2: full fields/usage exact, action within frozen tolerance

@@ -6,8 +6,8 @@ A pure Rust inference runtime and HTTP server for Laya System-1 models.
 Noul 判断能力，通过 HTTP 为多个客户端共享模型。
 
 **当前状态：Rust 已加载并校验固定 bundle、Tokenizer 和 CPU Session，启动时执行真实张量探针。**
-Sequence Builder 已通过固定 tokenizer 的逐 token 对照；答案后处理已通过固定 logits 对照；HTTP 服务尚未实现。资源初始化成功后仍以非零码退出，
-不监听端口；当前没有服务 Docker 镜像。Linux 真实运行结果见 [#8 验收记录](docs/validation/model-loader.md)。
+Sequence Builder、答案后处理和统一 engine 已通过固定样例对照；四个 HTTP 路由已接入共享调度器。
+全部资源加载成功后才监听端口；当前没有服务 Docker 镜像。HTTP 验收见 [#16 记录](docs/validation/http.md)。
 
 #9 已提供[模型无关的 System One 类型与校验](src/system_one.rs)：请求规范化、
 完整响应 DTO、静态类型化错误，以及数字词法/嵌套顺序保留。
@@ -39,7 +39,12 @@ Score 差异；21 个固定请求经 Rust 真实推理通过完整答案门槛�
 在 Tokio 阻塞任务中运行 engine；调用方取消或超时后，真实工作继续占槽。
 `Client` 提交请求并读取状态，`Scheduler::run` 持续回收任务，`close` 停止准入后排空。
 闭锁时序测试及 Linux N=1/2 的真实执行重叠与 RSS 见[调度验收](docs/validation/scheduler.md)。
-HTTP 路由、Prometheus 注册和进程信号/grace 处理仍由后续任务实现。
+
+#16 的 [`api`](src/api.rs) 提供 `POST /v1/system-one`、`GET /healthz`、`GET /readyz`、
+`GET /metrics`。请求按就绪、媒体类型、有界 body、JSON/字段限制、调度准入的顺序校验；
+HTTP 错误复用静态 envelope，真实工作在调用方断开或超时后仍由调度器回收。
+Metrics 当前编码空的 OpenMetrics registry，不生成计数占位。完整指标、结构化请求日志和
+信号/grace 退出属于 #17；当前操作系统终止信号会直接结束进程，不能视为优雅退出。
 
 ## 文档
 
@@ -113,7 +118,15 @@ Tokenizer 由 Sequence Builder 持有，禁用隐式 truncation/padding，使用
 按 `--max-concurrency` 创建独立 CPU Session，实际设置 intra/inter-op threads；
 inter-op 大于 1 时启用 ORT 并行图执行。每个 Session 验证名称、dtype、shape、动态维度，
 并运行 #7 的 `tensor-L2` 输入，检查输出 shape、有限值和 action 概率。
-任何阶段失败均退出码 1；全部成功后持有可复用资源，再报告 HTTP 未实现并退出码 1，不能当成 ready。
+任何阶段失败均退出码 1；全部成功后启动监听，`/readyz` 返回 `{"status":"ready"}`。
+队列满不影响 ready；调度器关闭准入时 ready 返回 503，health 仍只表示进程存活。
+
+```sh
+curl -fsS http://127.0.0.1:8080/readyz
+curl -fsS http://127.0.0.1:8080/v1/system-one \
+  -H 'Content-Type: application/json' \
+  --data '{"state":"客户要求退款。","questions":{"urgent":{"type":"noul","instructions":"是否紧急？"}}}'
+```
 
 ## CPU 原生依赖基线
 
@@ -130,7 +143,9 @@ inter-op 大于 1 时启用 ORT 并行图执行。每个 Session 验证名称、
 
 不启用 ORT 的 `download-binaries`、`copy-dylibs` 或 GPU provider；不启用 tokenizer 的 HTTP 功能。
 构建和启动不下载/导出模型，不调用 Python/Node。加载器先处理 `ort::init_from` 错误再创建环境，
-按一次性启动使用，不能在其他代码提前初始化 ORT。HTTP 等没有调用点的依赖暂不引入。
+按一次性启动使用，不能在其他代码提前初始化 ORT。
+HTTP 使用 Axum 0.8.9，仅启用 HTTP/1、JSON 和 Tokio；OpenMetrics 使用 prometheus-client 0.25.0，
+新增依赖、传递依赖与 Linux 编译记录见 [HTTP 验收](docs/validation/http.md)。
 
 官方运行库获取和诊断命令见 [Linux CPU 验收环境的最小复现](docs/validation-environment.md#最小复现)，
 可在没有模型时执行。按实际架构从 [微软 v1.28.0 release](https://github.com/microsoft/onnxruntime/releases/tag/v1.28.0)

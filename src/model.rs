@@ -150,6 +150,11 @@ fn load_sequence(directory: &Path, settings: &ModelConfig) -> Result<SequenceBui
 fn initialize_runtime(path: &Path) -> Result<(), Error> {
     let environment = ort::init_from(path)
         .map_err(|e| Error::caused("native ONNX Runtime load or ABI check failed", e))?;
+    // Native diagnostics can include paths or tensor values. Keep only severity;
+    // typed operation errors retain their source for internal diagnosis.
+    let environment = environment.with_logger(std::sync::Arc::new(|level, _, _, _, _| {
+        tracing::warn!(event = "native_runtime", ?level);
+    }));
     if !environment.with_telemetry(false).commit() {
         return Err(Error::new("ONNX Runtime was already initialized"));
     }

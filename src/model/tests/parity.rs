@@ -61,7 +61,7 @@ fn check_failures_and_reuse(model: &mut Model) {
     check_native_failure(model, &valid);
 }
 
-fn sequence_with_untrained_token(model: &Model) -> SequenceBuilder {
+pub(super) fn sequence_with_untrained_token(model: &Model) -> SequenceBuilder {
     let mut tokenizer = model.sequence.tokenizer().clone();
     assert_eq!(
         tokenizer

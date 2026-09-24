@@ -1,0 +1,39 @@
+added_lockfile_packages=37
+atomic-waker 1.1.2 rust=1.36 license=Apache-2.0 OR MIT archive_bytes=12422
+axum 0.8.9 rust=1.80 license=MIT archive_bytes=180525
+axum-core 0.5.6 rust=1.78 license=MIT archive_bytes=26769
+bytes 1.12.1 rust=1.57 license=MIT archive_bytes=75667
+dtoa 1.0.11 rust=1.68 license=MIT OR Apache-2.0 archive_bytes=21122
+futures-channel 0.3.34 rust=1.71 license=MIT OR Apache-2.0 archive_bytes=33165
+futures-core 0.3.34 rust=1.36 license=MIT OR Apache-2.0 archive_bytes=14692
+futures-task 0.3.34 rust=1.71 license=MIT OR Apache-2.0 archive_bytes=11376
+futures-util 0.3.34 rust=1.71 license=MIT OR Apache-2.0 archive_bytes=169782
+http 1.5.0 rust=1.57.0 license=MIT OR Apache-2.0 archive_bytes=111161
+http-body 1.1.0 rust=1.61 license=MIT archive_bytes=7887
+http-body-util 0.1.5 rust=1.61 license=MIT archive_bytes=18574
+httparse 1.10.1 rust=None license=MIT OR Apache-2.0 archive_bytes=45190
+httpdate 1.0.3 rust=1.56 license=MIT OR Apache-2.0 archive_bytes=10639
+hyper 1.11.1 rust=1.63 license=MIT archive_bytes=170053
+hyper-util 0.1.20 rust=1.64 license=MIT archive_bytes=112807
+lock_api 0.4.14 rust=1.71.0 license=MIT OR Apache-2.0 archive_bytes=29249
+matchit 0.8.4 rust=None license=MIT AND BSD-3-Clause archive_bytes=33986
+mediatype 0.23.0 rust=None license=MIT archive_bytes=61848
+mime 0.3.17 rust=None license=MIT OR Apache-2.0 archive_bytes=15712
+mio 1.2.3 rust=1.71 license=MIT archive_bytes=110455
+parking_lot 0.12.5 rust=1.71 license=MIT OR Apache-2.0 archive_bytes=46735
+parking_lot_core 0.9.12 rust=1.71.0 license=MIT OR Apache-2.0 archive_bytes=34110
+percent-encoding 2.3.2 rust=1.51 license=MIT OR Apache-2.0 archive_bytes=11583
+prometheus-client 0.25.0 rust=None license=Apache-2.0 OR MIT archive_bytes=98495
+prometheus-client-derive-encode 0.5.1 rust=None license=Apache-2.0 OR MIT archive_bytes=11234
+redox_syscall 0.5.18 rust=None license=MIT archive_bytes=30747
+scopeguard 1.2.0 rust=None license=MIT OR Apache-2.0 archive_bytes=11619
+serde_path_to_error 0.1.20 rust=1.61 license=MIT OR Apache-2.0 archive_bytes=18046
+slab 0.4.12 rust=1.51 license=MIT archive_bytes=19080
+socket2 0.6.5 rust=1.70 license=MIT OR Apache-2.0 archive_bytes=60031
+sync_wrapper 1.0.2 rust=None license=Apache-2.0 archive_bytes=6958
+tower 0.5.3 rust=1.64.0 license=MIT archive_bytes=110488
+tower-layer 0.3.3 rust=None license=MIT archive_bytes=6180
+tower-service 0.3.3 rust=None license=MIT archive_bytes=6950
+wasi 0.11.1+wasi-snapshot-preview1 rust=None license=Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT archive_bytes=28477
+windows-sys 0.61.2 rust=1.71 license=MIT OR Apache-2.0 archive_bytes=2517186
+added_crate_archives_bytes=4291000

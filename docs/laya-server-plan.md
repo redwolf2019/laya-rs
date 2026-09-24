@@ -1,12 +1,12 @@
 # Laya Rust HTTP Server 方案
 
 状态：CLI、固定 bundle 加载、Rust CPU 张量探针、System One 类型、输入规范化与 Python JSON 文本渲染已实现；
-Sequence Builder 与五个批处理输入已实现并通过固定 tokenizer 对照；后处理已通过固定 logits 对照，同步 engine 入口已贯通；HTTP 待实现。
+Sequence Builder 与五个批处理输入已实现并通过固定 tokenizer 对照；后处理已通过固定 logits 对照，同步 engine 入口及四个 HTTP 路由已贯通。
 已通过 #8 固定张量验收；#13 已修复 LayerNorm 数值差异，21 个固定请求的 Rust 真实推理
 与完整答案在 Linux ARM64 CPU 通过对照，见[后处理验收](validation/postprocess.md)。
-#14 已把该链路接入可复用 engine，失败恢复与运行记录见[engine 验收](validation/engine.md)。HTTP 尚待验收。
+#14 已把该链路接入可复用 engine，失败恢复与运行记录见[engine 验收](validation/engine.md)。HTTP 真实对照见 [HTTP 验收](validation/http.md)。
 #15 已接入有界 FIFO 调度、真实阻塞任务持槽和句柄回收，Linux N=1/2 实测见[调度验收](validation/scheduler.md)。
-版本日期：2026-09-23。
+版本日期：2026-09-24。
 
 字段、序列、校准、HTTP 错误、资源限制和验收阈值以
 [MVP 兼容契约](compatibility.md)为准；本文记录目标、工程边界与实施顺序。
@@ -258,7 +258,7 @@ permit 必须覆盖真实 CPU 工作的整个生命周期：即使 HTTP 请求�
 
 当前 `scheduler::Client` 复用上述 Session，`Scheduler::run(&mut self)` 由服务所有者持续驱动，
 关闭准入后等待全部 JoinSet 结果；取消该驱动 future 不转移或丢弃句柄，须恢复驱动完成回收。
-CLI 已装配并关闭空闲调度器，仍未监听 HTTP。后续退出流程在 grace 到期时必须终止整个进程。
+CLI 已把 HTTP 服务与调度器所有者并行驱动；#17 的信号退出流程在 grace 到期时必须终止整个进程。
 
 ## 9. 可观测性与生命周期
 
@@ -290,7 +290,8 @@ MVP 首轮部署验收与 benchmark 使用本机 Docker Desktop 的 Linux ARM64 
 记录实际 CPU、内存配额及虚拟化环境；结果不代表 16 核 / 32 GB 裸机或 Linux amd64。
 其他平台的可用性和性能需在对应环境另行验证。
 
-CLI 已可执行；启动先校验 bundle、加载 CPU 资源并跑探针，成功后仍报告 HTTP 未实现并非零退出。
+CLI 启动先校验 bundle、加载 CPU 资源并跑探针，成功后才监听 HTTP。
+#16 的 metrics 仅编码空 registry；完整指标、结构化请求日志、信号与 grace 验收留在 #17。
 构建和当前可执行检查见 [README](../README.md#构建与-cli)：
 
 ```sh

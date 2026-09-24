@@ -103,7 +103,14 @@ pub struct Scheduler {
 #[derive(Clone)]
 pub struct Client {
     shared: Arc<Shared>,
-    resources: Arc<Resources>,
+    worker: Worker,
+}
+
+#[derive(Clone)]
+enum Worker {
+    Model(Arc<Resources>),
+    #[cfg(test)]
+    Controlled(Arc<dyn Fn(Request) -> Result<Response, Error> + Send + Sync>),
 }
 
 struct Resources {
@@ -132,11 +139,11 @@ impl Scheduler {
         )?;
         let client = Client {
             shared: dispatcher.shared.clone(),
-            resources: Arc::new(Resources {
+            worker: Worker::Model(Arc::new(Resources {
                 sessions: Mutex::new(sessions),
                 sequence,
                 calibration,
-            }),
+            })),
         };
         Ok(Self { dispatcher, client })
     }
@@ -160,22 +167,26 @@ impl Client {
     /// Queue/availability/deadline errors or the unchanged engine failure. Dropping
     /// this future cancels waiting admission, never already-started CPU work.
     pub async fn system_one(&self, request: Request) -> Result<Response, Error> {
-        let resources = self.resources.clone();
+        let worker = self.worker.clone();
         let shared = self.shared.clone();
         self.shared
-            .execute(move || {
-                let mut session = lock(&resources.sessions).pop().ok_or_else(|| {
-                    shared.close();
-                    Error::Unavailable
-                })?;
-                let result = engine::system_one(
-                    &request,
-                    &resources.sequence,
-                    &mut session,
-                    &resources.calibration,
-                );
-                lock(&resources.sessions).push(session);
-                result.map_err(Error::Inference)
+            .execute(move || match worker {
+                Worker::Model(resources) => {
+                    let mut session = lock(&resources.sessions).pop().ok_or_else(|| {
+                        shared.close();
+                        Error::Unavailable
+                    })?;
+                    let result = engine::system_one(
+                        &request,
+                        &resources.sequence,
+                        &mut session,
+                        &resources.calibration,
+                    );
+                    lock(&resources.sessions).push(session);
+                    result.map_err(Error::Inference)
+                }
+                #[cfg(test)]
+                Worker::Controlled(work) => work(request),
             })
             .await
     }
@@ -440,3 +451,26 @@ impl Drop for Running {
 
 #[cfg(test)]
 mod tests;
+
+#[cfg(test)]
+impl Scheduler {
+    // Replace only the CPU boundary; route tests retain real admission/task ownership.
+    pub(crate) fn test_worker(
+        slots: usize,
+        queue_capacity: usize,
+        work: impl Fn(Request) -> Result<Response, Error> + Send + Sync + 'static,
+    ) -> Self {
+        let dispatcher = Dispatcher::new(
+            slots,
+            queue_capacity,
+            Duration::from_secs(3),
+            Duration::from_secs(5),
+        )
+        .unwrap();
+        let client = Client {
+            shared: dispatcher.shared.clone(),
+            worker: Worker::Controlled(Arc::new(work)),
+        };
+        Self { dispatcher, client }
+    }
+}

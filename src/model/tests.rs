@@ -1,6 +1,7 @@
 use super::*;
 
 mod concurrency;
+mod http;
 mod parity;
 
 fn tensor(ty: TensorElementType, shape: &[i64], symbols: &[&str]) -> ValueType {

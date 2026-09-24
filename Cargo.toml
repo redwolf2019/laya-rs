@@ -7,6 +7,10 @@ license = "MIT AND Apache-2.0"
 publish = false
 
 [dependencies]
+axum = { version = "=0.8.9", default-features = false, features = ["http1", "json", "tokio"] }
+http-body-util = "0.1.3"
+mediatype = { version = "=0.23.0", default-features = false }
+prometheus-client = { version = "=0.25.0", default-features = false }
 ort = { version = "=2.0.0-rc.13", default-features = false, features = ["std", "load-dynamic", "api-28"] }
 tokenizers = { version = "=0.23.2", default-features = false, features = ["onig"] }
 serde = { version = "1", features = ["derive"] }
@@ -16,4 +20,6 @@ tokio = { version = "1.53.1", default-features = false, features = ["rt-multi-th
 tracing = { version = "0.1.44", default-features = false, features = ["std"] }
 
 [dev-dependencies]
-tokio = { version = "1.53.1", default-features = false, features = ["test-util"] }
+futures-util = { version = "0.3", default-features = false, features = ["std"] }
+tower = { version = "0.5", default-features = false, features = ["util"] }
+tokio = { version = "1.53.1", default-features = false, features = ["test-util", "io-util"] }

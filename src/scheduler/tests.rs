@@ -325,6 +325,9 @@ impl tracing::Subscriber for FailureEvents {
 
 #[tokio::test(start_paused = true)]
 async fn buffered_failure_is_recorded_when_caller_later_times_out() {
+    // tracing-core 0.1.36's single-dispatch fast path consults the current thread.
+    // Register the unobserved threads too, so their first call cannot cache Never.
+    let _other_threads = tracing::Dispatch::new(tracing::subscriber::NoSubscriber::default());
     let events = Arc::new(std::sync::atomic::AtomicUsize::new(0));
     let _subscriber = tracing::subscriber::set_default(FailureEvents(events.clone()));
     let mut owner = Dispatcher::new(1, 0, Duration::from_secs(3), Duration::from_secs(5)).unwrap();

@@ -4,10 +4,11 @@
 本文是后续实现和验收的规范；[服务方案](laya-server-plan.md)说明实施顺序。
 本文冻结行为；#9 已实现模型无关的类型与输入边界，见
 [`src/system_one.rs`](../src/system_one.rs) 及 [`tests/system_one.rs`](../tests/system_one.rs)。
-尚未实现 HTTP 服务。#10 已生成[完整官方参考 fixtures](../tests/fixtures/README.md)，
-真实 ONNX 对照发现长选项 Score 四位舍入差异（4.5307 / 4.5306），未通过完整链路门槛。
+#10 已生成[完整官方参考 fixtures](../tests/fixtures/README.md)，
+其长选项 Score 四位舍入差异已在 #13 修复，历史失败证据保留。
 #15 的[调度层与验收](validation/scheduler.md)已实现本契约的排队、执行等待、取消及状态读取边界；
-HTTP 错误响应、指标注册与进程退出仍待后续任务验收。
+#16 的 [HTTP 验收](validation/http.md) 覆盖四路由、错误响应及真实模型对照；
+metrics 当前只编码空 registry，完整观测与进程退出属于 #17。
 
 ## 1. 固定依据与边界
 
@@ -297,6 +298,14 @@ CLI 是唯一运行配置入口，不实现第二套 YAML。`--model` 必须提�
 序列构造在获得槽后、模型调用前完成；marker 不足仍为输入拒绝。
 语法合法但单候选属于模型支持边界，超问题/选项/深度属于资源拒绝，
 三者都映射 400，但测试须分别标记，不能笼统称为非法 JSON。
+
+#16 传输细节：媒体类型遵循第 2.1 节，仅接受 `application/json`，
+所有 charset 参数必须是 UTF-8；body 始终按 UTF-8 JSON 校验。缺失、不符或无法解析的
+Content-Type 为 415。body 流读取失败映射静态 400；字节限制在收集前包住流，
+不依据 Content-Length 放行，也不等完整 chunked body 到齐后才拒绝。
+未知路径使用空 body 的 404，已知路径的错误方法使用空 body 的 405 和 `Allow`；
+GET 路由支持 HEAD（相同状态/headers，无 body），不新增业务错误 code 或路径别名。
+这些行为由 [HTTP 路由及 TCP 测试](../src/api/tests.rs) 验证。
 
 ### 7.3 准入、取消与退出
 

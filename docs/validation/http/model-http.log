@@ -1,0 +1,42 @@
+   Compiling laya-server v0.1.0 (/work)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.60s
+     Running unittests src/main.rs (/target/debug/deps/laya_server-da4ac18ab46d782c)
+
+running 1 test
+onnxruntime cpuid_info warning: Unknown CPU vendor. cpuinfo_vendor value: 0
+PASS HTTP/engine/official: "en-choice.json"
+PASS HTTP/engine/official: "en-noul.json"
+PASS HTTP/engine/official: "en-score.json"
+PASS HTTP/engine/official: "huge-integer.json"
+PASS HTTP/engine/official: "json-order-numbers.json"
+PASS HTTP/engine/official: "long-padding.json"
+PASS HTTP/engine/official: "marker.json"
+PASS HTTP/engine/official: "mixed-16.json"
+PASS HTTP/engine/official: "mixed-6.json"
+PASS HTTP/engine/official: "normalization.json"
+PASS HTTP/engine/official: "options-10.json"
+PASS HTTP/engine/official: "options-11.json"
+PASS HTTP/engine/official: "options-2.json"
+PASS HTTP/engine/official: "options-3.json"
+PASS HTTP/engine/official: "options-32.json"
+PASS HTTP/engine/official: "options-5.json"
+PASS HTTP/engine/official: "options-6.json"
+PASS HTTP/engine/official: "scalars.json"
+PASS HTTP/engine/official: "zh-choice.json"
+PASS HTTP/engine/official: "zh-noul.json"
+PASS HTTP/engine/official: "zh-score.json"
+PASS HTTP/engine/official: "mixed-6.json"
+PASS HTTP/engine/official: "mixed-6.json"
+PASS HTTP/engine/official: "mixed-6.json"
+PASS HTTP/engine/official: "mixed-6.json"
+PASS: chunked body >1 MiB rejected before terminal chunk
+TCP closed during real work: inflight=1
+PASS: disconnected CPU work completed and owner reaped it
+PASS: real native inference failure returns a static 500 envelope
+PASS HTTP/engine/official: "mixed-6.json"
+PASS: 21 HTTP/engine/official fixtures, 4 concurrent repeats, chunked 413, TCP disconnect, recovery, all tasks reaped
+PASS: native log fields contain only a static event and typed severity
+test model::tests::http::linux_http_model_parity_and_disconnect ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 33.45s
+
