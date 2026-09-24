@@ -71,6 +71,22 @@ laya-rs 行为依据 [API 兼容契约](docs/compatibility.md)；本项目未执
 运行服务不需要 Python、Node.js、PyTorch 或 GPU。ONNX Runtime 是原生依赖，
 “Rust 实现”指应用代码；自行导出模型时，才需要独立的 Python/PyTorch 准备环境。
 
+### 推荐最低配置（仅运行服务）
+
+以下配置用于运行预编译服务和固定的 `laya-multilingual` 模型，不包含源码编译或模型导出：
+
+| 资源 | 推荐配置 |
+| --- | --- |
+| CPU | 4 核 / 4 vCPU |
+| 内存 | 6 GiB |
+| 磁盘 | 至少 5 GiB 可用空间，不含操作系统；用于程序、模型、下载解压和日志 |
+| GPU / 显存 | 不需要 |
+
+`[推断/MED]` 这是依据[安装验收](docs/validation/installer.md)、
+[模型体积](docs/model-manifest.json)和[性能记录](docs/mvp-validation.md)给出的起步建议，
+严格的硬件下限尚未测定。长文本、多问题或更高推理并发需要按实际负载验证并增加资源；
+日志长期保留也需另留磁盘空间。
+
 ## 一键安装 / 卸载（Linux x86_64、ARM64）
 
 在有交互终端的 Linux 宿主机或虚拟机执行，需要 root 或 sudo。安装器自动下载并校验
