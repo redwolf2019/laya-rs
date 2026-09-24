@@ -55,18 +55,20 @@ owned_directory() {
         [ "$(stat -c %u "$1")" = 0 ] || die "目录必须由 root 所有：$1"
         mode=$(stat -c %a "$1")
         [ "$((0$mode & 0022))" = 0 ] || die "目录不能允许其他用户写入：$1"
-        [ -f "$1/.laya-installer" ] && [ "$(cat "$1/.laya-installer")" = 1 ] || die "拒绝接管非本安装器目录：$1"
+        if [ ! -f "$1/.laya-installer" ] || [ "$(cat "$1/.laya-installer")" != 1 ]; then die "拒绝接管非本安装器目录：$1"; fi
     fi
 }
 preflight() {
     [ "$(uname -s)" = Linux ] || die '仅支持 Linux 宿主机或虚拟机'
     [ "$(id -u)" = 0 ] || die '请使用 sudo sh 执行，或以 root 运行'
     case "$(uname -m)" in x86_64) arch=x86_64;; aarch64|arm64) arch=aarch64;; *) die '仅支持 x86_64 / ARM64';; esac
-    [ ! -e /.dockerenv ] && [ ! -e /run/.containerenv ] || die '不支持容器内安装'
+    if [ -e /.dockerenv ] || [ -e /run/.containerenv ]; then die '不支持容器内安装'; fi
     if command -v systemd-detect-virt >/dev/null 2>&1 && systemd-detect-virt --container --quiet; then die '不支持容器内安装'; fi
     detect_manager
     for dir in "$ROOT" "$DATA" "$CONF"; do owned_directory "$dir"; done
-    for dir in /opt /var/lib /etc /run; do [ -d "$dir" ] && [ -w "$dir" ] || die "系统目录不可写：$dir"; done
+    for dir in /opt /var/lib /etc /run; do
+        if [ ! -d "$dir" ] || [ ! -w "$dir" ]; then die "系统目录不可写：$dir"; fi
+    done
     mkdir "$LOCK" 2>/dev/null || die "另一个安装器正在执行，或存在未清理的锁：${LOCK}（确认无安装进程后再移除）"
     locked=1
     printf '%s\n' "$$" > "$LOCK/pid"
@@ -252,7 +254,7 @@ prepare_log() {
 check_service_conflicts() {
     [ -f "$CONF/manager" ] && return 0
     for path in /etc/systemd/system/laya-server.service /usr/lib/systemd/system/laya-server.service /lib/systemd/system/laya-server.service /etc/init.d/laya-server /etc/sv/laya-server /var/service/laya-server /etc/dinit.d/laya-server; do
-        [ ! -e "$path" ] && [ ! -L "$path" ] || die "拒绝覆盖既有服务：$path"
+        if [ -e "$path" ] || [ -L "$path" ]; then die "拒绝覆盖既有服务：$path"; fi
     done
 }
 check_api() {
@@ -347,7 +349,7 @@ prepare_runtime() {
     [ "$free" -ge 4194304 ] || die '/var/lib 至少需要 4 GiB 可用空间'
     checked_download "$base/laya-server-linux-$arch.tar.gz" "$work/runtime.tgz" "$runtime_sha"
     unpack "$work/runtime.tgz" "$work/runtime"
-    [ "$(cat "$work/runtime/VERSION")" = "$version" ] && [ "$(cat "$work/runtime/MODEL_ID")" = "$model_id" ] || die '程序包元数据不匹配'
+    if [ "$(cat "$work/runtime/VERSION")" != "$version" ] || [ "$(cat "$work/runtime/MODEL_ID")" != "$model_id" ]; then die '程序包元数据不匹配'; fi
     "$work/runtime/exec" laya-server --help >/dev/null || die '程序或私有运行库无法在本机运行'
     for dir in "$ROOT" "$DATA"; do make_directory "$dir" 755; done
     make_directory "$CONF" 700

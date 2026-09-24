@@ -69,7 +69,7 @@ def main():
     parser.add_argument("action", choices=("model", "release", "id"))
     parser.add_argument("--model", type=Path, default=ROOT / "models/multilingual")
     parser.add_argument("--out", type=Path, default=ROOT / "dist")
-    parser.add_argument("--version", default="v0.1.0")
+    parser.add_argument("--version", default="v0.1.1")
     args = parser.parse_args()
     if args.action == "id":
         print(model_id())

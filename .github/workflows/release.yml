@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Existing source tag, for example v0.1.0'
+        description: 'Existing source tag, for example v0.1.1'
         required: true
 
 permissions:

@@ -37,7 +37,7 @@ sudo cat /etc/laya-server/token.env
 Choice/Score/Noul 真实 API 调用，全部通过才显示成功。
 
 重复执行同一命令可升级或修复。默认选择最新稳定 Release，解析后固定本次版本；也可将
-命令末尾的 `install` 改成 `install v0.1.0` 指定版本。模型独立固定版本，校验通过后复用。
+命令末尾的 `install` 改成 `install v0.1.1` 指定版本。模型独立固定版本，校验通过后复用。
 旧程序在下载和校验期间继续服务，切换时有短暂停机。失败则恢复旧链接、配置和服务定义，
 再次进行真实推理检查；恢复失败会单独报错，不宣称回退成功。旧版本目录保留供诊断，
 完整卸载时一并清理。进程被 SIGKILL 或断电时无法执行 shell 退出处理，须检查服务和锁后恢复。
@@ -94,8 +94,8 @@ python3 tools/release/package.py id
 mkdir -p dist
 docker run --rm --platform linux/amd64 -v "$PWD:/work:ro" -v "$PWD/dist:/out" -w /work \
   rust:1.98.1-slim-bookworm@sha256:ff521445a372125ed4f76e1453a1f8098f2d05332d1601d30db1c1f62757e730 \
-  sh tools/release/build.sh v0.1.0 /out
-python3 tools/release/package.py release --version v0.1.0 --out dist
+  sh tools/release/build.sh v0.1.1 /out
+python3 tools/release/package.py release --version v0.1.1 --out dist
 ```
 
 `runtime-sources-<arch>.tar.gz` 是实际打包 Debian 库的对应源码（原始包、补丁、版本与构建入口），
