@@ -1,0 +1,52 @@
+[
+  {
+    "name": "loader",
+    "exit_code": 0,
+    "elapsed_s": 11.00955795898335
+  },
+  {
+    "name": "http",
+    "exit_code": 0,
+    "elapsed_s": 33.61033120797947
+  },
+  {
+    "name": "sequence",
+    "exit_code": 0,
+    "elapsed_s": 5.693595541990362
+  },
+  {
+    "name": "scheduler-n1",
+    "exit_code": 0,
+    "elapsed_s": 13.070818208972923
+  },
+  {
+    "name": "scheduler-n2",
+    "exit_code": 0,
+    "elapsed_s": 12.197235542000271
+  },
+  {
+    "name": "docker-smoke",
+    "exit_code": 0,
+    "elapsed_s": 46.45841237495188
+  },
+  {
+    "name": "fmt",
+    "exit_code": 0,
+    "elapsed_s": 0.17179770802613348
+  },
+  {
+    "name": "clippy",
+    "exit_code": 0,
+    "elapsed_s": 4.237746291037183
+  },
+  {
+    "name": "tests",
+    "exit_code": 0,
+    "elapsed_s": 4.83593404100975
+  },
+  {
+    "name": "benchmark-test",
+    "exit_code": 0,
+    "elapsed_s": 0.3509236670215614
+  }
+]

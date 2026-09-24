@@ -1,0 +1,160 @@
+[
+  {
+    "path": "models/multilingual/laya.onnx",
+    "sha256": "5a028e8dac51de3c430514c47e047fc89911edaaa72762c3e880a3591cc0184c",
+    "bytes": 2649363
+  },
+  {
+    "path": "models/multilingual/laya.onnx.data",
+    "sha256": "6ef993ee707fe1d6a75529f4a1f8347ff89966ff955d332ea3ebe4e5171a9ac1",
+    "bytes": 1287651328
+  },
+  {
+    "path": "models/multilingual/laya_config.json",
+    "sha256": "d9f54bcdd1993f9d5e6c5839516de423599759a635a1d53b172c154b3f717880",
+    "bytes": 127
+  },
+  {
+    "path": "models/multilingual/tokenizer/tokenizer.json",
+    "sha256": "609d8f4c067cd3950f88594c5a802616cea245823836ef5848ee4fc40aab5b6f",
+    "bytes": 34363188
+  },
+  {
+    "path": "models/multilingual/tokenizer/tokenizer_config.json",
+    "sha256": "424b69444bf7b5809dc2cd2e36d0bd71b8055124dd24274d6db3c655d38205e7",
+    "bytes": 502
+  },
+  {
+    "path": "models/multilingual/licenses/Apache-2.0.txt",
+    "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "bytes": 11358
+  },
+  {
+    "path": "models/multilingual/licenses/NOTICE.md",
+    "sha256": "bd0b93d7c933bb96b7457de588f5c79e83bf3bde8eb527e5d6030d163c0bc047",
+    "bytes": 2043
+  },
+  {
+    "path": "models/multilingual/licenses/model-README.md",
+    "sha256": "8a8a77d006d07a1a1ee1f964d83b4de935dee354a3e6f371c044b4a3b4c4ef70",
+    "bytes": 6957
+  },
+  {
+    "path": "models/multilingual/licenses/official-README.md",
+    "sha256": "575cb8fb4fd82465036a9d265c283fec9448b78067e6045afac8cfa113dde98f",
+    "bytes": 10217
+  },
+  {
+    "path": "models/multilingual/licenses/receptron-LICENSE",
+    "sha256": "c07ddef02172ce4162a2aae8ebddd5c2b84d8374da865c592afea5710e2acc0c",
+    "bytes": 1066
+  },
+  {
+    "path": "tests/fixtures/system-one/artificial.json",
+    "sha256": "939193398095e52c73db8c6310f65a3988e58eb141f7d5461dccb3ea57b8e066"
+  },
+  {
+    "path": "tests/fixtures/system-one/en-choice.json",
+    "sha256": "c5b48f6ca9634fb89eda409e531bf490acab1adffb15e84003a546a80e4a95e0"
+  },
+  {
+    "path": "tests/fixtures/system-one/en-noul.json",
+    "sha256": "cd8a94daeb8f39d8b4fe75d7a8509ee966c7605b0a9ff6d905fe9861a3ff7c3a"
+  },
+  {
+    "path": "tests/fixtures/system-one/en-score.json",
+    "sha256": "a0bd1660954d320da08d4450fdfb19ac053aad6090fd7377f8602443f9af9f44"
+  },
+  {
+    "path": "tests/fixtures/system-one/huge-integer.json",
+    "sha256": "0ed2bf12bd415aa9d972b93a15d9dc975fa521d6aefc3df4d477ae9de51d8bc7"
+  },
+  {
+    "path": "tests/fixtures/system-one/json-order-numbers.json",
+    "sha256": "8eb4b1e7b229cb771c72f8764c92e3c835a5d79a2fba40d425a048a718a52df4"
+  },
+  {
+    "path": "tests/fixtures/system-one/long-padding.json",
+    "sha256": "8babc54cb374aaf670f5c54bab47738134608834a426aaa5920e97f4b5426370"
+  },
+  {
+    "path": "tests/fixtures/system-one/marker.json",
+    "sha256": "c57d7cf14a164a5b6889d4aa7292f204101e9093743ffc7591cb66cf452b42c3"
+  },
+  {
+    "path": "tests/fixtures/system-one/mixed-16.json",
+    "sha256": "6079ce53c61ea7e80d68dc0b78930de19f088e1a7fd6cbe4e8df57361af051b3"
+  },
+  {
+    "path": "tests/fixtures/system-one/mixed-6.json",
+    "sha256": "6b458c99814d4ddcd429519a7592f02b3a0cc7deeb474c34dbe015e6295a288b"
+  },
+  {
+    "path": "tests/fixtures/system-one/normalization.json",
+    "sha256": "06933611aed0e5bcf7987f026143c86f38a60f7ffa859874e3ff05e32484c7c6"
+  },
+  {
+    "path": "tests/fixtures/system-one/options-10.json",
+    "sha256": "39f2d4af2b64900a5b748e09464a1198e2f1a35249567a29f53f8e317a2c624a"
+  },
+  {
+    "path": "tests/fixtures/system-one/options-11.json",
+    "sha256": "f93e945e0d48b4db7e125247a807af16c694585287cbe772a3e5d3da91f6a965"
+  },
+  {
+    "path": "tests/fixtures/system-one/options-2.json",
+    "sha256": "207fe18ea05f2e27675c422cebd8c526d5573d425e144bb00a9b6e024112bc7d"
+  },
+  {
+    "path": "tests/fixtures/system-one/options-3.json",
+    "sha256": "75437f83a2f17269d35a4bdd7976015cc57fe6de97ca41672af501fe1bd322fa"
+  },
+  {
+    "path": "tests/fixtures/system-one/options-32.json",
+    "sha256": "57b182f344d96be0a2dac21d3fa850a00996a18392e1a644d7432bedbe6945af"
+  },
+  {
+    "path": "tests/fixtures/system-one/options-5.json",
+    "sha256": "0c438e16494550b6897f1649f675083f0f5af18860f63f5be34a012b0ee4e386"
+  },
+  {
+    "path": "tests/fixtures/system-one/options-6.json",
+    "sha256": "7cd0b0d7dd47c8ab5e100e9229aab8fe07a1acd4be06ec1ddfe82907159ec2a1"
+  },
+  {
+    "path": "tests/fixtures/system-one/provenance.json",
+    "sha256": "33e674e4518ec79a9985e3b5cc923cd2c6bebdf1c082e150b236eacf700b9406"
+  },
+  {
+    "path": "tests/fixtures/system-one/rejected.json",
+    "sha256": "1d764b6c1e9009224a6fc829320c545e5ffa5cf968e40b625780b98da45b4902"
+  },
+  {
+    "path": "tests/fixtures/system-one/scalars.json",
+    "sha256": "825ee164797211d2a2c08b580fecce6ab6f42d5c14355ff0639877787dec2e1b"
+  },
+  {
+    "path": "tests/fixtures/system-one/zh-choice.json",
+    "sha256": "2c0fbea93b41d3496aee0da465dd0fa45853c070a85e3ea8a50f8ef8a3856de1"
+  },
+  {
+    "path": "tests/fixtures/system-one/zh-noul.json",
+    "sha256": "28b6756e28de75b19d79b1e5264c5edd5c5352d9220e9c9a82f2d1b014e64649"
+  },
+  {
+    "path": "tests/fixtures/system-one/zh-score.json",
+    "sha256": "a8eb365159e8f61294dca9f1f3f49c69dbb7813f50960a90290d5e566f45d192"
+  },
+  {
+    "path": "Cargo.lock",
+    "sha256": "11bf8d8c4e4b7d7b33a21c7cc25f7eb2495332bc7b7a480d7396b284e3763eb5"
+  },
+  {
+    "path": "docs/model-manifest.json",
+    "sha256": "3bff67d421ae27d4f68a3904c3fe73074509d38e85417025bd51e703b11d8359"
+  },
+  {
+    "path": "tests/fixtures/system-one/manifest.json",
+    "sha256": "75dcdd99fbc6d281bd45ddf14f3c552a6d71f9ee9dcab3ef956e632e30e5e2cb"
+  }
+]

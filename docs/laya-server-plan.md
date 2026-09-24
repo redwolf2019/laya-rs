@@ -7,6 +7,9 @@ Sequence Builder 与五个批处理输入已实现并通过固定 tokenizer 对�
 #14 已把该链路接入可复用 engine，失败恢复与运行记录见[engine 验收](validation/engine.md)。HTTP 真实对照见 [HTTP 验收](validation/http.md)。
 #15 已接入有界 FIFO 调度、真实阻塞任务持槽和句柄回收，Linux N=1/2 实测见[调度验收](validation/scheduler.md)。
 版本日期：2026-09-24。
+#17/#18 已交付指标、信号/grace 和 Linux ARM64 运行镜像；#19 的四阶段汇总、12 组 benchmark
+及 Linux 模型/HTTP/资源/退出回归全部通过，范围限本机 Docker Desktop Linux ARM64。
+四阶段最终门槛、本次与复用检查、未执行范围及线程建议集中在 [MVP 验收报告](mvp-validation.md)。
 
 字段、序列、校准、HTTP 错误、资源限制和验收阈值以
 [MVP 兼容契约](compatibility.md)为准；本文记录目标、工程边界与实施顺序。
@@ -299,7 +302,7 @@ CLI 启动先校验 bundle、加载 CPU 资源并跑探针，成功后才监听 
   --model ./models/multilingual \
   --ort-library /opt/onnxruntime/lib/libonnxruntime.so \
   --listen 0.0.0.0:8080 \
-  --threads 8 \
+  --threads 2 \
   --max-concurrency 2
 ```
 
@@ -363,3 +366,8 @@ logits 使用 `abs <= 1e-4 + 1e-3*abs(reference)`，未舍入概率及 act_proba
 - 固定模型、CPU 型号、线程配置、请求内容和 token 数，区分冷启动与预热后结果。
 
 验收：Linux CPU 部署可复现；给出实测线程与并发建议，不预设延迟或吞吐承诺。
+
+本机 Docker Desktop Linux ARM64 的 mixed-6 实测：单客户端可从 intra=2/slot=1 开始，
+多个持续客户端可用 intra=2/slot=2，inter=1；双槽在客户端并发 2/4/8 时约 5.24–5.29 QPS。
+完整时长、样本、分位数、资源与限制见 [#19 报告](mvp-validation.md)。默认参数未修改；
+该结果不外推其他请求长度、语言、架构、裸机或生产流量。

@@ -1,0 +1,266 @@
+{
+  "Id": "ac8d1b8967360805fc42be730a5d1789579d7f91928dbf4fa64c17951f09d374",
+  "Created": "2026-09-24T03:43:56.190953419Z",
+  "Path": "/usr/local/bin/laya-server",
+  "Args": [
+    "--model",
+    "/models/multilingual",
+    "--threads",
+    "1",
+    "--max-concurrency",
+    "1",
+    "--threads",
+    "2",
+    "--max-concurrency",
+    "1",
+    "--inter-op-threads",
+    "1",
+    "--queue-capacity",
+    "32",
+    "--queue-timeout",
+    "30",
+    "--inference-timeout",
+    "120",
+    "--shutdown-grace",
+    "120"
+  ],
+  "State": {
+    "Status": "running",
+    "Running": true,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 32475,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-09-24T03:43:56.248144586Z",
+    "FinishedAt": "0001-01-01T00:00:00Z"
+  },
+  "Image": "sha256:56128072f8b929ae37afe02ea1e3ce13505313908a23e76556ab80f5a4e26564",
+  "ResolvConfPath": "/var/lib/docker/containers/ac8d1b8967360805fc42be730a5d1789579d7f91928dbf4fa64c17951f09d374/resolv.conf",
+  "HostnamePath": "/var/lib/docker/containers/ac8d1b8967360805fc42be730a5d1789579d7f91928dbf4fa64c17951f09d374/hostname",
+  "HostsPath": "/var/lib/docker/containers/ac8d1b8967360805fc42be730a5d1789579d7f91928dbf4fa64c17951f09d374/hosts",
+  "LogPath": "/var/lib/docker/containers/ac8d1b8967360805fc42be730a5d1789579d7f91928dbf4fa64c17951f09d374/ac8d1b8967360805fc42be730a5d1789579d7f91928dbf4fa64c17951f09d374-json.log",
+  "Name": "/trusting_wiles",
+  "RestartCount": 0,
+  "Driver": "overlay2",
+  "Platform": "linux",
+  "MountLabel": "",
+  "ProcessLabel": "",
+  "AppArmorProfile": "",
+  "ExecIDs": null,
+  "HostConfig": {
+    "Binds": null,
+    "ContainerIDFile": "",
+    "LogConfig": {
+      "Type": "json-file",
+      "Config": {}
+    },
+    "NetworkMode": "bridge",
+    "PortBindings": {
+      "8080/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": ""
+        }
+      ]
+    },
+    "RestartPolicy": {
+      "Name": "no",
+      "MaximumRetryCount": 0
+    },
+    "AutoRemove": false,
+    "VolumeDriver": "",
+    "VolumesFrom": null,
+    "ConsoleSize": [
+      0,
+      0
+    ],
+    "CapAdd": null,
+    "CapDrop": [
+      "ALL"
+    ],
+    "CgroupnsMode": "private",
+    "Dns": null,
+    "DnsOptions": [],
+    "DnsSearch": [],
+    "ExtraHosts": null,
+    "GroupAdd": null,
+    "IpcMode": "private",
+    "Cgroup": "",
+    "Links": null,
+    "OomScoreAdj": 0,
+    "PidMode": "",
+    "Privileged": false,
+    "PublishAllPorts": false,
+    "ReadonlyRootfs": true,
+    "SecurityOpt": [
+      "no-new-privileges"
+    ],
+    "UTSMode": "",
+    "UsernsMode": "",
+    "ShmSize": 67108864,
+    "Runtime": "runc",
+    "Isolation": "",
+    "CpuShares": 0,
+    "Memory": 12884901888,
+    "NanoCpus": 8000000000,
+    "CgroupParent": "",
+    "BlkioWeight": 0,
+    "BlkioWeightDevice": [],
+    "BlkioDeviceReadBps": [],
+    "BlkioDeviceWriteBps": [],
+    "BlkioDeviceReadIOps": [],
+    "BlkioDeviceWriteIOps": [],
+    "CpuPeriod": 0,
+    "CpuQuota": 0,
+    "CpuRealtimePeriod": 0,
+    "CpuRealtimeRuntime": 0,
+    "CpusetCpus": "",
+    "CpusetMems": "",
+    "Devices": [],
+    "DeviceCgroupRules": null,
+    "DeviceRequests": null,
+    "MemoryReservation": 0,
+    "MemorySwap": 12884901888,
+    "MemorySwappiness": null,
+    "OomKillDisable": null,
+    "PidsLimit": null,
+    "Ulimits": [],
+    "CpuCount": 0,
+    "CpuPercent": 0,
+    "IOMaximumIOps": 0,
+    "IOMaximumBandwidth": 0,
+    "Mounts": [
+      {
+        "Type": "bind",
+        "Source": "/Users/redwolf/MyProjects/laya-rs/models/multilingual",
+        "Target": "/models/multilingual",
+        "ReadOnly": true
+      }
+    ],
+    "MaskedPaths": [
+      "/proc/acpi",
+      "/proc/asound",
+      "/proc/interrupts",
+      "/proc/kcore",
+      "/proc/keys",
+      "/proc/latency_stats",
+      "/proc/sched_debug",
+      "/proc/scsi",
+      "/proc/timer_list",
+      "/proc/timer_stats",
+      "/sys/devices/virtual/powercap",
+      "/sys/firmware"
+    ],
+    "ReadonlyPaths": [
+      "/proc/bus",
+      "/proc/fs",
+      "/proc/irq",
+      "/proc/sys",
+      "/proc/sysrq-trigger"
+    ]
+  },
+  "GraphDriver": {
+    "Data": {
+      "ID": "ac8d1b8967360805fc42be730a5d1789579d7f91928dbf4fa64c17951f09d374",
+      "LowerDir": "/var/lib/docker/overlay2/32cfd6b729ec6b464939615f944868cea6d41487009dc87fd8c80f5aaba13771-init/diff:/var/lib/docker/overlay2/tuz6b7k4t05m2y93409j1cs0h/diff:/var/lib/docker/overlay2/w45rpu54aso23jvg3rrnoiqk3/diff:/var/lib/docker/overlay2/zmdkdubxaiqiuxvr7applq8as/diff:/var/lib/docker/overlay2/rzal39oswmvcgyhu5s366wgf8/diff:/var/lib/docker/overlay2/nopcw6s3hav1zdejwpe90mujc/diff:/var/lib/docker/overlay2/d9lcz3es8ym5ojrjhffplea9v/diff:/var/lib/docker/overlay2/prixf00w0626uol88lgrj503c/diff:/var/lib/docker/overlay2/5077c34ddc7233be6b3ab79f423eeceb9e6a50365d77f03ec55e94a132743d71/diff",
+      "MergedDir": "/var/lib/docker/overlay2/32cfd6b729ec6b464939615f944868cea6d41487009dc87fd8c80f5aaba13771/merged",
+      "UpperDir": "/var/lib/docker/overlay2/32cfd6b729ec6b464939615f944868cea6d41487009dc87fd8c80f5aaba13771/diff",
+      "WorkDir": "/var/lib/docker/overlay2/32cfd6b729ec6b464939615f944868cea6d41487009dc87fd8c80f5aaba13771/work"
+    },
+    "Name": "overlay2"
+  },
+  "Mounts": [
+    {
+      "Type": "bind",
+      "Source": "/Users/redwolf/MyProjects/laya-rs/models/multilingual",
+      "Destination": "/models/multilingual",
+      "Mode": "",
+      "RW": false,
+      "Propagation": "rprivate"
+    }
+  ],
+  "Config": {
+    "Hostname": "ac8d1b896736",
+    "Domainname": "",
+    "User": "65532:65532",
+    "AttachStdin": false,
+    "AttachStdout": true,
+    "AttachStderr": true,
+    "ExposedPorts": {
+      "8080/tcp": {}
+    },
+    "Tty": false,
+    "OpenStdin": false,
+    "StdinOnce": false,
+    "Env": [
+      "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "LD_LIBRARY_PATH=/opt/onnxruntime/lib"
+    ],
+    "Cmd": [
+      "--model",
+      "/models/multilingual",
+      "--threads",
+      "1",
+      "--max-concurrency",
+      "1",
+      "--threads",
+      "2",
+      "--max-concurrency",
+      "1",
+      "--inter-op-threads",
+      "1",
+      "--queue-capacity",
+      "32",
+      "--queue-timeout",
+      "30",
+      "--inference-timeout",
+      "120",
+      "--shutdown-grace",
+      "120"
+    ],
+    "Image": "sha256:56128072f8b929ae37afe02ea1e3ce13505313908a23e76556ab80f5a4e26564",
+    "Volumes": null,
+    "WorkingDir": "",
+    "Entrypoint": [
+      "/usr/local/bin/laya-server"
+    ],
+    "Labels": {
+      "laya.validation": "18"
+    },
+    "StopSignal": "SIGTERM"
+  },
+  "NetworkSettings": {
+    "SandboxID": "2fd6459ab883d4cc0a58db12e93e25d1872b203f5861dca9499f2aa142467fcb",
+    "SandboxKey": "/var/run/docker/netns/2fd6459ab883",
+    "Ports": {
+      "8080/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "61510"
+        }
+      ]
+    },
+    "Networks": {
+      "bridge": {
+        "IPAMConfig": null,
+        "Links": null,
+        "Aliases": null,
+        "DriverOpts": null,
+        "GwPriority": 0,
+        "NetworkID": "62eedfc040f9ed6ac7a1c17f9facc07a8600a0ec6686952176b672b55cc1108d",
+        "EndpointID": "179819519ff1b04f41fbd8a007bf611123d68d280d2068d9636989d6c42ca652",
+        "Gateway": "172.17.0.1",
+        "IPAddress": "172.17.0.4",
+        "MacAddress": "2e:d5:b1:0f:61:87",
+        "IPPrefixLen": 16,
+        "IPv6Gateway": "",
+        "GlobalIPv6Address": "",
+        "GlobalIPv6PrefixLen": 0,
+        "DNSNames": null
+      }
+    }
+  }
+}

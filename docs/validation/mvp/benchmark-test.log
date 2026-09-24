@@ -1,0 +1,3 @@
+COMMAND ["python3", "docs/validation/test-benchmark.py"]
+PASS: CLI percentiles, success QPS, failures, insufficient and empty samples
+PASS: truncated real HTTP response produces a transport failure sample

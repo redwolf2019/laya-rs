@@ -1,0 +1,97 @@
+COMMAND ["docker", "exec", "-w", "/work", "-e", "LAYA_TEST_MODEL=/work/models/multilingual", "-e", "LAYA_TEST_ORT=/ort/lib/libonnxruntime.so", "laya-loader-8", "cargo", "test", "--locked", "--bin", "laya-server", "linux_http_model_parity_and_disconnect", "--", "--ignored", "--nocapture"]
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running unittests src/main.rs (/target/debug/deps/laya_server-729f3f5c4e27f4a2)
+
+running 1 test
+onnxruntime cpuid_info warning: Unknown CPU vendor. cpuinfo_vendor value: 0
+PASS HTTP/engine/official: "en-choice.json"
+PASS HTTP/engine/official: "en-noul.json"
+PASS HTTP/engine/official: "en-score.json"
+PASS HTTP/engine/official: "huge-integer.json"
+PASS HTTP/engine/official: "json-order-numbers.json"
+PASS HTTP/engine/official: "long-padding.json"
+PASS HTTP/engine/official: "marker.json"
+PASS HTTP/engine/official: "mixed-16.json"
+PASS HTTP/engine/official: "mixed-6.json"
+PASS HTTP/engine/official: "normalization.json"
+PASS HTTP/engine/official: "options-10.json"
+PASS HTTP/engine/official: "options-11.json"
+PASS HTTP/engine/official: "options-2.json"
+PASS HTTP/engine/official: "options-3.json"
+PASS HTTP/engine/official: "options-32.json"
+PASS HTTP/engine/official: "options-5.json"
+PASS HTTP/engine/official: "options-6.json"
+PASS HTTP/engine/official: "scalars.json"
+PASS HTTP/engine/official: "zh-choice.json"
+PASS HTTP/engine/official: "zh-noul.json"
+PASS HTTP/engine/official: "zh-score.json"
+PASS HTTP/engine/official: "mixed-6.json"
+PASS HTTP/engine/official: "mixed-6.json"
+PASS HTTP/engine/official: "mixed-6.json"
+PASS HTTP/engine/official: "mixed-6.json"
+PASS: chunked body >1 MiB rejected before terminal chunk
+TCP closed during real work: inflight=1
+PASS: disconnected CPU work completed and owner reaped it
+PASS: real native inference failure returns a static 500 envelope
+PASS HTTP/engine/official: "mixed-6.json"
+METRICS after real runs:
+# HELP laya_requests System One HTTP requests.
+# TYPE laya_requests counter
+laya_requests_total 29
+# HELP laya_request_duration_seconds HTTP time including queue.
+# TYPE laya_request_duration_seconds histogram
+laya_request_duration_seconds_sum 14.509070711
+laya_request_duration_seconds_count 29
+laya_request_duration_seconds_bucket{le="0.005"} 3
+laya_request_duration_seconds_bucket{le="0.01"} 3
+laya_request_duration_seconds_bucket{le="0.025"} 3
+laya_request_duration_seconds_bucket{le="0.05"} 8
+laya_request_duration_seconds_bucket{le="0.1"} 15
+laya_request_duration_seconds_bucket{le="0.25"} 19
+laya_request_duration_seconds_bucket{le="0.5"} 22
+laya_request_duration_seconds_bucket{le="1.0"} 25
+laya_request_duration_seconds_bucket{le="2.5"} 28
+laya_request_duration_seconds_bucket{le="5.0"} 28
+laya_request_duration_seconds_bucket{le="10.0"} 29
+laya_request_duration_seconds_bucket{le="30.0"} 29
+laya_request_duration_seconds_bucket{le="60.0"} 29
+laya_request_duration_seconds_bucket{le="120.0"} 29
+laya_request_duration_seconds_bucket{le="+Inf"} 29
+# HELP laya_inference_duration_seconds Actual Session run time.
+# TYPE laya_inference_duration_seconds histogram
+laya_inference_duration_seconds_sum 12.665151421000001
+laya_inference_duration_seconds_count 28
+laya_inference_duration_seconds_bucket{le="0.005"} 1
+laya_inference_duration_seconds_bucket{le="0.01"} 1
+laya_inference_duration_seconds_bucket{le="0.025"} 1
+laya_inference_duration_seconds_bucket{le="0.05"} 6
+laya_inference_duration_seconds_bucket{le="0.1"} 13
+laya_inference_duration_seconds_bucket{le="0.25"} 17
+laya_inference_duration_seconds_bucket{le="0.5"} 24
+laya_inference_duration_seconds_bucket{le="1.0"} 26
+laya_inference_duration_seconds_bucket{le="2.5"} 27
+laya_inference_duration_seconds_bucket{le="5.0"} 27
+laya_inference_duration_seconds_bucket{le="10.0"} 28
+laya_inference_duration_seconds_bucket{le="30.0"} 28
+laya_inference_duration_seconds_bucket{le="60.0"} 28
+laya_inference_duration_seconds_bucket{le="120.0"} 28
+laya_inference_duration_seconds_bucket{le="+Inf"} 28
+# HELP laya_errors Failed HTTP requests by terminal reason.
+# TYPE laya_errors counter
+laya_errors_total{reason="payload_too_large"} 1
+laya_errors_total{reason="client_cancelled"} 1
+laya_errors_total{reason="inference_failed"} 1
+# HELP laya_queue_size Waiting requests.
+# TYPE laya_queue_size gauge
+laya_queue_size 0
+# HELP laya_inference_inflight Occupied execution slots.
+# TYPE laya_inference_inflight gauge
+laya_inference_inflight 0
+# EOF
+
+PASS: 21 HTTP/engine/official fixtures, 4 concurrent repeats, chunked 413, TCP disconnect, recovery, all tasks reaped
+PASS: native log fields contain only a static event and typed severity
+test model::tests::http::linux_http_model_parity_and_disconnect ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 33.47s
+

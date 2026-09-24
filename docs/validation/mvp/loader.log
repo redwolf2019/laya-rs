@@ -1,0 +1,14 @@
+COMMAND ["docker", "exec", "-w", "/work", "-e", "LAYA_TEST_MODEL=/work/models/multilingual", "-e", "LAYA_TEST_ORT=/ort/lib/libonnxruntime.so", "laya-loader-8", "cargo", "test", "--locked", "--bin", "laya-server", "linux_real_model_smoke", "--", "--ignored", "--nocapture"]
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.05s
+     Running unittests src/main.rs (/target/debug/deps/laya_server-729f3f5c4e27f4a2)
+
+running 1 test
+onnxruntime cpuid_info warning: Unknown CPU vendor. cpuinfo_vendor value: 0
+slot=0 repeated tensor-L2 inference: logits=[1.0814673, -1.090791], act_probs=[1.0, 0.0]
+slot=1 repeated tensor-L2 inference: logits=[1.0814673, -1.090791], act_probs=[1.0, 0.0]
+ORT Build Info: git-branch=HEAD, git-commit-id=da9b5e364c, fp8-kv-cache=1, build type=Release
+PASS: verified bundle, CPUExecutionProvider, two reusable sessions, intra=2 inter=2, tensor-L2 reference tolerance
+test model::tests::linux_real_model_smoke ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 10.82s
+

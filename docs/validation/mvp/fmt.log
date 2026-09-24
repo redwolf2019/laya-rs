@@ -1,0 +1,1 @@
+COMMAND ["docker", "exec", "-w", "/work", "laya-loader-8", "cargo", "fmt", "--check"]

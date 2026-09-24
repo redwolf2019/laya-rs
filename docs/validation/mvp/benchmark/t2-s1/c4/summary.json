@@ -1,0 +1,26 @@
+{
+  "attempts": 164,
+  "completed": 164,
+  "successes": 164,
+  "elapsed_s": 61.10970858403016,
+  "protocol_met": true,
+  "latency_ms": {
+    "p50": 1479.823999979999,
+    "p95": 1552.7630830183625,
+    "p99": 1600.7756250328384
+  },
+  "success_qps": 2.683697955693708,
+  "error_rate": 0.0,
+  "timeout_rate": 0.0,
+  "rejection_rate": 0.0,
+  "outcomes": {
+    "success": 164
+  },
+  "clients": 4,
+  "cpu_percent": 199.89244930551686,
+  "clock_ticks": 100,
+  "rss_peak_kib": 677328,
+  "queue_max": 3,
+  "inflight_max": 1,
+  "resource_samples": 58
+}

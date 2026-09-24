@@ -1,0 +1,191 @@
+[
+  {
+    "start_s": 2.4170149117708206e-06,
+    "end_s": 0.37380837503587827,
+    "latency_ms": 373.8059580209665,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 0.3738139170454815,
+    "end_s": 0.7489000839996152,
+    "latency_ms": 375.08616695413366,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 0.7489057499915361,
+    "end_s": 1.1205414170399308,
+    "latency_ms": 371.6356670483947,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 1.1205442920327187,
+    "end_s": 1.4921935420134105,
+    "latency_ms": 371.6492499806918,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 1.4921993340249173,
+    "end_s": 1.859155542042572,
+    "latency_ms": 366.9562080176547,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 1.859162250009831,
+    "end_s": 2.2305733340326697,
+    "latency_ms": 371.4110840228386,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 2.230579334020149,
+    "end_s": 2.6037043750402518,
+    "latency_ms": 373.1250410201028,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 2.6037096669897437,
+    "end_s": 2.979221250046976,
+    "latency_ms": 375.5115830572322,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 2.9792270000325516,
+    "end_s": 3.356165042030625,
+    "latency_ms": 376.93804199807346,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 3.3561705840402283,
+    "end_s": 3.7312169590150006,
+    "latency_ms": 375.04637497477233,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 3.731225916999392,
+    "end_s": 4.104915417032316,
+    "latency_ms": 373.6895000329241,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 4.104924084036611,
+    "end_s": 4.481281709042378,
+    "latency_ms": 376.35762500576675,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 4.481287583999801,
+    "end_s": 4.857972124998923,
+    "latency_ms": 376.68454099912196,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 4.85797812504461,
+    "end_s": 5.231190417020116,
+    "latency_ms": 373.21229197550565,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 5.231196959037334,
+    "end_s": 5.607192917028442,
+    "latency_ms": 375.9959579911083,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 5.607199500023853,
+    "end_s": 5.980373875005171,
+    "latency_ms": 373.17437498131767,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 5.980380834022071,
+    "end_s": 6.349851875042077,
+    "latency_ms": 369.47104102000594,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 6.349862959003076,
+    "end_s": 6.721339167037513,
+    "latency_ms": 371.47620803443715,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 6.7213456250028685,
+    "end_s": 7.096987250028178,
+    "latency_ms": 375.6416250253096,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 7.096992917009629,
+    "end_s": 7.470469416992273,
+    "latency_ms": 373.4764999826439,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 7.470482125005219,
+    "end_s": 7.845284125010949,
+    "latency_ms": 374.8020000057295,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 7.845290084020235,
+    "end_s": 8.2200356250396,
+    "latency_ms": 374.7455410193652,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 8.22004291700432,
+    "end_s": 8.595443250029348,
+    "latency_ms": 375.40033302502707,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 8.595449042040855,
+    "end_s": 8.970779124996625,
+    "latency_ms": 375.3300829557702,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 8.970785000012256,
+    "end_s": 9.342829959001392,
+    "latency_ms": 372.0449589891359,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 9.342836084018927,
+    "end_s": 9.714458167029079,
+    "latency_ms": 371.622083010152,
+    "status": 200,
+    "outcome": "success"
+  },
+  {
+    "start_s": 9.714466959005222,
+    "end_s": 10.09019779204391,
+    "latency_ms": 375.7308330386877,
+    "status": 200,
+    "outcome": "success"
+  }
+]

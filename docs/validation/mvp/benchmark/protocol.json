@@ -1,0 +1,35 @@
+{
+  "fixture": "tests/fixtures/system-one/mixed-6.json",
+  "fixture_sha256": "6b458c99814d4ddcd429519a7592f02b3a0cc7deeb474c34dbe015e6295a288b",
+  "request_json": "{\"state\": \"客户需要退款。 The app crashes.\", \"questions\": {\"zh-choice\": {\"type\": \"choice\", \"instructions\": \"由哪个部门处理？\", \"criteria\": {\"账单\": \"退款、支付\", \"技术\": \"软件故障\", \"销售\": \"购买咨询\"}}, \"zh-score\": {\"type\": \"score\", \"instructions\": \"处理优先级？\", \"criteria\": [\"低\", \"中\", \"高\", \"紧急\"]}, \"zh-noul\": {\"type\": \"noul\", \"instructions\": \"客户需要退款。\"}, \"en-choice\": {\"type\": \"choice\", \"instructions\": \"Choose a team.\", \"criteria\": {\"billing\": null, \"technical\": \"Software faults\", \"sales\": \"\"}}, \"en-score\": {\"type\": \"score\", \"instructions\": \"Rate urgency.\", \"criteria\": [\"low\", \"medium\", \"high\"]}, \"en-noul\": {\"type\": \"noul\", \"instructions\": \"The customer reports a software fault.\"}}}",
+  "usage": {
+    "input_tokens": 228,
+    "output_tokens": 0
+  },
+  "configurations": [
+    [
+      1,
+      1
+    ],
+    [
+      2,
+      1
+    ],
+    [
+      2,
+      2
+    ]
+  ],
+  "clients": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "warmup": "10 seconds AND 10 sequential successes per group",
+  "measurement": "60 seconds AND 100 completed HTTP requests; cap 300 seconds/10000 attempts",
+  "client_timeout_s": 150,
+  "quantiles": "nearest rank, successful requests only",
+  "qps": "successful requests / last completion offset, including drain",
+  "python": "3.11.16 (main, Aug 12 2026, 23:03:19) [Clang 21.0.0 (clang-2100.1.1.101)]"
+}

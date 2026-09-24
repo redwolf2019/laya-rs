@@ -1,0 +1,13 @@
+machdep.cpu.brand_string: Apple M2 Max
+hw.ncpu: 12
+hw.memsize: 68719476736
+ProductName:		macOS
+ProductVersion:		27.0
+BuildVersion:		26A428
+Kernel=6.12.76-linuxkit Arch=aarch64 CPU=8 Memory=16748113920 OS=Docker Desktop Version=29.6.2
+6669a5c4667b vigilant_ellis 56128072f8b9
+f2b724c6a4b1 laya-loader-8 rust:1.98.1-slim-bookworm
+a48d3ea58ec7 laya-model-prep-7 python
+CONTAINER ID   NAME                CPU %     MEM USAGE / LIMIT   MEM %     NET I/O          BLOCK I/O        PIDS
+f2b724c6a4b1   laya-loader-8       0.00%     476.3MiB / 12GiB    3.88%     8.99MB / 187kB   615MB / 5.15GB   1
+a48d3ea58ec7   laya-model-prep-7   0.00%     197MiB / 12GiB      1.60%     10.2kB / 126B    311MB / 211MB    1

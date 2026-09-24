@@ -1,0 +1,34 @@
+COMMAND ["docker", "exec", "-w", "/work", "-e", "LAYA_TEST_MODEL=/work/models/multilingual", "-e", "LAYA_TEST_ORT=/ort/lib/libonnxruntime.so", "-e", "LAYA_TEST_CONCURRENCY=2", "laya-loader-8", "cargo", "test", "--locked", "--bin", "laya-server", "linux_scheduler_concurrency", "--", "--ignored", "--nocapture"]
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running unittests src/main.rs (/target/debug/deps/laya_server-729f3f5c4e27f4a2)
+
+running 1 test
+before_load: VmHWM:	    5624 kB
+before_load: VmRSS:	    5624 kB
+onnxruntime cpuid_info warning: Unknown CPU vendor. cpuinfo_vendor value: 0
+loaded: VmHWM:	 1115136 kB
+loaded: VmRSS:	 1110032 kB
+stress_elapsed_ms=1511
+after_stress: VmHWM:	 1236796 kB
+after_stress: VmRSS:	 1190288 kB
+run_event: ns=0 id=1 entering=true active=1
+run_event: ns=1000 id=2 entering=true active=2
+run_event: ns=371094667 id=1 entering=false active=1
+run_event: ns=372284500 id=3 entering=true active=2
+run_event: ns=383823792 id=2 entering=false active=1
+run_event: ns=384873375 id=4 entering=true active=2
+run_event: ns=735870334 id=3 entering=false active=1
+run_event: ns=737039084 id=5 entering=true active=2
+run_event: ns=759507167 id=4 entering=false active=1
+run_event: ns=760610292 id=6 entering=true active=2
+run_event: ns=1099645542 id=5 entering=false active=1
+run_event: ns=1100764125 id=7 entering=true active=2
+run_event: ns=1136069167 id=6 entering=false active=1
+run_event: ns=1137160959 id=8 entering=true active=2
+run_event: ns=1470514334 id=7 entering=false active=1
+run_event: ns=1507269917 id=8 entering=false active=0
+PASS: requests=8 native_runs=8 observed_max=2 configured_slots=2 threads_per_session=2 inter_op=1
+test model::tests::concurrency::linux_scheduler_concurrency ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 12.06s
+

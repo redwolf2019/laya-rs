@@ -1,0 +1,87 @@
+[
+  {
+    "issue": 2,
+    "commit": "03cdbac6cf6b4287b9f8cae7ec24bc59ac13a6fb",
+    "ancestor_of_baseline": true
+  },
+  {
+    "issue": 3,
+    "commit": "ab20013f6b37a3d3a84368c1cfb464a9fdb619d6",
+    "ancestor_of_baseline": true
+  },
+  {
+    "issue": 4,
+    "commit": "81d413d28722307ad960db61e08e57357206ec2d",
+    "ancestor_of_baseline": true
+  },
+  {
+    "issue": 5,
+    "commit": "37bbf66bbec286f5c6cb5d90587070af07a51c6c",
+    "ancestor_of_baseline": true
+  },
+  {
+    "issue": 6,
+    "commit": "24774ab77532f2043f1327aeb62a4acb06e67e6e",
+    "ancestor_of_baseline": true
+  },
+  {
+    "issue": 7,
+    "commit": "0c83713c2f5e9ca73aca98167e2de94ccf1d25ec",
+    "ancestor_of_baseline": true
+  },
+  {
+    "issue": 8,
+    "commit": "d169873b2115aee4766c409454da81745127a836",
+    "ancestor_of_baseline": true
+  },
+  {
+    "issue": 9,
+    "commit": "600f0809d6d49d25ba4d2ec4713f88e80ad37bae",
+    "ancestor_of_baseline": true
+  },
+  {
+    "issue": 10,
+    "commit": "4b1bd8191dbf221e6464752434980f03629107e7",
+    "ancestor_of_baseline": true
+  },
+  {
+    "issue": 11,
+    "commit": "5fea2864a202c5b12e5b0bbf6a3b7fdc3311c539",
+    "ancestor_of_baseline": true
+  },
+  {
+    "issue": 12,
+    "commit": "e209c25e0a5c8e1b1d05e4db784eb96aa9cfd6a1",
+    "ancestor_of_baseline": true
+  },
+  {
+    "issue": 13,
+    "commit": "444fc1d93cdf56153c9ec1c4b4d2aa1ae30f7149",
+    "ancestor_of_baseline": true
+  },
+  {
+    "issue": 14,
+    "commit": "493bca6e067d6b7ad2af67b0a3753178c3623a41",
+    "ancestor_of_baseline": true
+  },
+  {
+    "issue": 15,
+    "commit": "3b03d8bc42c3b6ab323a9547eb58f48d9d1e07b5",
+    "ancestor_of_baseline": true
+  },
+  {
+    "issue": 16,
+    "commit": "cc5ff26fd5a7f5eb101499df4cfa93b00490063b",
+    "ancestor_of_baseline": true
+  },
+  {
+    "issue": 17,
+    "commit": "d1ecdd4d0cf6eb0bd1032f026b971a713d504970",
+    "ancestor_of_baseline": true
+  },
+  {
+    "issue": 18,
+    "commit": "2846a8ef7b549e1b76423189cba3db01beec6793",
+    "ancestor_of_baseline": true
+  }
+]

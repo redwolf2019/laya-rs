@@ -1,0 +1,147 @@
+COMMAND ["docker", "exec", "-w", "/work", "laya-loader-8", "cargo", "test", "--locked"]
+   Compiling laya-server v0.1.0 (/work)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.78s
+     Running unittests src/lib.rs (/target/debug/deps/laya_server-fe0981cc5e68c8ef)
+
+running 30 tests
+test api::tests::closing_admission_during_body_read_prevents_execution ... ok
+test api::tests::health_and_readiness_follow_resource_admission ... ok
+test api::tests::metrics_and_unknown_routes_use_documented_transport_responses ... ok
+test api::tests::bad_media_and_body_io_errors_never_echo_diagnostics ... ok
+test api::tests::field_count_depth_and_unicode_rejections_have_the_same_envelope ... ok
+test api::tests::body_exact_limit_accepts_and_one_extra_byte_rejects ... ok
+test api::tests::cancelling_route_futures_removes_queue_but_keeps_running_work ... ok
+test api::tests::model_failure_is_sanitized_and_marker_loss_remains_a_client_error ... ok
+test api::tests::network::chunked_http_overflow_returns_before_terminal_chunk ... ok
+test api::tests::metrics_count_success_and_all_validation_failures_without_client_labels ... ok
+test api::tests::late_inference_failure_cannot_count_a_second_http_error ... ok
+test api::tests::rejects_media_stream_overflow_and_json_before_inference ... ok
+test api::tests::metrics_count_request_terminals_once_and_follow_real_slots ... ok
+test api::tests::queue_full_queue_timeout_and_execution_timeout_keep_cpu_slot ... ok
+test api::tests::unavailable_precedes_media_and_body_validation ... ok
+test api::tests::network::tcp_disconnect_cancels_waiters_but_does_not_stop_cpu ... ok
+test scheduler::tests::buffered_failure_is_recorded_when_caller_later_times_out ... ok
+test scheduler::tests::exhausted_async_budget_does_not_turn_an_idle_slot_into_queue_full ... ok
+test scheduler::tests::queue_deadline_wins_over_a_simultaneously_available_slot ... ok
+test scheduler::tests::inference_timeout_keeps_slot_and_late_failure_is_reaped ... ok
+test api::tests::successful_response_preserves_all_engine_fields_and_repeated_requests ... ok
+test scheduler::tests::engine_failure_reuses_slot_and_panic_closes_admission_then_joins ... ok
+test server::tests::process_fixture ... ignored, spawned only by the process-level signal test
+test scheduler::tests::cancelled_running_waiter_holds_slot_until_cpu_finishes ... ok
+test scheduler::tests::scheduler_errors_use_frozen_status_and_static_envelope ... ok
+test scheduler::tests::result_at_execution_deadline_is_timeout_even_if_already_ready ... ok
+test scheduler::tests::shutdown_rejects_queue_and_cancelled_driver_can_resume_draining ... ok
+test scheduler::tests::queued_cancellation_restores_capacity_and_preserves_fifo ... ok
+test server::tests::signals_drain_idle_process_and_allow_restart ... ok
+test server::tests::signals_drain_or_terminate_actual_work_and_clear_queue ... ok
+
+test result: ok. 29 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 2.68s
+
+     Running unittests src/main.rs (/target/debug/deps/laya_server-729f3f5c4e27f4a2)
+
+running 14 tests
+test config::tests::concurrency_cannot_exceed_the_runtime_semaphore_range ... ok
+test model::tests::concurrency::linux_scheduler_concurrency ... ignored, Linux real bundle/ORT; LAYA_TEST_CONCURRENCY=1 or 2; run in separate processes
+test model::tests::http::linux_http_model_parity_and_disconnect ... ignored, Linux real bundle/ORT; set LAYA_TEST_MODEL and LAYA_TEST_ORT
+test model::tests::linux_real_model_smoke ... ignored, requires Linux, real #7 bundle and official ORT 1.28 CPU library; see docs/validation/model-loader.md
+test config::tests::native_thread_limit_is_accepted_without_truncation ... ok
+test config::tests::defaults_match_the_frozen_cli_contract ... ok
+test model::tests::parity::linux_system_one_model_parity ... ignored, requires Linux, verified bundle and ORT; set LAYA_TEST_MODEL / LAYA_TEST_ORT
+test model::tests::missing_native_library_returns_a_sanitized_error_without_panicking ... ok
+test config::tests::cli_overrides_every_default_at_the_lower_bound ... ok
+test model::tests::model_config_preserves_default_type_and_bucket_temperatures ... ok
+test model::tests::model_config_validates_all_temperatures_and_task_budgets ... ok
+test model::tests::session_interface_rejects_wrong_names_counts_and_action_width ... ok
+test model::tests::session_interface_rejects_wrong_names_types_shapes_and_dynamic_symbols ... ok
+test model::tests::bundle_rejects_missing_truncated_and_same_size_corrupted_files ... ok
+
+test result: ok. 10 passed; 0 failed; 4 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/cli.rs (/target/debug/deps/cli-62043f1ce5ff7795)
+
+running 6 tests
+test non_utf8_input_is_rejected_without_a_panic_or_echo ... ok
+test help_runs_without_model_and_lists_the_frozen_options ... ok
+test missing_bundle_fails_before_native_loading_or_listening ... ok
+test native_and_clock_bounds_are_checked ... ok
+test invalid_input_fails_without_echoing_values ... ok
+test integer_options_reject_invalid_and_unrepresentable_values ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests/engine.rs (/target/debug/deps/engine-12a216bda09e466f)
+
+running 1 test
+test errors_preserve_sources_and_expose_only_the_frozen_envelope ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/fixtures.rs (/target/debug/deps/fixtures-62ea78481693c5e8)
+
+running 1 test
+test official_fixtures_are_integral_and_consumable_without_python ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests/json_text.rs (/target/debug/deps/json_text-0390e5072b1ef614)
+
+running 1 test
+test text_matches_cpython_bytes_in_both_modes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/postprocess.rs (/target/debug/deps/postprocess-3d1aab3fc3456626)
+
+running 10 tests
+test invalid_temperatures_and_json_config_fail_before_inference ... ok
+test artificial_extreme_logits_are_stable_or_fail_on_nonfinite_intermediates ... ok
+test action_is_validated_without_recalibration_or_rounding ... ok
+test nonfinite_outputs_including_padding_fail_atomically ... ok
+test output_shapes_and_missing_buffer_indices_fail ... ok
+test cpython_decimal_rounding_preserves_midpoint_sides_and_signed_zero ... ok
+test artificial_ties_and_zero_probabilities_match_the_official_oracle ... ok
+test artificial_buckets_fallback_ties_and_rounding_match_the_official_oracle ... ok
+test all_official_and_onnx_logits_match_their_official_postprocessing_replays ... ok
+test onnx_outputs_match_official_answers_exactly ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/sequence.rs (/target/debug/deps/sequence-8cfeac5aae06750b)
+
+running 6 tests
+test maximum_request_resources_preserve_every_question_and_option ... ignored, requires the pinned local tokenizer; set LAYA_TEST_MODEL
+test real_tokenizer_matches_all_official_sequence_fixtures ... ignored, requires the pinned local tokenizer; set LAYA_TEST_MODEL (no ONNX weights/runtime needed)
+test real_tokenizer_matches_synthetic_budget_oracle ... ignored, requires the pinned local tokenizer; set LAYA_TEST_MODEL
+test invalid_budgets_and_special_token_configuration_return_typed_errors ... ok
+test batch_records_explicit_markers_and_counts_repeated_state_without_padding ... ok
+test marker_at_truncation_boundary_rejects_the_whole_request ... ok
+
+test result: ok. 3 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/system_one.rs (/target/debug/deps/system_one-f7dff20c345552f9)
+
+running 15 tests
+test complete_response_uses_official_fields_and_order ... ok
+test choice_normalization_preserves_first_position_and_last_description ... ok
+test effective_fields_use_last_values_but_questions_keep_first_positions ... ok
+test criteria_rejects_every_non_public_form ... ok
+test depth_is_checked_before_overwritten_or_unknown_values_are_discarded ... ok
+test ordered_views_preserve_nested_keys_and_numeric_categories ... ok
+test required_fields_and_question_types_are_strict ... ok
+test score_keeps_repeated_levels_and_noul_defaults_are_false_then_true ... ok
+test syntax_and_unicode_are_checked_in_ignored_and_overwritten_values ... ok
+test question_limit_applies_after_duplicate_key_collapse ... ok
+test too_few_effective_options_are_model_boundary_errors ... ok
+test option_limits_cover_arrays_objects_and_duplicate_semantics ... ok
+test state_and_instructions_accept_all_json_kinds_without_number_loss ... ok
+test explicit_limits_apply_without_the_serde_default_recursion_ceiling ... ok
+test full_body_byte_limit_includes_whitespace ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+   Doc-tests laya_server
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

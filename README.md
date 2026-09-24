@@ -2,13 +2,16 @@
 
 A pure Rust inference runtime and HTTP server for Laya System-1 models.
 
-面向 Linux CPU 的 Laya 推理服务，计划提供中文、英文及多语言的 Choice、Score、
+面向 Linux CPU 的 Laya 推理服务，提供中文、英文及多语言的 Choice、Score、
 Noul 判断能力，通过 HTTP 为多个客户端共享模型。
 
-**当前状态：Rust 已加载并校验固定 bundle、Tokenizer 和 CPU Session，启动时执行真实张量探针。**
+**当前状态：固定 MVP 四阶段已在 Docker Desktop Linux ARM64 通过验收。**
+Rust 加载并校验固定 bundle、Tokenizer 和 CPU Session，启动时执行真实张量探针。
 Sequence Builder、答案后处理和统一 engine 已通过固定样例对照；四个 HTTP 路由已接入共享调度器。
 全部资源加载成功后才监听端口；已提供 Linux ARM64 CPU 多阶段 Docker 镜像构建。
 HTTP 验收见 [#16 记录](docs/validation/http.md)，镜像验收见 [#18 记录](docs/validation/docker.md)。
+四阶段证据、12 组真实负载、线程/执行槽建议和复现命令见 [MVP 验收报告](docs/mvp-validation.md)。
+性能范围仅为本机 Docker Desktop Linux ARM64；没有 amd64、16 核/32 GB 裸机或延迟/QPS SLA 声明。
 
 #9 已提供[模型无关的 System One 类型与校验](src/system_one.rs)：请求规范化、
 完整响应 DTO、静态类型化错误，以及数字词法/嵌套顺序保留。
@@ -51,6 +54,7 @@ HTTP 错误复用静态 envelope，真实工作在调用方断开或超时后仍
 
 ## 文档
 
+- [MVP 四阶段验收与 Linux CPU benchmark](docs/mvp-validation.md)
 - [服务方案与验收条件](docs/laya-server-plan.md)
 - [multilingual bundle 准备与真实 CPU 对照](tools/model-prep/README.md)
 - [MVP 开发路线图与可执行任务](https://github.com/redwolf2019/laya-rs/issues/1)
@@ -107,7 +111,7 @@ rtk cargo run --locked -- --model .
 
 ```sh
 rtk cargo run --release --locked -- --model ./models/multilingual \
-  --ort-library /opt/onnxruntime/lib/libonnxruntime.so --threads 8 --max-concurrency 2
+  --ort-library /opt/onnxruntime/lib/libonnxruntime.so --threads 2 --max-concurrency 2
 ```
 
 在 Linux 中提供实际 ORT 路径后可执行。`--ort-library` 默认 `libonnxruntime.so`，
@@ -182,7 +186,9 @@ rtk proxy curl -fsS http://127.0.0.1:8080/v1/system-one \
 `LD_LIBRARY_PATH` 提供默认 `libonnxruntime.so`；也可显式传 `--ort-library`。
 服务直接作为 PID 1 接收信号，没有 shell 启动包装器。
 
-上面的 8 vCPU / 12 GiB、intra=1、inter=1、concurrency=1 是本票实测配置，不是最优性能建议。
+上面保留 #18 验收用的 8 vCPU / 12 GiB、intra=1、inter=1、concurrency=1。
+#19 的 mixed-6 实测建议：单客户端先用 `--threads 2 --max-concurrency 1`，多个持续客户端可用
+`--threads 2 --max-concurrency 2`，inter-op 保持 1；详细数据和限制见 [benchmark](docs/mvp-validation.md#实测结果)。
 未传命令参数时镜像 CMD 使用 model=/models/multilingual、threads=4、concurrency=1；
 自行追加参数会替换整个 CMD，因此须同时传 `--model`，其余未指定值使用 CLI 默认值。
 并发槽各自持有一个 Session，增加并发会增加内存。Docker Desktop VM 需留出对应资源；
@@ -247,7 +253,8 @@ Linux CI 运行 fmt、clippy、无模型测试，真实 smoke 以 `#[ignore]` �
 它要求 Linux、真实 bundle 与官方 ORT 库，缺文件会失败，不能静默改用 mock。
 执行方法、原生失败检查和输出见 [#8 验收记录](docs/validation/model-loader.md)。
 #7 的完整离线对照见 [模型清单](docs/model-manifest.json)；#8 验证固定张量加载/运行，
-#12 另行验证 Rust Sequence Builder；尚不证明完整答案、Jev 兼容或性能。
+#12 对照 Sequence Builder；#13/#14 验证 21 个请求的完整答案，#16–#18 验证 HTTP、退出与部署，
+#19 汇总四阶段门槛并运行固定负载。结论只覆盖报告所列环境与样例，不声称 Jev 全输入兼容。
 绿色 CI 不表示真实模型测试已运行。
 
 需求与任务在 [GitHub Issues](https://github.com/redwolf2019/laya-rs/issues) 管理。

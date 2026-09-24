@@ -1,0 +1,47 @@
+COMMAND ["docker", "exec", "-w", "/work", "-e", "LAYA_TEST_MODEL=/work/models/multilingual", "-e", "LAYA_TEST_ORT=/ort/lib/libonnxruntime.so", "laya-loader-8", "cargo", "test", "--locked", "--test", "sequence", "--", "--ignored", "--nocapture"]
+   Compiling laya-server v0.1.0 (/work)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.84s
+     Running tests/sequence.rs (/target/debug/deps/sequence-8cfeac5aae06750b)
+
+running 3 tests
+checking empty-state
+checking "en-choice.json"
+checking "en-noul.json"
+checking "en-score.json"
+checking "huge-integer.json"
+checking "json-order-numbers.json"
+checking short-state
+checking "long-padding.json"
+checking room-zero
+test maximum_request_resources_preserve_every_question_and_option ... ok
+checking "marker.json"
+checking "mixed-16.json"
+checking "mixed-6.json"
+checking "normalization.json"
+checking "options-10.json"
+checking "options-11.json"
+checking "options-2.json"
+checking "options-3.json"
+checking "options-32.json"
+checking "options-5.json"
+checking "options-6.json"
+checking "scalars.json"
+checking "zh-choice.json"
+checking "zh-noul.json"
+checking "zh-score.json"
+checking room-one
+test real_tokenizer_matches_all_official_sequence_fixtures ... ok
+checking last-marker-kept
+checking last-marker-out-of-bounds
+checking all-markers-lost
+checking head-0
+checking head-15
+checking head-16
+checking head-23
+checking head-24
+checking head-113
+checking head-114
+test real_tokenizer_matches_synthetic_budget_oracle ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 3.71s
+

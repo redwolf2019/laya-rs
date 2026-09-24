@@ -1,0 +1,10 @@
+{
+  "create_to_ready_s": 1.9898240839829668,
+  "first_request": {
+    "start_s": 8.330098353326321e-07,
+    "end_s": 0.6979947079671547,
+    "latency_ms": 697.9938749573193,
+    "status": 200,
+    "outcome": "success"
+  }
+}

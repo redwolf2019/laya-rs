@@ -1,0 +1,559 @@
+[
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjU0MjE1Mzcw",
+        "login": "redwolf2019",
+        "name": "",
+        "databaseId": 54215370
+      }
+    ],
+    "body": "## Question\n\n哪一个固定的 Laya / ONNX 移植源码版本可作为 MVP 的协议、Sequence Builder 与后处理基线？哪些行为必须逐字节或逐字段对照，哪些 HTTP 与资源规则需要本项目另行约定？\n\n## 范围与输入\n\nAFK 研究票。阅读仓库服务方案第 5–7、11 节，以及 `he-jev/laya`、`receptron/laya` 的固定源码。研究只为后续任务建立可引用的规格，不执行 MVP 实现或真实模型验收。\n\n## 产物\n\n在独立 `research/mvp-protocol` 分支保存 `docs/research/mvp-protocol.md`，Issue 结论链接到固定提交。记录官方与移植源码 SHA、许可证和冲突时的依据；所有事实引用固定源码行或一级文档。\n\n## 验收\n\n- [ ] 给出请求可选形式、字段默认值、完整答案字段、usage、舍入、错误行为、客户端路径与兼容性边界。\n- [ ] 说明 state 的 JSON 序列化与键顺序、问题/选项顺序、特殊 token 与 marker 注入、预算/截断/padding、多问题布局。\n- [ ] 说明温度选择、softmax、Choice / Score / Noul、confidence、legend、act_probability，并指出需要固定测试的数值边界。\n- [ ] 提供后续 golden fixtures 的具体场景表和生成来源；区分源码验证与实际运行，不捏造 token IDs、数值容差或实测输出。\n- [ ] 将影响实现的未知项列为明确的问题及最小验证方法；所有本地文档链接和 diff 通过检查。\n\n完成后按 wayfinder 发表 resolution comment，链接报告，关闭研究票；主地图由主 Agent 更新。\n",
+    "comments": [
+      {
+        "id": "IC_kwDOUm40o88AAAABWTGctA",
+        "author": {
+          "login": "redwolf2019"
+        },
+        "authorAssociation": "OWNER",
+        "body": "以官方 `he-jev/laya@c5d78730f3493e4fe16d61507ef4b78eef7318cf` 作为 MVP 语义基线；ONNX 移植固定为 `receptron/laya@6478649e723122ca24bbf5fb69ed1010023c9750`，用于交叉核对。用户已确认保留完整 JSON 输入，另设序列化对照任务。\n\n[协议、序列与后处理研究报告（固定提交）](https://github.com/redwolf2019/laya-rs/blob/03cdbac6cf6b4287b9f8cae7ec24bc59ac13a6fb/docs/research/mvp-protocol.md) 已覆盖本票验收项：请求可选形式、完整答案、usage、顺序、特殊 token、预算、padding、温度、confidence、act_probability、错误边界和 golden 场景表。研究分支为 `research/mvp-protocol`，未合并 main。\n\n需带入后续实现的差异：\n\n- 官方与 TS 的对象 instructions、JSON 数字/键顺序、四位舍入和 model 字段不同。报告给出固定源码行和纯语言探针，不能把两者同时当作同一 oracle。\n- ONNX `act_probs` 已做 softmax；返回第 0 项，不再 softmax、校准或四位舍入。\n- 两份固定实现提供进程内 API，没有建立 HTTP transport 契约；项目路径和错误 envelope 需由契约票定义。\n- 单选项/单等级受到模型 `topk(2)` 及导出维度约束，不能根据 confidence helper 宣称支持。\n\n[源码已验证，HIGH] 读取了固定版本，核对报告本地链接、源码行范围及 staged diff；Python 3.11.16 / Node v24.16.0 的序列化与舍入探针已运行。未下载权重，未运行 tokenizer、真实模型、golden、Linux 部署或 Jev 客户端测试。数值容差和实际 bundle I/O 留给后续独立验收。\n",
+        "createdAt": "2026-09-23T08:13:13Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/redwolf2019/laya-rs/issues/2#issuecomment-5791390900",
+        "viewerDidAuthor": true
+      }
+    ],
+    "number": 2,
+    "state": "CLOSED",
+    "title": "固定 System One 协议、序列与后处理的参考基线"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjU0MjE1Mzcw",
+        "login": "redwolf2019",
+        "name": "",
+        "databaseId": 54215370
+      }
+    ],
+    "body": "## Question\n\n哪个固定的 multilingual ONNX bundle 和 Rust / ort / ONNX Runtime CPU 组合适合作为 MVP 的候选基线，其文件完整性、许可证、张量接口及 Session 并发约束是什么？\n\n## 范围与输入\n\nAFK 研究票。依据服务方案第 3–4、8、10–11 节，检查 `receptron/laya-onnx` 的固定 revision、实际配置、模型元信息、ort 已发布源码与对应 ONNX Runtime 官方资料。当前只做一级来源核实；编译、下载权重后哈希核验和真实 CPU 执行留给后续验收任务。\n\n## 产物\n\n在独立 `research/mvp-runtime` 分支保存 `docs/research/mvp-runtime.md`，Issue 结论链接到固定提交。记录模型 revision、必要文件/大小/发布方可核验的 SHA-256、许可证、配置值、张量已知项；给出有来源的 Rust / ort / ORT / tokenizer 候选版本与 CPU 构建方式。\n\n## 验收\n\n- [ ] 区分下载后实际计算的校验值与发布方 LFS 元数据，不能把元数据称为本地哈希验证。\n- [ ] 列出模型名、最大上下文、温度和选项数约束；张量名称、dtype、shape、动态维度若未从模型读取，明确留给真实 Session 检查。\n- [ ] 核对选定 ort 的 run 可变借用、Session 所有权/线程约束、原生 ABI、Linux CPU 包与许可证；说明单 Session 和执行槽对实际并发的影响。\n- [ ] 给出最小编译/加载探针与 Linux 验收建议；不将源码支持或候选版本称为已编译、已推理或有性能收益。\n- [ ] 每项重要结论带来源、置信度与验证范围；文档引用与 diff 通过检查。\n\n完成后按 wayfinder 发表 resolution comment，链接报告，关闭研究票；主地图由主 Agent 更新。\n",
+    "comments": [
+      {
+        "id": "IC_kwDOUm40o88AAAABWTIUEA",
+        "author": {
+          "login": "redwolf2019"
+        },
+        "authorAssociation": "OWNER",
+        "body": "研究完成。固定报告：[MVP 模型资产与 Rust CPU 运行库核实](https://github.com/redwolf2019/laya-rs/blob/ab20013f6b37a3d3a84368c1cfb464a9fdb619d6/docs/research/mvp-runtime.md)。\n\n- `[已验证/HIGH]` 指定 `receptron/laya-onnx` revision 只有 English bundle，没有 `multilingual/`；官方 multilingual 原始 checkpoint 已固定为 `052592a15d198d9ad47da779604259b10b47b7aa`，配置为 `max_len=1024`、`head_max_len=256`、temperature 全 1。报告区分发布方 LFS SHA 与实际读取后计算的 SHA。\n- 社区 FP32 候选 `ti3x-m/laya-multilingual-onnx@ab6836981ce0ea5937e605fb76ddac8960bd1e21` 有 manifest，但固定 batch=1，源码来自 fork；必须通过源代码差异、实际 Session 接口及固定官方样例对照，不能据发布方 parity 直接接受。不能满足多问题批处理契约时，按用户授权走独立离线导出，应用构建/运行仍不依赖 Python。\n- `[推断/MED]` 候选组合是 Rust 1.98.1、ort 2.0.0-rc.13、ORT CPU 1.28.0、tokenizers 0.23.2。已核查发布源码/API、许可证和 Linux x64/aarch64 资产；`Session::run` 要求可变借用，并发 2 需要独立执行槽，单个 Mutex Session 仍串行。\n\n通过检查：小文件与发布元数据核对、引用检查、staged diff whitespace 检查；报告分支已推送。未执行：模型权重下载校验、导出、ONNX Session 读取、Rust 编译、Linux 加载/推理和性能测试。报告中的步骤交给阶段一执行票，不能把本研究结题视为模型兼容性验收。\n",
+        "createdAt": "2026-09-23T08:15:37Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/redwolf2019/laya-rs/issues/3#issuecomment-5791421456",
+        "viewerDidAuthor": true
+      }
+    ],
+    "number": 3,
+    "state": "CLOSED",
+    "title": "核实 multilingual bundle 与 Rust CPU 运行库候选组合"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjU0MjE1Mzcw",
+        "login": "redwolf2019",
+        "name": "",
+        "databaseId": 54215370
+      }
+    ],
+    "body": "## Question\n\n后续 Agent 依据哪一份冻结契约实现和验收 MVP，才能避免重新决定业务语义或把移植差异当成官方行为？\n\n## 输入与已定范围\n\n阅读 [固定 System One 协议、序列与后处理的参考基线](https://github.com/redwolf2019/laya-rs/issues/2)、[核实 multilingual bundle 与 Rust CPU 运行库候选组合](https://github.com/redwolf2019/laya-rs/issues/3)、`CONTEXT.md`、服务方案第 1–11 节。用户已确认：官方固定版本语义优先，保留完整 JSON 输入能力；允许独立一次性离线导出 multilingual ONNX，应用构建、启动、推理不依赖 Python。TypeScript 移植仅作实现和导出参考。\n\n## 交付\n\n创建 `docs/compatibility.md` 并同步 `docs/laya-server-plan.md`。把研究结论落成字段表、规范化规则、序列/校准规则、错误表及场景矩阵；后续票按此实现。引用研究报告的固定提交，不能引用浮动 main 代替版本依据。\n\n本票采用以下项目资源策略，属于保守的 MVP 默认值，不是性能实测：请求体最多 1 MiB；每请求 1–16 个问题；规范化后的 Choice / Score 为 2–32 项，Noul 为 2 项；JSON 嵌套上限 64。模型 token 预算另按已固定的真实配置执行，不能以截断替代这些限制。CLI 暴露上述可调限制及 queue capacity=32、queue timeout=30s、HTTP 执行等待 timeout=120s、shutdown grace=120s；线程默认 8 / inter-op=1，实际并发默认 2，均校验有效范围。更小的部署配置可用于测试；提高默认上限需另有资源证据。\n\nHTTP 固定 `POST /v1/system-one`、`GET /healthz`、`GET /readyz`、`GET /metrics`。路径是本项目约定，不新增未经证实的 Jev 路径别名。整请求原子返回答案或错误，不返回部分答案。状态码/错误码冻结为：JSON/字段/问题非法 400 `invalid_request`；body 超限 413 `payload_too_large`；媒体类型不符 415 `unsupported_media_type`；队列满 429 `queue_full`；排队超时 503 `queue_timeout`；未就绪/退出 503 `unavailable`；执行等待超时 504 `inference_timeout`；模型/数值失败 500 `inference_failed`。统一 body 为 `{\"error\":{\"code\":\"...\",\"message\":\"...\"}}`，只含静态或字段路径提示，不回显正文、内部路径或异常内容。\n\n执行等待超时只结束 HTTP 等待；真实 CPU 工作结束前仍持有 slot/permit。退出停止准入，等待中的请求结束为 unavailable，在途工作最多等 grace；到期记录未完成数量并以非零码退出整个进程，不声称线程已取消。模型/原生库加载失败在开始监听前非零退出。\n\n## 验收\n\n- [ ] 完整请求形式和默认值、Choice/Score/Noul 所有答案字段、官方 model 值、usage、舍入和 tie-breaking 均有固定源码依据；合法 JSON 数字不能被静默收窄为整数域。\n- [ ] HTTP解码采用固定Python json.loads对应行为：重复对象键以后值覆盖且保留首次键位置，Choice数组重复项按官方折叠；instructions/state接受任意JSON类型。非法JSON、孤立surrogate拒绝；参考HTTP解码固定CPython 3.11.16的JSON语义，受1 MiB body与深度限制，关闭Python整数十进制位数的额外上限以保留完整整数输入；禁止非标准NaN/Infinity字面量。合法数值字面量保留整数/浮点区别和精度：1e400等溢出按Python解析为inf后在模型输入文本中渲染Infinity，极小数按Python浮点下溢规则处理；这不放宽温度或模型输出必须有限的规则。未知请求字段忽略（不改变已识别语义），criteria字段类型按官方公开形式严格校验。区分语法无效、模型支持边界及资源拒绝。\n- [ ] 预先冻结真实对照阈值：token IDs / marker / mask / usage 逐项完全一致；原始 logits 使用 `abs <= 1e-4 + 1e-3 * abs(reference)`；未舍入概率和 act_probability 使用 `abs <= 1e-5 + 1e-4 * abs(reference)`；官方舍入后的字段和离散 Choice 结果精确一致。失败须定位，不得为了通过而自动放宽。\n- [ ] 覆盖中文、英文、三类型、混合多问题、长文本截断、JSON 数字/顺序、marker、padding、非法输入、温度桶与数值边界。\n- [ ] 固定指标计数规则：System One 每次 HTTP 请求计一次；错误按有界原因计数，后台晚到的推理失败与 HTTP 失败不得重复计算同一请求；耗时包含/不包含排队的边界清楚。\n- [ ] 文档没有未定的业务规则。新发现与用户已确认方向冲突时，报告事实并请求决定，不自行换为英文模型或 TS 语义。\n\n验证：逐项对照两个研究报告及服务方案，检查 Markdown 链接与 `rtk git diff --check`。本票不实现服务，也不宣称数值阈值已经通过模型验证。\n\n前置产物：[固定 System One 协议、序列与后处理的参考基线](https://github.com/redwolf2019/laya-rs/issues/2)、[核实 multilingual bundle 与 Rust CPU 运行库候选组合](https://github.com/redwolf2019/laya-rs/issues/3)。原生阻塞关系全部解除且本票未分配时才可领取；先分配给执行者。\n\n地图：[MVP 路线图：从文档仓库到 Linux CPU 推理服务](https://github.com/redwolf2019/laya-rs/issues/1)。本票新增文件与命令是交付目标，执行前遵守仓库 AGENTS.md；完成后附验证结果再关闭。\n\n",
+    "comments": [
+      {
+        "id": "IC_kwDOUm40o88AAAABWTfZAg",
+        "author": {
+          "login": "redwolf2019"
+        },
+        "authorAssociation": "OWNER",
+        "body": "已完成文档契约，提交 `81d413d28722307ad960db61e08e57357206ec2d` 位于本地 `main`，尚未推送。\n\n新增 `docs/compatibility.md`，同步 `docs/laya-server-plan.md`：冻结完整 JSON、请求与答案字段、序列/校准、资源和错误表、退出与指标计数，以及真实对照阈值和场景矩阵。依据为两份研究报告的固定提交与官方固定源码。原有 README 和方案编辑保留在工作区，未并入本票提交。\n\n[已验证/HIGH，文档及语言探针范围] 18 个唯一外部链接可读取，本地链接、引用定义、代码围栏和固定引用检查通过。`rtk git diff --check`、`rtk git diff --cached --check`、提交后 `git show --format= --check HEAD` 均通过；shell 经 RTK 调用。CPython 3.11.16 与官方纯函数探针核对了 JSON 示例、重复键/选项、Noul 默认、任意精度整数、浮点溢出/下溢及舍入。\n\nStandards 评审：0 项；Spec 评审：0 项，最终暂存方案一致性复核通过。\n\n本票不含服务代码，未执行 Cargo、真实 tokenizer、模型推理、Linux 加载或性能验收；数值阈值仅冻结，尚未实测通过。\n",
+        "createdAt": "2026-09-23T08:44:55Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/redwolf2019/laya-rs/issues/4#issuecomment-5791799554",
+        "viewerDidAuthor": true
+      }
+    ],
+    "number": 4,
+    "state": "CLOSED",
+    "title": "冻结 MVP 的官方兼容契约、服务限制与验收矩阵"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjU0MjE1Mzcw",
+        "login": "redwolf2019",
+        "name": "",
+        "databaseId": 54215370
+      }
+    ],
+    "body": "## Question\n\n后续模型、容器与 benchmark 任务在哪个真实 Linux CPU 环境执行，并怎样复用和准确描述该环境？\n\n## 范围\n\n用户已选择本机 Docker Desktop 的 Linux ARM64 容器作为 MVP 验收环境。已检查本机为 Darwin arm64，`/Applications/Docker.app` 和 Docker CLI 存在，daemon 当前未运行；本票启动既有 Docker Desktop，确认 Linux ARM64 容器可执行，并记录实际配置。只使用现有本机，不开通付费服务器，也不把 amd64 模拟运行用于性能验收。\n\n## 交付与验收\n\n- [x] 记录实际 Linux kernel、CPU 架构/型号、容器引擎、分配 CPU/RAM、可用磁盘及虚拟化情况；保存 `docs/validation-environment.md` 和最小复现命令。\n- [x] 在 Linux 容器内运行系统信息和 CPU-only 原生库检查，记录原始输出。Docker CLI 安装不等于 daemon 可运行；前置检查失败不得判通过。\n- [x] 采用 [核实 multilingual bundle 与 Rust CPU 运行库候选组合](https://github.com/redwolf2019/laya-rs/issues/3) 选定的对应 CPU 架构官方 ORT 发行包并核验来源/校验值，记录 glibc 与动态库依赖。无 CUDA/GPU provider 的运行要求明确。\n- [x] 开发期参考/导出环境与纯 Rust 服务构建环境分离；后续任务可以把只读模型目录挂入 Linux 环境，不要求在服务镜像安装 Python/Node。\n- [x] 原始环境参数成为后续 benchmark 的输入；不得把虚拟机或容器测量称为 16 核 / 32GB 裸机结果。环境不足就报告实际缺口，不伪造远端地址或测量数据。\n\n验证：文档中的 Linux 信息与动态库命令实际成功执行；检查引用与 `rtk git diff --check`。本票不实现 Docker 发布镜像或服务代码。\n\n前置产物：[核实 multilingual bundle 与 Rust CPU 运行库候选组合](https://github.com/redwolf2019/laya-rs/issues/3)。原生阻塞关系全部解除且本票未分配时才可领取；先分配给执行者。\n\n地图：[MVP 路线图：从文档仓库到 Linux CPU 推理服务](https://github.com/redwolf2019/laya-rs/issues/1)。本票新增文件与命令是交付目标，执行前遵守仓库 AGENTS.md；完成后附验证结果再关闭。\n\n",
+    "comments": [
+      {
+        "id": "IC_kwDOUm40o88AAAABWT3f_g",
+        "author": {
+          "login": "redwolf2019"
+        },
+        "authorAssociation": "OWNER",
+        "body": "已完成本机 Linux ARM64 环境验收。产物在当前 `main` 的本地提交 `37bbf66bbec286f5c6cb5d90587070af07a51c6c`，尚未推送：`docs/validation-environment.md`、`docs/validation/check-linux.sh` 和两份原始输出。\n\n`[已验证/HIGH]` Docker Desktop 4.85.0 / Engine 29.6.2 已启动。内核为 `6.12.76-linuxkit`，VM 可见 8 vCPU、16,748,113,920 bytes RAM；本次容器固定 8 vCPU、12 GiB、swap=0。宿主机为 Apple M2 Max，剩余磁盘约 63 GiB；记录明确区分宿主机、VM 与容器配额，不作为裸机或 amd64 性能数据。\n\n官方 `onnxruntime-linux-aarch64-1.28.0.tgz` 的本地 SHA-256 与 Release API 一致。Linux 内 `file`、`readelf -d`、版本需求和 `ldd` 检查成功；glibc 2.36 可加载 ORT C API 28，唯一 provider 为 `CPUExecutionProvider`，Environment 创建/释放成功。原始日志保留 `Unknown CPU vendor` 警告，未判断其性能影响。\n\n验证：文档中的 ARM64 `docker run ... bash /check-linux.sh` 最终退出码 0；`rtk proxy bash -n docs/validation/check-linux.sh`、本地文档链接检查、`rtk git diff --cached --check` 和提交后 diff 检查通过。code-review 双轴结果为 Standards 0 项、Spec 0 项；评审读取脚本与原始记录，没有另行重跑容器。\n\n文档包含固定镜像 digest、复现命令、只读模型挂载方式、参考/导出与 Rust 服务环境的分离要求，以及后续 benchmark 应采集的参数。当前无 Cargo 工程，未执行 Rust 编译或测试；未下载模型、执行真实推理或测量吞吐/延迟。后续模型与服务票继续完成这些验收。\n",
+        "createdAt": "2026-09-23T09:15:23Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/redwolf2019/laya-rs/issues/5#issuecomment-5792194558",
+        "viewerDidAuthor": true
+      }
+    ],
+    "number": 5,
+    "state": "CLOSED",
+    "title": "建立可复用的 Linux CPU 验收环境与运行记录"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjU0MjE1Mzcw",
+        "login": "redwolf2019",
+        "name": "",
+        "databaseId": 54215370
+      }
+    ],
+    "body": "## Question\n\n怎样从文档仓库建立能编译、能验证配置的最小 Rust 应用，并固定 CPU 原生依赖组合？\n\n## 输入\n\n[冻结 MVP 的官方兼容契约、服务限制与验收矩阵](https://github.com/redwolf2019/laya-rs/issues/4) 的 CLI/资源契约与 [核实 multilingual bundle 与 Rust CPU 运行库候选组合](https://github.com/redwolf2019/laya-rs/issues/3) 的版本报告。候选版本须按报告的固定来源复核，编译失败不能悄悄升级。\n\n## 交付\n\n创建 `Cargo.toml`、`Cargo.lock`、固定工具链、必要的 main/config 代码和最小 Linux CI。只添加本票实际使用的依赖，其余在使用它们的任务中加入并锁定；不预建空模块或假推理端点。CLI 必须包含现方案的 model/listen/threads/max-concurrency，以及契约冻结的资源和超时参数。未接入模型前普通启动应明确表示功能尚未完成并非零退出，不能伪装可用服务。\n\nRust/ort/ORT/tokenizers 使用 [核实 multilingual bundle 与 Rust CPU 运行库候选组合](https://github.com/redwolf2019/laya-rs/issues/3) 最终确定的精确候选；ort CPU 动态加载方式、ABI 和官方运行库获取步骤记录在 README。Axum 0.8、Tokio、Serde 等其余依赖按实际发布版本锁入 Cargo.lock，并检查 MSRV、许可证和 Linux CPU 支持。\n\n## 验收\n\n- [ ] `--help` 可运行，所有 CLI 值有类型与范围校验；零/负数、非法地址、不存在模型目录、未知参数在启动时给出脱敏错误并非零退出。\n- [ ] 默认值与 [冻结 MVP 的官方兼容契约、服务限制与验收矩阵](https://github.com/redwolf2019/laya-rs/issues/4) 一致，CLI 可以覆盖；不引入 YAML 第二套配置或自定义配置框架。\n- [ ] 将 fmt、clippy、无模型单元测试作为 Linux CI；真实模型测试单独标识，缺权重时显示未执行，不能让 CI 绿色被解释为兼容通过。\n- [ ] 构建过程不调用 Python/Node，Cargo.lock 被追踪；README 只展示已能执行的命令。\n\n验证：`rtk cargo fmt --check`、`rtk cargo clippy --all-targets -- -D warnings`、`rtk cargo test`；另运行 help 和至少一组非法 CLI 参数。记录具体工具链、Cargo 依赖与原生 ABI，不能将 cargo check 称为真实 ORT 推理验证。\n\n前置产物：[冻结 MVP 的官方兼容契约、服务限制与验收矩阵](https://github.com/redwolf2019/laya-rs/issues/4)、[核实 multilingual bundle 与 Rust CPU 运行库候选组合](https://github.com/redwolf2019/laya-rs/issues/3)。原生阻塞关系全部解除且本票未分配时才可领取；先分配给执行者。\n\n地图：[MVP 路线图：从文档仓库到 Linux CPU 推理服务](https://github.com/redwolf2019/laya-rs/issues/1)。本票新增文件与命令是交付目标，执行前遵守仓库 AGENTS.md；完成后附验证结果再关闭。\n\n",
+    "comments": [
+      {
+        "id": "IC_kwDOUm40o88AAAABWUCYnw",
+        "author": {
+          "login": "redwolf2019"
+        },
+        "authorAssociation": "OWNER",
+        "body": "已完成 CLI 工程，提交 `24774ab77532f2043f1327aeb62a4acb06e67e6e` 位于本地 `main`，尚未推送。\n\n`Cargo.toml`、`Cargo.lock`、`rust-toolchain.toml` 和 main/config 已落地。全部冻结参数可覆盖默认值；校验模型目录、IP/端口、整数范围、ORT C int 线程边界和超时时钟范围，错误不回显原始输入。`--help` 返回 0，配置非法返回 2，配置合法也以 1 报告服务尚未实现，不监听端口。\n\n本票只使用标准库，Cargo 依赖树仅包含 laya-server 0.1.0。按票中“只添加实际使用的依赖”要求，ort/tokenizers/HTTP 依赖留给实际使用它们的任务；README 固定 ort/ort-sys =2.0.0-rc.13、ORT CPU 1.28.0 / C API 28、tokenizers =0.23.2，并记录 features、MSRV/许可证核实范围、官方包校验值和获取步骤。没有把候选表称为已编译的推理组合。\n\n[已验证/HIGH，实际执行]\n\n- Rust `1.98.1 (48a229cea 2026-09-01)`；Linux Cargo `1.98.1 (797e8a9bc 2026-08-05)`，host `aarch64-unknown-linux-gnu`，LLVM 22.1.8。\n- 宿主 Darwin ARM64：`rtk cargo check --all-targets`、`rtk cargo build --locked`、`rtk cargo fmt --check`、`rtk cargo clippy --all-targets -- -D warnings`、`rtk cargo test --locked` 通过，最终为 3 个配置单元测试和 6 个 CLI 进程测试。help 与非法输入测试先失败，再实现后通过。\n- Docker Desktop Linux ARM64：固定官方镜像 `rust@sha256:ff521445a372125ed4f76e1453a1f8098f2d05332d1601d30db1c1f62757e730`，`--cpus 8 --memory 12g --memory-swap 12g`，仓库只读挂载，target 位于容器 `/tmp`。实际运行 `cargo fmt --check`、`cargo clippy --locked --all-targets -- -D warnings`、`cargo test --locked`，9 项通过。另跑 help、`--model . --threads 0` 和 `--model .`，退出码分别为 0、2、1。构建与检查未调用 Python/Node。\n- 本地 Markdown 链接、暂存 diff whitespace 和提交后 `git show --format= --check HEAD` 通过；工作区干净。\n- Standards 评审：0 项；Spec 评审：0 项。\n\n新增 Linux CI 执行 fmt/clippy/无模型测试，并独立标记 `Real model validation — NOT RUN`。远程 GitHub Actions 尚未执行；未运行 Rust ort 加载、tokenizer/模型推理或性能测试。#5 的原生 ARM64 ABI 加载结果已在 README 引用，本票没有重复执行或扩展该结论。\n",
+        "createdAt": "2026-09-23T09:29:04Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/redwolf2019/laya-rs/issues/6#issuecomment-5792372895",
+        "viewerDidAuthor": true
+      }
+    ],
+    "number": 6,
+    "state": "CLOSED",
+    "title": "建立可编译的 Rust 工程、CLI 配置与 CPU 依赖基线"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjU0MjE1Mzcw",
+        "login": "redwolf2019",
+        "name": "",
+        "databaseId": 54215370
+      }
+    ],
+    "body": "## Question\n\n如何从固定官方 multilingual checkpoint 得到可用于本项目多问题批处理的 ONNX bundle，并让另一个 Agent 能验证同一组文件？\n\n## 固定输入与范围\n\n读取 [核实 multilingual bundle 与 Rust CPU 运行库候选组合](https://github.com/redwolf2019/laya-rs/issues/3)。原 receptron/laya-onnx 来源没有 multilingual；目前社区候选的 batch=1 不符合本项目动态多问题批处理要求。采用用户授权的独立一次性离线导出：官方 checkpoint `convaiinnovations/laya-multilingual@052592a15d198d9ad47da779604259b10b47b7aa`；官方源码以 [固定 System One 协议、序列与后处理的参考基线](https://github.com/redwolf2019/laya-rs/issues/2) 的固定 SHA 为准。移植 exporter 只复用适用部分，逐项核对官方模型结构，不能改成英文、fp16 或量化版以绕过失败。\n\n## 交付\n\n在独立开发期环境固定 Python/PyTorch/Transformers/ONNX/exporter 版本和执行命令；可以保留最小开发脚本/锁文件于 `tools/model-prep/`，服务的 Cargo 构建、启动和 Docker 发布不调用它。权重及 bundle 放在忽略目录 `models/multilingual/`，小型来源与 SHA-256 清单放在 `docs/model-manifest.json`。保留来源许可证与必要归属。\n\n最终 bundle 合同为 laya.onnx、其实际使用的 external-data 文件、laya_config.json、tokenizer/tokenizer.json、tokenizer/tokenizer_config.json；ONNX external_data location 必须对应实际文件。记录每个文件的字节数与下载/生成后实际计算的 SHA-256，不能只抄 LFS 元数据。\n\n## 验收\n\n- [x] 核对官方 checkpoint 下载 SHA 与发布方元数据，记录源码/权重 revision、完整导出环境；模型权重不进入 Git。\n- [x] 输出 fp32 CPU 图；从最终模型/Session 检查 input_ids、attention_mask、marker_pos、marker_mask、qtype 以及 logits / act_probs 的实际名称、dtype、shape和动态维度，不凭 exporter 文本当作已验证。\n- [x] 实际运行 B=1 与 B>=2、不同序列长度和候选数；确认最短输入、padding、多问题动态 B/L/K 的合法范围。若图输出 act_logits 而非 act_probs，修正导出并重新核验，不静默改后处理。\n- [x] 配置 max_len=1024、head_max_len=256 等使用固定 checkpoint 的任务配置，不能用 tokenizer/encoder 的 8192 上限覆盖。\n- [x] 用官方 checkpoint 在相同 token 输入上对比中文/英文三类型的原始 logits 与 act_probs，达到 [冻结 MVP 的官方兼容契约、服务限制与验收矩阵](https://github.com/redwolf2019/laya-rs/issues/4) 的预定容差；保存小型结果和原始日志。\n- [x] 记录复现命令和本机产物目录，后续任务据 manifest 获取/重建并核验；不上传到未授权第三方模型仓库。\n- [x] 失败保留诊断，不关闭本票、不自动换模型/精度或放宽阈值。\n\n验证：离线导出命令、实际 SHA-256、CPU ORT B=1/B>=2 探针、官方参考对照均实际执行；Rust 项目尚未接入不是本票通过真实 bundle 对照的替代。\n\n前置产物：[冻结 MVP 的官方兼容契约、服务限制与验收矩阵](https://github.com/redwolf2019/laya-rs/issues/4)、[核实 multilingual bundle 与 Rust CPU 运行库候选组合](https://github.com/redwolf2019/laya-rs/issues/3)、[建立可复用的 Linux CPU 验收环境与运行记录](https://github.com/redwolf2019/laya-rs/issues/5)。原生阻塞关系全部解除且本票未分配时才可领取；先分配给执行者。\n\n地图：[MVP 路线图：从文档仓库到 Linux CPU 推理服务](https://github.com/redwolf2019/laya-rs/issues/1)。本票新增文件与命令是交付目标，执行前遵守仓库 AGENTS.md；完成后附验证结果再关闭。\n\n",
+    "comments": [
+      {
+        "id": "IC_kwDOUm40o88AAAABWUSeSg",
+        "author": {
+          "login": "redwolf2019"
+        },
+        "authorAssociation": "OWNER",
+        "body": "已完成。产物在当前 `main` 的本地提交 `0c83713c2f5e9ca73aca98167e2de94ccf1d25ec`，尚未推送：`tools/model-prep/`、`docs/model-manifest.json` 和 `docs/validation/model-prep/`。\n\n`[已验证/HIGH]` 固定官方 checkpoint 的 643,835,514 字节权重已下载，实际 SHA-256 为 `9d628fd971b700382ac6f65920a86f149777b2e748e0c955fb3b19695aa8f204`，与发布方 LFS 元数据一致。其余 checkpoint 文件、官方源码、tokenizer、最终 bundle 和许可文件均保存了实际大小/哈希。权重不在 Git；本机 bundle 位于 `/Users/redwolf/MyProjects/laya-rs/models/multilingual`，未上传模型。\n\n独立环境固定 CPython 3.11.16、PyTorch 2.10.0+cpu、Transformers 5.0.0、ONNX 1.20.1、ONNXScript 0.5.4、ORT 1.28.0；完整依赖锁、镜像 digest、命令和日志已保存。Linux ARM64 容器配置为 8 vCPU、12 GiB、swap=0，来自 Docker Desktop VM，不作为裸机或 amd64 性能结果。准备脚本不进入 Cargo 构建或服务启动。\n\n`[已验证/HIGH]` 最终模型为 fp32、IR 10 / opset 18；实际 external-data location 为 `laya.onnx.data`。Session 读取确认五个输入以及 `logits:float32[batch,options]`、`act_probs:float32[batch,2]`，B/L/K 为动态维度。任务配置保持 1024/256；真实 tokenizer 为 CLS=2、SEP=1、MASK=4、PAD=0。\n\n`export.py`、`verify.py` 在 Linux CPU 实际执行成功。19 个探针包含中英文三类型，B=1/2/6/16、所选 K=2–32 边界、L=1024、混合长度/候选 padding，以及 L=2 的纯张量探针。双方使用相同的官方 builder/collator token 输入；有效 logits 最大绝对误差 `1.6927719116210938e-05`，act_probs 最大绝对误差 0，全部满足冻结容差。action 样例均饱和为 `[1,0]`，文档明确这一覆盖限制；没有放宽阈值或改用其他模型/精度。\n\n检查通过：完整 manifest 哈希复核、Python 编译检查与 pip check、文档本地链接、diff whitespace；宿主机 Rust check/fmt/clippy 与全部 9 项测试。code-review 的 Standards 轴发现并修复了 manifest 硬编码本机路径，复核无剩余项；Spec 轴 0 项。评审独立核对文件、日志和数值，没有重跑模型。\n\nRust 推理、HTTP、完整响应 golden、Jev 客户端兼容和性能验收仍由后续任务完成。模型准备容器已停止，保留本机文件供后续任务核验。\n",
+        "createdAt": "2026-09-23T09:48:20Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/redwolf2019/laya-rs/issues/7#issuecomment-5792636490",
+        "viewerDidAuthor": true
+      }
+    ],
+    "number": 7,
+    "state": "CLOSED",
+    "title": "产出可核验的 multilingual ONNX bundle 与离线导出记录"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjU0MjE1Mzcw",
+        "login": "redwolf2019",
+        "name": "",
+        "databaseId": 54215370
+      }
+    ],
+    "body": "## Question\n\n服务怎样在启动时验证模型文件与张量接口，并获得可用的 CPU Session 和 Tokenizer？\n\n## 输入与交付\n\n消费 [产出可核验的 multilingual ONNX bundle 与离线导出记录](https://github.com/redwolf2019/laya-rs/issues/7) 的实际 bundle 与 manifest、[建立可编译的 Rust 工程、CLI 配置与 CPU 依赖基线](https://github.com/redwolf2019/laya-rs/issues/6) 的配置/依赖组合；实现最少必要的 model/tokenizer 加载代码。生产构建只读取本地模型目录和原生库，不下载或导出模型。\n\n## 验收\n\n- [ ] 检查文件存在、内容 SHA-256、external-data 引用、JSON 配置、特殊 token 实际 ID、温度有限且为正；缺文件、损坏文件、非法配置和原生 ABI 错误有明确启动失败。\n- [ ] 使用 Session 元信息核对输入输出名称/dtype/shape/动态维度及 CPU provider，拒绝与固定 manifest 不符的模型，不能依赖名称相似。\n- [ ] 设置实际 intra/inter-op threads，固定 tokenizer 的 truncation/padding 行为，不能让 tokenizer 隐式策略覆盖 Sequence Builder。\n- [ ] 使用 [产出可核验的 multilingual ONNX bundle 与离线导出记录](https://github.com/redwolf2019/laya-rs/issues/7) 的固定张量跑一次真实 CPU 推理并检查输出维度和有限值；加载成功或单独 tokenizer encode 不能冒充模型可用。\n- [ ] 在 Linux 验收环境记录原生库版本、模型 digest 和运行结果。任何加载阶段失败都不能把 ready 状态设为真。\n- [ ] 模型初始化只在启动执行，后续请求复用资源；不在这里预建热更新、多模型或通用 provider 层。\n\n验证：fmt、clippy、相关 cargo test；添加缺文件/坏配置/shape或dtype不符的失败用例，以及显式需要真实模型的 Linux smoke。没有真实 bundle 时本票不得按 mock 成功结题。\n\n前置产物：[建立可编译的 Rust 工程、CLI 配置与 CPU 依赖基线](https://github.com/redwolf2019/laya-rs/issues/6)、[产出可核验的 multilingual ONNX bundle 与离线导出记录](https://github.com/redwolf2019/laya-rs/issues/7)、[建立可复用的 Linux CPU 验收环境与运行记录](https://github.com/redwolf2019/laya-rs/issues/5)。原生阻塞关系全部解除且本票未分配时才可领取；先分配给执行者。\n\n地图：[MVP 路线图：从文档仓库到 Linux CPU 推理服务](https://github.com/redwolf2019/laya-rs/issues/1)。本票新增文件与命令是交付目标，执行前遵守仓库 AGENTS.md；完成后附验证结果再关闭。\n\n",
+    "comments": [
+      {
+        "id": "IC_kwDOUm40o88AAAABWUiIzg",
+        "author": {
+          "login": "redwolf2019"
+        },
+        "authorAssociation": "OWNER",
+        "body": "已完成，当前 `main` 的本地提交 `d169873`，尚未推送。实现与证据在 `src/model.rs`、`src/model/tests.rs`、`docs/validation/model-loader.md` 及其原始日志目录。\n\n[已验证/HIGH] 加载器内嵌 #7 manifest，核验全部 bundle 文件大小/SHA-256、JSON、1024/256 任务预算、有限正温度及真实特殊 token ID。固定 ONNX 哈希锁定 #7 已验收的 external-data 引用，目录须只读且不可变。Tokenizer 关闭隐式 truncation/padding；生产启动只读本地文件。\n\n通过 Session 元信息逐项核对五个输入和两个输出的名称、dtype、shape、动态符号。按并发数创建独立 CPU Session，设置实际 intra/inter-op threads，逐槽执行 #7 的固定 tensor-L2 探针后才返回可复用资源。新增 `--ort-library` CLI 参数，契约及示例同步；HTTP 未实现，初始化成功后仍明确退出码 1，不报告 ready。\n\n[已验证/HIGH] Linux ARM64 / Docker Desktop / 8 vCPU / 12 GiB / swap=0，官方 ORT CPU 1.28.0（API 28）、ort 2.0.0-rc.13、tokenizers 0.23.2、Rust 1.98.1。两个 Session 使用 intra=2/inter=2 完成初始化与重复真实推理，logits 均为 `[1.0814669,-1.09079]`，act_probs 为 `[1,0]`，shape `[1,2]`，通过 #7 官方参考输出的冻结容差。模型图、external data 与原生库 digest 均已记录。\n\n独立 Debian 容器 `--network none`、无 Python/Node/GPU 工具，默认 intra=8/inter=1、两槽真实启动通过。缺库、缺 OrtGetApiBase、旧 ABI 三种失败均非零退出，无 panic 或输入路径回显。\n\n验证：宿主与 Linux fmt、clippy、普通全量测试 14 passed / 1 ignored；显式 Linux 真实 smoke 1 passed。缺文件/截断/同大小损坏、坏 JSON/温度/预算、shape/dtype/名称/动态符号错误均有测试。独立 code-review：Standards 0 项，Spec 0 项；评审只读，未另行重跑模型。\n\n验收边界为固定张量 L=2/B=1 和两槽复用；action 样例饱和。完整 Sequence Builder、中文/英文全响应、动态 batch 的 Rust 对照、Jev HTTP 兼容与性能仍待后续任务。普通 CI 显示真实 smoke 未执行，未运行远程 CI。构建容器已停止，bundle 未入 Git、未上传。\n",
+        "createdAt": "2026-09-23T10:06:56Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/redwolf2019/laya-rs/issues/8#issuecomment-5792893134",
+        "viewerDidAuthor": true
+      }
+    ],
+    "number": 8,
+    "state": "CLOSED",
+    "title": "加载并校验 bundle、Tokenizer 与 CPU ONNX Session"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjU0MjE1Mzcw",
+        "login": "redwolf2019",
+        "name": "",
+        "databaseId": 54215370
+      }
+    ],
+    "body": "## Question\n\n如何把 HTTP 输入转换成官方语义对应的有序问题与答案类型，并在进入推理前拒绝非法请求？\n\n## 交付\n\n按 [冻结 MVP 的官方兼容契约、服务限制与验收矩阵](https://github.com/redwolf2019/laya-rs/issues/4) 和 [固定 System One 协议、序列与后处理的参考基线](https://github.com/redwolf2019/laya-rs/issues/2) 实现请求/响应 DTO、规范化表示和类型化错误。覆盖官方允许的请求可选形式、criteria 默认值及 rl_agent 等完整字段；所有公开约束写进对应模块文档。\n\n## 验收\n\n- [ ] state/instructions 保留字符串与完整 JSON 能力；嵌套对象顺序、数字原始类别/精度信息不能在 deserialize 时丢失，供 [实现与官方 Python 一致的 JSON 序列化](https://github.com/redwolf2019/laya-rs/issues/11) 的 serializer 使用。\n- [ ] Choice 候选与 Score 等级顺序、默认 Noul false/true 含义严格对照官方，重复项/重复键行为按冻结契约；不能为了方便排序或改变候选含义。\n- [ ] 校验空问题、不支持的 type、非法字段类型、规范化后 k<2、数量/深度边界，以及所有可能导致索引越界的输入；非法请求不能 panic。\n- [ ] 完整响应包含官方要求的 model、answers、usage、confidence、legend、rl_agent.act_probability 等；此处只定义类型，不返回虚构推理值。\n- [ ] 确定性错误使用枚举/类型表达，禁止错误字符串匹配或泄露输入正文。\n- [ ] 用表驱动样例覆盖每种合法形式及每个拒绝边界（上限与上限+1），合法浮点/指数 JSON 不能退化为只接收整数。\n\n验证：fmt、clippy、相关 cargo test；测试验证输入→规范化语义和响应结构，不依赖模型、不测试尚未实现的推理。\n\n前置产物：[冻结 MVP 的官方兼容契约、服务限制与验收矩阵](https://github.com/redwolf2019/laya-rs/issues/4)、[建立可编译的 Rust 工程、CLI 配置与 CPU 依赖基线](https://github.com/redwolf2019/laya-rs/issues/6)。原生阻塞关系全部解除且本票未分配时才可领取；先分配给执行者。\n\n地图：[MVP 路线图：从文档仓库到 Linux CPU 推理服务](https://github.com/redwolf2019/laya-rs/issues/1)。本票新增文件与命令是交付目标，执行前遵守仓库 AGENTS.md；完成后附验证结果再关闭。\n\n",
+    "comments": [
+      {
+        "id": "IC_kwDOUm40o88AAAABWVTPuQ",
+        "author": {
+          "login": "redwolf2019"
+        },
+        "authorAssociation": "OWNER",
+        "body": "已完成，本地提交 `600f0809d6d49d25ba4d2ec4713f88e80ad37bae`（当前 `main`，尚未推送）。\n\n`src/system_one.rs` 提供请求规范化、完整响应 DTO 和类型化静态错误；`src/system_one/json.rs` 保留数字原始词法，并提供按首次位置、后值覆盖的对象视图。完整文档校验包含未知字段及被覆盖值。CLI 复用同一组默认输入限制。\n\n[已验证/HIGH；本机无模型验证范围]\n\n- `rtk cargo fmt --check`：通过。\n- `rtk cargo clippy --locked --all-targets -- -D warnings`：通过。\n- `rtk cargo test --locked --test system_one`：15 项通过，覆盖合法形式、顺序与重复项、数字/Unicode、数量/字节/深度边界、响应结构及错误 envelope。\n- `rtk cargo test --locked`：29 项通过，1 项真实模型测试明确跳过。\n- 本地 Markdown 链接、函数行数和 `rtk git diff --cached --check`：通过。\n\n双轴评审：Standards 0 项，Spec 0 项；未发现待修复问题。未新增依赖包，`serde_json` 仅启用 `raw_value`，既有 `Cargo.lock` 无需变化。\n\n本次未运行 Linux 或真实模型验收，不声明推理/Jev 兼容。Python 数字转换与 JSON 文本渲染留给 #11；HTTP 和答案后处理仍待后续任务。\n",
+        "createdAt": "2026-09-23T11:05:11Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/redwolf2019/laya-rs/issues/9#issuecomment-5793697721",
+        "viewerDidAuthor": true
+      }
+    ],
+    "number": 9,
+    "state": "CLOSED",
+    "title": "实现完整 System One 类型、规范化与边界校验"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjU0MjE1Mzcw",
+        "login": "redwolf2019",
+        "name": "",
+        "databaseId": 54215370
+      }
+    ],
+    "body": "## Question\n\nRust 实现用哪一组可追溯、可复现的真实官方输出判定序列、数值和协议兼容？\n\n## 交付\n\n使用 [固定 System One 协议、序列与后处理的参考基线](https://github.com/redwolf2019/laya-rs/issues/2) 固定的官方 Python 源码和 [产出可核验的 multilingual ONNX bundle 与离线导出记录](https://github.com/redwolf2019/laya-rs/issues/7) 固定 checkpoint，建立仅供开发的最小 fixture 生成入口，保存小型 fixture 于 `tests/fixtures/`，记录来源/生成环境/命令/输入/中间值与 digest；权重不入 Git。服务构建与运行不执行生成器。\n\n## 验收\n\n- [x] 中文、英文分别覆盖 Choice/Score/Noul，另有混合多问题、不同候选数/序列长度、长状态、长指令、长选项、marker 注入、截断和 padding。\n- [x] 每个正常样例保存规范化顺序、序列化文本、token IDs、marker_pos、attention_mask/marker_mask/qtype、未padding长度与input_tokens、原始logits、温度来源、概率和完整答案 JSON。\n- [x] JSON专项包括嵌套插入顺序、整数样式键、空格/Unicode/转义、emoji、负零、1.0、指数边界、超过2^53的大整数；同时给出按契约拒绝的畸形输入。\n- [x] 数值样例覆盖温度桶2/3/5/6/10/11、类型温度fallback、四位舍入中点和近并列Choice；可以用明确标识的人工 logits 边界样例补充，不能伪称模型输出。\n- [x] 用最终ONNX bundle在同样输入上对比官方checkpoint，记录 [冻结 MVP 的官方兼容契约、服务限制与验收矩阵](https://github.com/redwolf2019/laya-rs/issues/4) 固定阈值下的差异；不得以ONNX自己生成的期望值证明官方兼容。\n- [x] 文件可被 Rust 无 Python/Node 地消费。生成器重复运行的结果可比，浮动版本与随意重生成不能覆盖原始失败证据。\n\n验证：实际执行官方生成与ONNX对照命令，验证fixture schema及摘要，检查所有fixture的 provenance；真实参考未执行时不得关闭本票。\n\n前置产物：[冻结 MVP 的官方兼容契约、服务限制与验收矩阵](https://github.com/redwolf2019/laya-rs/issues/4)、[产出可核验的 multilingual ONNX bundle 与离线导出记录](https://github.com/redwolf2019/laya-rs/issues/7)。原生阻塞关系全部解除且本票未分配时才可领取；先分配给执行者。\n\n地图：[MVP 路线图：从文档仓库到 Linux CPU 推理服务](https://github.com/redwolf2019/laya-rs/issues/1)。本票新增文件与命令是交付目标，执行前遵守仓库 AGENTS.md；完成后附验证结果再关闭。\n\n",
+    "comments": [
+      {
+        "id": "IC_kwDOUm40o88AAAABWVnxuw",
+        "author": {
+          "login": "redwolf2019"
+        },
+        "authorAssociation": "OWNER",
+        "body": "[已验证/HIGH] #10 的 fixture 交付与六项验收已完成，提交 [4b1bd81](https://github.com/redwolf2019/laya-rs/commit/4b1bd81) 已推送到 main。\n\n- 21 个固定官方 checkpoint 请求覆盖中英文三类型、混合 batch、不同候选数/长度、长输入、真实 marker 注入、截断与 padding。\n- 每个真实样例包含原始请求、规范化顺序与文本、token/marker/mask/qtype、未 padding 长度、logits、温度、概率及官方完整响应。\n- JSON 专项与 20 个契约拒绝样例已保存；温度桶、fallback、舍入中点和近并列人工样例明确标注来源。\n- 已在固定 Linux ARM64 CPU 环境实际执行官方生成和最终 ONNX bundle 对照。两轮 24 个文件摘要完全一致，原始失败证据未覆盖。\n- Rust 离线消费测试通过；fmt、clippy 通过，全量测试 30 passed / 1 ignored。ignored 的既有 Linux smoke 未在本次重跑。Standards / Spec 双轴评审均无需修改项。\n\n产物及复现说明：[tests/fixtures/README.md](https://github.com/redwolf2019/laya-rs/blob/4b1bd81/tests/fixtures/README.md)。原始日志、失败数据和重复生成摘要位于 [docs/validation/fixtures](https://github.com/redwolf2019/laya-rs/tree/4b1bd81/docs/validation/fixtures)。\n\n完整模型兼容仍未通过：long-padding 的 Score 为官方 4.5307、ONNX 4.5306；其余 20 个真实请求通过全部比较。manifest 继续标记 failed，不更改阈值或期望。该差异在 #13 及后续端到端兼容验收中必须保留，不能以本票关闭判定兼容通过。\n\n更正首次交付说明中“#10 保持开放”的判断：本票要求“记录固定阈值下的差异”，明确禁止关闭的情形是“真实参考未执行”。本次已完成真实参考与差异记录，所以可以关闭 fixture 交付票；不增加“所有对照必须通过”作为本票条件，也不放宽模型兼容契约。\n",
+        "createdAt": "2026-09-23T11:31:04Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/redwolf2019/laya-rs/issues/10#issuecomment-5794034107",
+        "viewerDidAuthor": true
+      }
+    ],
+    "number": 10,
+    "state": "CLOSED",
+    "title": "生成固定官方参考的 token、logits 与完整答案 fixtures"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjU0MjE1Mzcw",
+        "login": "redwolf2019",
+        "name": "",
+        "databaseId": 54215370
+      }
+    ],
+    "body": "## Question\n\nRust 怎样把完整 JSON state/instructions 序列化为与固定官方参考相同的模型输入文本？\n\n## 输入与范围\n\n消费 [实现完整 System One 类型、规范化与边界校验](https://github.com/redwolf2019/laya-rs/issues/9) 的保真有序表示、[生成固定官方参考的 token、logits 与完整答案 fixtures](https://github.com/redwolf2019/laya-rs/issues/10) 的官方字节级样例以及 [固定 System One 协议、序列与后处理的参考基线](https://github.com/redwolf2019/laya-rs/issues/2) 的语义说明。仅实现跨语言序列化差异，不改模型或通过限制为整数来缩小输入域。\n\n## 验收\n\n- [ ] 字符串直接按官方行为使用；非字符串 state 使用官方的 Unicode/分隔符行为，非字符串 instructions 使用官方 ensure_ascii 行为；所有层级对象保持对应 Python 解码后的顺序。\n- [ ] 数字覆盖普通整数、超大整数、浮点、-0.0、指数阈值/符号/前导零、1.0与1的区别；行为由固定 Python oracle 决定，不能用serde_json默认dump或全局插空格近似。\n- [ ] 正确处理中文、补充平面字符/UTF-16 surrogate escapes、控制字符、引号与反斜杠；非法Unicode按 [冻结 MVP 的官方兼容契约、服务限制与验收矩阵](https://github.com/redwolf2019/laya-rs/issues/4) 拒绝，不静默替换。\n- [ ] 对固定fixtures逐字节一致，并保留可运行的最小差异测试；官方对极端JSON数/深度的拒绝也有对应断言。\n- [ ] 检查引用本序列化函数的所有生产路径，state与instructions共享必要底层逻辑但各自规则不能串用；优先标准库/已有依赖，不引入Python运行时或外部服务。\n\n验证：fmt、clippy、相关cargo test；从fixture读取期望文本做字节比较。测试需能在没有Python和模型文件的环境运行。\n\n前置产物：[实现完整 System One 类型、规范化与边界校验](https://github.com/redwolf2019/laya-rs/issues/9)、[生成固定官方参考的 token、logits 与完整答案 fixtures](https://github.com/redwolf2019/laya-rs/issues/10)。原生阻塞关系全部解除且本票未分配时才可领取；先分配给执行者。\n\n地图：[MVP 路线图：从文档仓库到 Linux CPU 推理服务](https://github.com/redwolf2019/laya-rs/issues/1)。本票新增文件与命令是交付目标，执行前遵守仓库 AGENTS.md；完成后附验证结果再关闭。\n\n",
+    "comments": [
+      {
+        "id": "IC_kwDOUm40o88AAAABWVwDrw",
+        "author": {
+          "login": "redwolf2019"
+        },
+        "authorAssociation": "OWNER",
+        "body": "#11 已完成，本地提交 `5fea286`（main，尚未推送）。\n\n`Request::state_text()` 与 `Question::instructions_text()` 共享有序 JSON 渲染，分别使用 Python 的 Unicode/ASCII 规则。任意精度整数、binary64 最短表示、负零、指数格式与溢出/下溢按冻结契约处理；没有新增依赖或运行时 Python。实现见 `src/system_one/json.rs`。\n\n[已验证/HIGH，文本范围] 21 个官方请求的 state/instructions 逐字节一致；补充 CPython 3.11.16 oracle 包含 390 个接受样例和 7 个拒绝样例，再生成文件与提交样本完全一致。孤立 surrogate、非法 UTF-8、覆盖值校验与可调深度边界由既有输入测试覆盖。来源和复现命令见 `tests/fixtures/README.md`。\n\n验证结果：\n\n- `rtk cargo check --locked --all-targets`：通过。\n- `rtk cargo fmt --check`：通过。\n- `rtk cargo clippy --locked --all-targets -- -D warnings`：通过。\n- `rtk cargo test --locked --test json_text --test fixtures --test system_one`：17 项通过。\n- `rtk cargo test --locked`：31 项通过，1 项真实模型测试按原有标记跳过。\n- 本地 Markdown 引用、`git diff --cached --check`：通过。\n- code-review：Standards 0 项，Spec 0 项，无待修复问题。\n\nRust 检查运行于宿主机；Python oracle 在已有固定 Linux 容器中生成。未重跑 Linux Rust/真实模型推理，不代表所有 binary64 位模式或完整推理兼容；#10 的 long-padding Score 差异仍由 #13 和端到端验收处理。\n",
+        "createdAt": "2026-09-23T11:42:04Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/redwolf2019/laya-rs/issues/11#issuecomment-5794169775",
+        "viewerDidAuthor": true
+      }
+    ],
+    "number": 11,
+    "state": "CLOSED",
+    "title": "实现与官方 Python 一致的 JSON 序列化"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjU0MjE1Mzcw",
+        "login": "redwolf2019",
+        "name": "",
+        "databaseId": 54215370
+      }
+    ],
+    "body": "## Question\n\n怎样将规范化问题构造成官方训练格式，并保证 marker、预算、截断与批处理布局逐项可比？\n\n## 范围\n\n复用 [加载并校验 bundle、Tokenizer 与 CPU ONNX Session](https://github.com/redwolf2019/laya-rs/issues/8) 的Tokenizer和真实配置、[实现与官方 Python 一致的 JSON 序列化](https://github.com/redwolf2019/laya-rs/issues/11) 的序列化结果，按 [固定 System One 协议、序列与后处理的参考基线](https://github.com/redwolf2019/laya-rs/issues/2) 与 [生成固定官方参考的 token、logits 与完整答案 fixtures](https://github.com/redwolf2019/laya-rs/issues/10) 实现 Sequence Builder。不要用state+question拼接替代官方结构。\n\n## 验收\n\n- [ ] 三种类型前缀、特殊token真实ID、MASK marker位置和用户文本中字面MASK的处理与官方一致；覆盖多个marker、截断后marker丢失与越界失败。\n- [ ] 指令/每选项预算、head/state截断、最终max_len、padding/attention mask逐项匹配；head_max_len不能自行解释为最大选项数量。\n- [ ] 每个问题一行，B=问题数、L=批内最长序列、K=批内最多选项，按固定图构造input_ids/attention_mask/marker_pos/marker_mask/qtype的dtype与shape（qtype是[B]，Choice/Score/Noul分别为0/1/2）。\n- [ ] input_tokens是每行未padding长度之和，state在每个问题中重复计数，output_tokens始终0；不把padding或只计一次state混入usage。\n- [ ] [生成固定官方参考的 token、logits 与完整答案 fixtures](https://github.com/redwolf2019/laya-rs/issues/10) 全部序列、token、marker、mask、usage精确一致；长中文、极短state、不同k混合batch和最大资源边界均验证。\n- [ ] 所有索引/shape计算有边界和溢出处理，错误进入类型化错误路径；不截断后悄悄丢候选项。\n\n验证：fmt、clippy、相关cargo test，使用真实tokenizer的fixture对照；不要求在每个无模型CI下载权重，但专项测试未运行时显式说明。\n\n前置产物：[实现与官方 Python 一致的 JSON 序列化](https://github.com/redwolf2019/laya-rs/issues/11)、[加载并校验 bundle、Tokenizer 与 CPU ONNX Session](https://github.com/redwolf2019/laya-rs/issues/8)、[生成固定官方参考的 token、logits 与完整答案 fixtures](https://github.com/redwolf2019/laya-rs/issues/10)。原生阻塞关系全部解除且本票未分配时才可领取；先分配给执行者。\n\n地图：[MVP 路线图：从文档仓库到 Linux CPU 推理服务](https://github.com/redwolf2019/laya-rs/issues/1)。本票新增文件与命令是交付目标，执行前遵守仓库 AGENTS.md；完成后附验证结果再关闭。\n\n",
+    "comments": [
+      {
+        "id": "IC_kwDOUm40o88AAAABWV-xOA",
+        "author": {
+          "login": "redwolf2019"
+        },
+        "authorAssociation": "OWNER",
+        "body": "已完成，提交 `e209c25e0a5c8e1b1d05e4db784eb96aa9cfd6a1` 位于本地 main，尚未推送。\n\nSequence Builder 复用固定 bundle 的 tokenizer、特殊 token 配置和真实任务预算，消费 #11 的文本渲染与规范化选项；输出五个按行排列的 i64/bool 输入缓冲区、shape 和 usage。marker 丢失整批返回类型化错误；预算、长度和分配检查不静默丢候选项。没有新增依赖。\n\n[已验证/HIGH，固定样例及下列环境范围]\n\n- `cargo fmt --check`、`cargo clippy --locked --all-targets -- -D warnings` 通过。\n- 宿主 `cargo test --locked`：34 passed / 4 ignored。三个真实 tokenizer 专项另行显式执行：3 passed；21 个官方请求的五张量、shape、usage 和未裁切 tokenizer 调用 IDs 精确一致。\n- 固定官方源码生成的 14 个合成预算 oracle 覆盖空/短状态、room=0/1、marker 越界/丢失和 head 压缩阈值；第二次生成逐字节相同。\n- 同一请求精确 1 MiB、16 问题、每题 32 项、64 层 JSON 验证通过。\n- Linux ARM64 `cargo test --locked --test sequence -- --include-ignored --nocapture`：6 passed / 0 ignored。\n- Linux ARM64 `linux_real_model_smoke -- --ignored --nocapture`：1 passed，两套 CPU Session 的真实固定张量复用检查通过。\n- code-review：Standards 0 项，Spec 0 项；Spec 独立复跑序列测试为 6 passed。\n\n实现和复现记录：`src/sequence.rs`、`tests/sequence.rs`、`docs/validation/sequence.md`。移植归属与 Apache-2.0 文本已保留。\n\n本次未实现或验收 HTTP、完整推理/后处理与性能。#10 `long-padding` Score 官方 4.5307 / ONNX 4.5306 的既有差异原样保留，不能把本次序列对齐视为完整模型兼容通过。\n",
+        "createdAt": "2026-09-23T12:00:28Z",
+        "includesCreatedEdit": true,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/redwolf2019/laya-rs/issues/12#issuecomment-5794410808",
+        "viewerDidAuthor": true
+      }
+    ],
+    "number": 12,
+    "state": "CLOSED",
+    "title": "实现逐 token 对齐的 Sequence Builder 与批处理张量"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjU0MjE1Mzcw",
+        "login": "redwolf2019",
+        "name": "",
+        "databaseId": 54215370
+      }
+    ],
+    "body": "## Question\n\n怎样从真实选项logits和act_probs得到与官方一致的完整答案，且在坏数值上明确失败？\n\n## 范围\n\n读取 [固定 System One 协议、序列与后处理的参考基线](https://github.com/redwolf2019/laya-rs/issues/2) 和 [冻结 MVP 的官方兼容契约、服务限制与验收矩阵](https://github.com/redwolf2019/laya-rs/issues/4)；实现温度选择、稳定softmax、完整答案构造与官方舍入规则，复用已有类型。不引入业务再校准。\n\n## 验收\n\n- [ ] 使用实际k个logits，忽略padding选项；bucket temperature优先于类型temperature，桶边界和fallback与官方一致，已有校准不能被默认1.0覆盖。\n- [ ] 温度非有限或<=0失败；softmax减最大值并验证结果有限/归一；全坏logits、shape不符和输出索引越界均有确定错误。\n- [ ] Choice、Score期望等级、Noul P(true)、confidence、legend、ties与四位舍入全部对照官方；不把Score替换为argmax，也不把Noul变布尔值。\n- [ ] act_probability取固定导出约定的act_probs第0项；检查act_probs的shape、有限性、[0,1]范围与归一化；不得重复softmax、重复温度缩放或擅自四位舍入。\n- [ ] [生成固定官方参考的 token、logits 与完整答案 fixtures](https://github.com/redwolf2019/laya-rs/issues/10) 正常样例满足预定容差、舍入字段精确相等；人工数值边界用例明确标识，覆盖巨大/接近logits、近并列、桶边界和舍入中点。\n- [ ] 无模型时也能运行后处理单元测试；这些测试不作为实际推理兼容证据。\n\n验证：fmt、clippy、相关cargo test，保存失败时的字段/差异定位信息，测试日志不包含业务正文。\n\n前置产物：[实现完整 System One 类型、规范化与边界校验](https://github.com/redwolf2019/laya-rs/issues/9)、[生成固定官方参考的 token、logits 与完整答案 fixtures](https://github.com/redwolf2019/laya-rs/issues/10)。原生阻塞关系全部解除且本票未分配时才可领取；先分配给执行者。\n\n地图：[MVP 路线图：从文档仓库到 Linux CPU 推理服务](https://github.com/redwolf2019/laya-rs/issues/1)。本票新增文件与命令是交付目标，执行前遵守仓库 AGENTS.md；完成后附验证结果再关闭。\n\n",
+    "comments": [
+      {
+        "id": "IC_kwDOUm40o88AAAABWWLr4w",
+        "author": {
+          "login": "redwolf2019"
+        },
+        "authorAssociation": "OWNER",
+        "body": "后处理实现已提交到本地 main：`141bba9483029ce8222f0e9c138c9702e96a55a8`，尚未推送。#13 保持开放：跨后端四位字段验收仍未通过。\n\n`src/postprocess.rs` 复用现有答案类型，提供类型/桶温度选择、稳定 float32 softmax、Choice/Score/Noul 完整答案和 Python 四位舍入；action 第 0 项保持原值。加载器共用校准校验，拒绝坏温度、shape、索引及数值；无新增依赖。\n\n[已验证/HIGH，固定输出重放范围] 21 组官方 logits 及 21 组 ONNX logits 均与同组输入的官方后处理结果精确一致。fmt、clippy 通过；`cargo test --locked` 为 44 passed / 5 ignored；Linux ARM64 后处理为 9 passed / 1 ignored。Standards 评审 0 项；Spec 0 项新增实现缺陷、1 项未完成验收。\n\n显式运行 `cargo test --locked --test postprocess onnx_outputs_match_official_answers_exactly -- --ignored --nocapture` 退出 101，重现 #10 的 long-padding Score：ONNX/Rust `4.5306`，官方模型 `4.5307`。失败保存在 `docs/validation/postprocess/cross-backend.log`，未修改 fixtures、容差、配置或权重。同组 logits 的重放通过支持将差异定位到模型输出阶段，底层原因尚未证明。\n\n复现命令及边界见 `docs/validation/postprocess.md`。本次未执行实时模型推理、HTTP 或性能验收；普通测试中另四个 ignored 是既有 tokenizer 专项和模型 smoke，未重跑。后续仍需解决模型输出差异并通过跨后端门槛，才可关闭本票。\n",
+        "createdAt": "2026-09-23T12:15:46Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/redwolf2019/laya-rs/issues/13#issuecomment-5794622435",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDOUm40o88AAAABWWjpjw",
+        "author": {
+          "login": "redwolf2019"
+        },
+        "authorAssociation": "OWNER",
+        "body": "严格兼容修复已完成，本地 main 提交 `444fc1d`，尚未推送。\n\n首个偏差出现在 embedding 后的 LayerNorm。固定 PyTorch 模型重新运行与官方 fixture logits 逐位相同；将官方首层归一化结果注入旧 ONNX，Score 从 `4.530648112297058` 回到 `4.530650153756142`，四位结果为官方的 `4.5307`。这证明归一化误差会导致本例跨界，不表示其他算子逐位相同。\n\n离线导出现在统一将 50 处 LayerNorm 展开为中心化 FP32 方差和标准差倒数乘法。未改 epsilon、温度、权重、官方期望或验收容差，也没有按样例加分支。新图 SHA-256 为 `5a028e8dac51de3c430514c47e047fc89911edaaa72762c3e880a3591cc0184c`；模型 manifest 已同步，外部权重摘要不变，原图身份和失败记录保留。\n\n[已验证/HIGH，Linux ARM64 CPU 固定样例范围] 同一真实 Rust 回归在旧 bundle 上重现 `4.5306 / 4.5307`，新图的 21 个请求全部通过。链路包含 Rust Sequence Builder、两个交替使用的 ORT Session、Rust 后处理；四位字段精确相等，logits、未舍入概率和 action 满足原容差。新图实际输出使用官方 AST 独立复核 21 项通过；重复生成图及实际输出均逐字节一致。\n\n命令：\n- `cargo fmt --check`\n- `cargo clippy --locked --all-targets -- -D warnings`\n- `cargo test --locked`：45 passed / 5 ignored。\n- Linux：`LAYA_TEST_MODEL=/work/models/multilingual LAYA_TEST_ORT=/ort/lib/libonnxruntime.so cargo test --locked --bin laya-server linux_system_one_model_parity -- --ignored --nocapture`：21 请求通过。\n\n普通后处理 10 项全部执行，原跨后端 gate 已取消 ignored。另四个既有 tokenizer/model 专项未独立重跑；新模型加载已执行每槽 startup smoke。Standards 0 项，Spec 0 项；Spec 独立复跑后处理 10 passed。\n\n实现与复现见 `tools/model-prep/normalize.py`、`tools/model-prep/postprocess_oracle.py`、`docs/validation/postprocess.md`；新输出在 `tests/fixtures/normalized-outputs.json`，旧 #10 fixtures 原样保留。HTTP、amd64、性能及任意输入空间逐位一致不在本次已验证范围内。\n",
+        "createdAt": "2026-09-23T12:42:26Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/redwolf2019/laya-rs/issues/13#issuecomment-5795015055",
+        "viewerDidAuthor": true
+      }
+    ],
+    "number": 13,
+    "state": "CLOSED",
+    "title": "实现官方温度选择与 Choice、Score、Noul 后处理"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjU0MjE1Mzcw",
+        "login": "redwolf2019",
+        "name": "",
+        "databaseId": 54215370
+      }
+    ],
+    "body": "## Question\n\n一个规范化System One请求能否在Rust中完成真实CPU推理，并在既定容差下复现官方答案？\n\n## 交付\n\n将bundle/Tokenizer/Sequence Builder/Session/后处理接成最小统一engine入口，输入规范化请求，返回完整typed答案与usage。保留可独立运行的真实模型对照测试，供HTTP和最终镜像复用；不在本票加入队列或路由。\n\n## 验收\n\n- [ ] [生成固定官方参考的 token、logits 与完整答案 fixtures](https://github.com/redwolf2019/laya-rs/issues/10) 的中英三类型及混合多问题全部经过真实Rust→ORT CPU链，序列中间值精确一致，最终数值与字段满足 [冻结 MVP 的官方兼容契约、服务限制与验收矩阵](https://github.com/redwolf2019/laya-rs/issues/4) 阈值。\n- [ ] 验证B=1/B>=2、不同K/L、长状态、Unicode、截断、padding；记录实际模型/原生库/依赖digest及架构。\n- [ ] request/inference路径不使用unwrap/expect/panic处理可失败场景；坏shape、非有限输出、推理错误均保留内部来源并对外使用类型化错误。\n- [ ] 模型常驻、连续多次请求不重新加载；失败一次后后续正常请求仍可处理。\n- [ ] 给出从零准备模型后运行真实对照的确切命令；缺模型时该专项明确失败或标未执行，不能生成假的成功结果。\n- [ ] 只声明已对照通过的固定模型/输入域/平台兼容范围，不宣称Jev完全兼容。\n\n验证：fmt、clippy、单元测试、Linux CPU真实模型对照全部执行。将原始差异报告和运行信息链接回本票。\n\n前置产物：[加载并校验 bundle、Tokenizer 与 CPU ONNX Session](https://github.com/redwolf2019/laya-rs/issues/8)、[实现逐 token 对齐的 Sequence Builder 与批处理张量](https://github.com/redwolf2019/laya-rs/issues/12)、[实现官方温度选择与 Choice、Score、Noul 后处理](https://github.com/redwolf2019/laya-rs/issues/13)。原生阻塞关系全部解除且本票未分配时才可领取；先分配给执行者。\n\n地图：[MVP 路线图：从文档仓库到 Linux CPU 推理服务](https://github.com/redwolf2019/laya-rs/issues/1)。本票新增文件与命令是交付目标，执行前遵守仓库 AGENTS.md；完成后附验证结果再关闭。\n\n",
+    "comments": [
+      {
+        "id": "IC_kwDOUm40o88AAAABWW5LhA",
+        "author": {
+          "login": "redwolf2019"
+        },
+        "authorAssociation": "OWNER",
+        "body": "已完成，本地 main 提交 `493bca6e067d6b7ad2af67b0a3753178c3623a41`，尚未推送。\n\n`engine::system_one` 复用已加载的 Sequence Builder、独占 CPU Session 与 Calibration，从规范化 Request 返回完整 Response/usage。输入张量构造、ORT 执行、float32 输出提取与后处理已接通；保留类型化错误来源，Display/envelope 为静态文本。未加入队列、路由、配置或依赖。\n\n[已验证/HIGH，固定样例与 Linux ARM64 CPU 范围] 21 个官方请求全部经过生产 engine；五个序列缓冲区、shape、usage 精确相同，完整答案四位字段精确相等，logits/未舍入概率/action 满足原容差。两个常驻 Session 交替复用，模型只加载一次。\n\n错误恢复包含：人工接口图实际返回坏 shape / NaN 后的同 Session 恢复；真实模型实际触发一次 Gather 词表越界错误后，原 Session 的正常请求与故障前答案相同。原始错误类型通过 source 保留。人工图只有 441 字节常量，不含训练权重，不作为模型兼容证据。\n\n验证：\n- `cargo fmt --check`、`cargo clippy --locked --all-targets -- -D warnings` 通过。\n- 完整 `cargo test --locked`：46 passed / 5 ignored。\n- Linux `LAYA_TEST_MODEL=/work/models/multilingual LAYA_TEST_ORT=/ort/lib/libonnxruntime.so cargo test --locked --bin laya-server linux_system_one_model_parity -- --ignored --nocapture`：21 请求及错误恢复全部通过。\n- 显式传入缺模型路径时专项退出 101，没有模拟成功；人工接口图重复生成后 cmp 相同。\n- Standards 的一处 fixtures 格式说明已修正，复核后 0 项；Spec 0 项，独立短测试 11 passed。\n\n原始日志和实际模型/原生库/Cargo.lock 摘要在 `docs/validation/engine/`，入口、验证边界、从零准备及专项命令见 `docs/validation/engine.md`。本次复用已有固定环境，没有从零重下权重或重导模型；另外四个既有 tokenizer/model 专项未独立重跑，加载器仍逐槽执行 startup smoke。HTTP、amd64、并发吞吐及 Jev 完全兼容不属于本次声明。\n",
+        "createdAt": "2026-09-23T13:05:16Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/redwolf2019/laya-rs/issues/14#issuecomment-5795367812",
+        "viewerDidAuthor": true
+      }
+    ],
+    "number": 14,
+    "state": "CLOSED",
+    "title": "贯通真实 multilingual CPU 推理并通过官方对照"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjU0MjE1Mzcw",
+        "login": "redwolf2019",
+        "name": "",
+        "databaseId": 54215370
+      }
+    ],
+    "body": "## Question\n\n服务怎样限制等待请求和真实CPU工作，确保超时、取消和失败不会释放仍在使用的执行名额？\n\n## 输入与交付\n\n在 [贯通真实 multilingual CPU 推理并通过官方对照](https://github.com/redwolf2019/laya-rs/issues/14) 上实现最小执行调度，按 [冻结 MVP 的官方兼容契约、服务限制与验收矩阵](https://github.com/redwolf2019/laya-rs/issues/4) 的容量/超时语义工作。采用所选ort真实API允许的Session所有权：配置N个实际执行槽时必须有N个可独立执行的Session；单Mutex Session外加N个permit不能报告为并发N。\n\n## 验收\n\n- [x] CPU推理在Tokio阻塞边界，队列容量与运行槽分别有界；队满/排队超时按契约返回，等待期取消从队列移除且不会启动计算。\n- [x] 运行slot/permit随真实阻塞工作持有；HTTP等待超时或调用方取消后，未结束CPU工作继续占名额，直到成功/错误完成。\n- [x] 执行任务有明确结果接收、JoinHandle追踪和回收路径；不得丢句柄、跨await持有阻塞锁或把abort等待当作杀死CPU线程。\n- [x] 等待/运行状态可供指标读取，所有完成、失败、队满、排队超时、运行超时与取消路径都归位。\n- [x] 使用可控阻塞闭锁的最小测试证明：N槽满时第N+1个不开始；取消一个正在跑的等待者仍不允许越限；释放CPU闭锁后才出现空槽。避免用sleep时序碰运气或预建通用engine trait。\n- [x] 真实Linux模型压力检查实际最大并行数与N=1/2的RSS；不以semaphore配置值作为并发或吞吐收益证据。\n\n验证：fmt、clippy、相关cargo test，故障/超时/取消时序测试及真实CPU并发smoke；本票不添加自动重试。\n\n前置产物：[贯通真实 multilingual CPU 推理并通过官方对照](https://github.com/redwolf2019/laya-rs/issues/14)、[冻结 MVP 的官方兼容契约、服务限制与验收矩阵](https://github.com/redwolf2019/laya-rs/issues/4)。原生阻塞关系全部解除且本票未分配时才可领取；先分配给执行者。\n\n地图：[MVP 路线图：从文档仓库到 Linux CPU 推理服务](https://github.com/redwolf2019/laya-rs/issues/1)。本票新增文件与命令是交付目标，执行前遵守仓库 AGENTS.md；完成后附验证结果再关闭。\n\n",
+    "comments": [
+      {
+        "id": "IC_kwDOUm40o88AAAABWhIbZw",
+        "author": {
+          "login": "redwolf2019"
+        },
+        "authorAssociation": "OWNER",
+        "body": "已在本地 main 提交 `3b03d8b`（尚未推送）。\n\n调度器使用 FIFO 有界等待和独立 Session，阻塞工作持槽到分词、原生推理和输出处理结束。调用方取消或超时不会提前释放槽；所有任务由 JoinSet 接收并回收，状态可供指标读取。没有自动重试。\n\n[已验证/HIGH，以下执行范围]\n\n- `cargo fmt --check`、`cargo clippy --locked --all-targets -- -D warnings` 通过；最终 `cargo test --locked` 为 57 passed / 6 ignored。\n- 10 项闭锁/暂停时钟测试覆盖 FIFO、容量、取消、超时、失败、退出和句柄恢复回收；协作预算假队满、缓冲失败漏日志两条回归均先复现失败再修复。\n- Docker Desktop Linux ARM64，8 vCPU / 12 GiB，ORT CPU 1.28.0；每 Session intra-op=2、inter-op=1。N=1/2 各在独立进程并发提交 8 个 mixed-6 固定请求，完整答案通过原门槛。真实 Session::run 最大重叠分别为 1、2；压力后 RSS 分别为 681796、1188524 kB，峰值分别为 681796、1235044 kB。\n- code-review：Standards 0 项未解决；Spec 初审 3 项已修复，复核 0 项未解决。\n\n实现与证据：`src/scheduler.rs`、`src/scheduler/tests.rs`、`docs/validation/scheduler.md` 及 `docs/validation/scheduler/` 原始日志。\n\nHTTP、Prometheus 注册及信号/grace 集成留给后续票。本次真实模型只重跑 mixed-6 并发场景；其余 5 个既有模型/tokenizer 专项未独立重跑。上述小规模压力结果不作为稳态吞吐或其他平台的性能结论。\n",
+        "createdAt": "2026-09-24T01:58:51Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/redwolf2019/laya-rs/issues/15#issuecomment-5806103399",
+        "viewerDidAuthor": true
+      }
+    ],
+    "number": 15,
+    "state": "CLOSED",
+    "title": "实现有界排队与覆盖真实推理生命周期的并发控制"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjU0MjE1Mzcw",
+        "login": "redwolf2019",
+        "name": "",
+        "databaseId": 54215370
+      }
+    ],
+    "body": "## Question\n\n多个HTTP客户端能否按冻结契约共享真实engine，并得到正确状态码、完整答案和真实健康状态？\n\n## 交付\n\n实现Axum `/v1/system-one`、`/healthz`、`/readyz`、`/metrics`路由及状态装配，System One接入 [实现有界排队与覆盖真实推理生命周期的并发控制](https://github.com/redwolf2019/laya-rs/issues/15)。Metrics端点先提供合法registry响应，完整观测与退出由 [完成结构化观测、就绪转换与可验证的优雅退出](https://github.com/redwolf2019/laya-rs/issues/17) 完成，不用虚构计数占位。\n\n## 验收\n\n- [x] 中文/英文三类型混合请求返回 [冻结 MVP 的官方兼容契约、服务限制与验收矩阵](https://github.com/redwolf2019/laya-rs/issues/4) 的完整字段，模型值和usage与同输入engine一致；重复请求不触发模型重载。\n- [x] 在收集body前施加字节限制，chunked/无Content-Length也受限；畸形JSON、错误媒体类型、字段/数量限制、队满、超时、模型错误走同一错误格式。\n- [x] 客户端连接关闭与请求future取消按实际Axum/Tokio行为测试：不能声称TCP断开必定中断CPU；排队取消或后台计算继续时资源行为均符合scheduler契约。\n- [x] healthz返回约定存活JSON；readyz仅在全部资源可用且允许准入时200，其余503；加载失败按启动契约退出，不返回假的ready或推理答案。\n- [x] 请求日志和外部错误不泄露state/instructions、任意JSON正文、绝对模型路径或底层异常；未知路径/方法行为有明确测试。\n- [x] route级测试验证所有状态映射；真实HTTP smoke通过实际Linux模型，不能只用stub处理器宣称服务可推理。\n\n验证：fmt、clippy、cargo test及真实curl/HTTP对照命令；同时验证至少一个chunked超限请求和一个客户端中途断开场景。\n\n前置产物：[实现有界排队与覆盖真实推理生命周期的并发控制](https://github.com/redwolf2019/laya-rs/issues/15)、[实现完整 System One 类型、规范化与边界校验](https://github.com/redwolf2019/laya-rs/issues/9)。原生阻塞关系全部解除且本票未分配时才可领取；先分配给执行者。\n\n地图：[MVP 路线图：从文档仓库到 Linux CPU 推理服务](https://github.com/redwolf2019/laya-rs/issues/1)。本票新增文件与命令是交付目标，执行前遵守仓库 AGENTS.md；完成后附验证结果再关闭。\n\n",
+    "comments": [
+      {
+        "id": "IC_kwDOUm40o88AAAABWheSXQ",
+        "author": {
+          "login": "redwolf2019"
+        },
+        "authorAssociation": "OWNER",
+        "body": "已完成。本地 `main` 提交 `cc5ff26fd5a7f5eb101499df4cfa93b00490063b`，尚未推送。\n\n- 四个 Axum HTTP/1 路由已接入常驻模型与共享调度器。输入按冻结次序校验，body 流读取前限字节；八种错误返回静态 envelope。\n- `application/json` 与 UTF-8 参数边界、未知路径/方法、健康/就绪、队列及取消路径均有 route/TCP 测试。metrics 编码真实空 registry，不制造计数。\n- 原生日志只保留静态事件和 severity；启动错误保留 typed source。补修并行测试中 tracing-core 单 dispatch 缓存抑制观察事件的问题，生产调度逻辑和计数断言未改。\n\n[已验证/HIGH，固定平台和请求范围]\n\n`cargo fmt --check`、`cargo clippy --locked --all-targets -- -D warnings`、`cargo test --locked` 通过：71 passed / 7 ignored。14 项 HTTP 测试包含真实 TCP 排队/运行断开、未终止 chunked 超限；24 项库测试连续 20 次默认并行运行通过。\n\nLinux ARM64（8 vCPU/12 GiB，ORT CPU 1.28.0，intra=2/inter=1，N=1）另行执行 `linux_http_model_parity_and_disconnect`：21 个 HTTP 响应与同输入 engine 完全相等，通过已有官方完整答案门槛；4 个并发重复请求、1 MiB chunked 413、真实工作期间断开（当时 inflight=1）、任务回收、真实原生 500 和后续恢复通过。独立 CLI 的 curl 探针及两次 mixed-6 也通过。\n\n验收与命令：`docs/validation/http.md`；原始记录：`docs/validation/http/`。\nStandards 和 Spec 各修正 1 项，复核均为 0 项未解决发现。\n\n未运行远程 CI、其他六个既有外部资源专项、Linux amd64 或性能 benchmark。完整指标、结构化请求日志及信号/grace 优雅退出按本票范围留给 #17。\n",
+        "createdAt": "2026-09-24T02:37:56Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/redwolf2019/laya-rs/issues/16#issuecomment-5806461533",
+        "viewerDidAuthor": true
+      }
+    ],
+    "number": 16,
+    "state": "CLOSED",
+    "title": "接通四个 HTTP 路由、统一错误与真实推理响应"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjU0MjE1Mzcw",
+        "login": "redwolf2019",
+        "name": "",
+        "databaseId": 54215370
+      }
+    ],
+    "body": "## Question\n\n指标和日志能否反映真实队列/推理状态，且服务收到退出信号后按契约结束工作？\n\n## 交付\n\n按 [冻结 MVP 的官方兼容契约、服务限制与验收矩阵](https://github.com/redwolf2019/laya-rs/issues/4) 接入Tracing和六个既定Prometheus指标：laya_requests_total、laya_request_duration_seconds、laya_inference_duration_seconds、laya_queue_size、laya_inference_inflight、laya_errors_total。补全 [接通四个 HTTP 路由、统一错误与真实推理响应](https://github.com/redwolf2019/laya-rs/issues/16) 的ready状态和信号退出。\n\n## 验收\n\n- [x] counter/histogram/gauge类型、耗时单位与边界一致，metrics可被Prometheus文本解析；标签只用有界结果类别，不用正文/问题名/任意客户端字段。\n- [x] 成功、校验失败、排队超时、执行等待超时、断连、推理失败后计数符合契约；HTTP超时但CPU仍跑时inflight保持>0，真实结束才回落。\n- [x] 使用代表性敏感state/instructions触发错误，捕获日志/响应验证正文没有泄露；记录请求结果、耗时及脱敏内部原因即可。\n- [x] SIGTERM/SIGINT停止准入并使ready失败，明确结束排队请求；追踪在途工作，grace内完成可正常退出，到期按契约非零终止并记录未完成数量。\n- [x] 使用子进程级测试覆盖空闲、排队、正在推理、超时后的CPU仍运行四种退出场景；不得仅assert一个shutdown标志。\n- [x] 验证退出与取消后不会留下运行进程或持有的队列/任务资源，服务反复启动/退出可用。\n\n验证：fmt、clippy、相关cargo test，以及真实进程信号/metrics抓取/日志检查；保存观测到的状态转换和退出码。\n\n前置产物：[接通四个 HTTP 路由、统一错误与真实推理响应](https://github.com/redwolf2019/laya-rs/issues/16)。原生阻塞关系全部解除且本票未分配时才可领取；先分配给执行者。\n\n地图：[MVP 路线图：从文档仓库到 Linux CPU 推理服务](https://github.com/redwolf2019/laya-rs/issues/1)。本票新增文件与命令是交付目标，执行前遵守仓库 AGENTS.md；完成后附验证结果再关闭。\n\n",
+    "comments": [
+      {
+        "id": "IC_kwDOUm40o88AAAABWhtR-g",
+        "author": {
+          "login": "redwolf2019"
+        },
+        "authorAssociation": "OWNER",
+        "body": "已实现，提交 `d1ecdd4d0cf6eb0bd1032f026b971a713d504970`（本地 main，尚未推送）。验证记录与复现命令：`docs/validation/observability.md`，原始日志位于 `docs/validation/observability/`。\n\n- 六个 OpenMetrics 指标及 Tracing JSON 请求/生命周期日志接通。错误按首个终态只计一次；queue/inflight 复用调度器快照，Session run 计时不含分词/排队/后处理，HTTP 超时或断连不提前释放 CPU 槽。\n- SIGTERM/SIGINT 停止准入，ready=503，等待项 unavailable；grace 内回收全部任务后退出 0，到期记录 inflight/tracked_tasks 后终止进程并退出 1。\n- 宿主 fmt、clippy --all-targets -D warnings、完整 cargo test --locked 通过：76 passed / 8 ignored。一个 ignored 是由父测试启动的子进程入口，七个为模型/tokenizer 专项；本次另行执行真实 HTTP 模型专项，其余六个未重跑。\n- Linux ARM64 的 12 个受控 CPU 子进程场景通过，覆盖两种信号、空闲、排队、运行中、HTTP 超时后 CPU 仍运行、正常及强制退出，检查真实响应、指标、日志、退出码及端口回收。敏感 state/instructions/内部异常不进入日志或错误响应。\n- 真实模型通过 21 固定请求及重复/断连/原生错误恢复：29 HTTP 请求、28 次实际 Session run；六个指标 family 经独立 OpenMetrics 解析器通过。真实 CLI 验证 TERM 正常排空退出 0、504 后 inflight=1 且 grace 到期退出 1，以及同端口重启后空闲 INT 退出 0。\n- Standards 修正测试启动握手的超时与清理路径；Spec 修正文档旧状态。双轴复核均 0 项未解决。\n\n[已验证/HIGH，宿主与 Docker Desktop Linux ARM64、固定 bundle 范围] 未运行远程 CI、amd64 或裸机性能测试；未推送远端。按 #1 的执行约定回填结果并关闭本票。\n",
+        "createdAt": "2026-09-24T03:04:13Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/redwolf2019/laya-rs/issues/17#issuecomment-5806707194",
+        "viewerDidAuthor": true
+      }
+    ],
+    "number": 17,
+    "state": "CLOSED",
+    "title": "完成结构化观测、就绪转换与可验证的优雅退出"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjU0MjE1Mzcw",
+        "login": "redwolf2019",
+        "name": "",
+        "databaseId": 54215370
+      }
+    ],
+    "body": "## Question\n\n能否用只读挂载的固定模型启动Linux CPU镜像，在无Python/Node/GPU运行环境中完成真实HTTP请求？\n\n## 交付\n\n创建多阶段Dockerfile、最小.dockerignore与README构建/模型准备/启动/探活/退出说明。目标架构按 [建立可复用的 Linux CPU 验收环境与运行记录](https://github.com/redwolf2019/laya-rs/issues/5)；构建与最终运行阶段均不得调用模型导出器，不把权重加入镜像或Git。使用已固定的CPU ORT发行包及必要原生库、证书和第三方许可证。\n\n## 验收\n\n- [x] 干净checkout加固定bundle即可按文档构建/启动；镜像中只含服务、必要运行库/基础文件，无Python、Node.js、PyTorch、CUDA/GPU运行时。\n- [x] 模型只读挂载，容器以非root用户运行；模型缺失/损坏、挂载权限不足、ABI不匹配以清晰非零失败退出。\n- [x] 在真实Linux容器运行中英三类型/混合请求、health/ready/metrics，对照 [生成固定官方参考的 token、logits 与完整答案 fixtures](https://github.com/redwolf2019/laya-rs/issues/10)；检查实际动态链接和provider，不能仅检查Dockerfile文本。\n- [x] 容器CPU/RAM限制和服务thread/concurrency参数有可复现示例；OOM/负载不足时记录原因，不改用假模型验收。\n- [x] Docker stop/SIGTERM验证 [完成结构化观测、就绪转换与可验证的优雅退出](https://github.com/redwolf2019/laya-rs/issues/17) 的退出语义；最终产物记录镜像digest、平台、模型digest和native依赖清单。\n- [x] 说明一次性离线导出是开发准备步骤，普通构建与使用已准备bundle的部署者无需Python/Node。\n\n验证：实际docker build/run、镜像依赖检查、真实HTTP smoke和docker stop；另运行fmt/clippy/相关cargo test，未改Rust逻辑时复用最近同提交有效结果。\n\n前置产物：[完成结构化观测、就绪转换与可验证的优雅退出](https://github.com/redwolf2019/laya-rs/issues/17)、[建立可复用的 Linux CPU 验收环境与运行记录](https://github.com/redwolf2019/laya-rs/issues/5)、[产出可核验的 multilingual ONNX bundle 与离线导出记录](https://github.com/redwolf2019/laya-rs/issues/7)。原生阻塞关系全部解除且本票未分配时才可领取；先分配给执行者。\n\n地图：[MVP 路线图：从文档仓库到 Linux CPU 推理服务](https://github.com/redwolf2019/laya-rs/issues/1)。本票新增文件与命令是交付目标，执行前遵守仓库 AGENTS.md；完成后附验证结果再关闭。\n\n",
+    "comments": [
+      {
+        "id": "IC_kwDOUm40o88AAAABWh5jMQ",
+        "author": {
+          "login": "redwolf2019"
+        },
+        "authorAssociation": "OWNER",
+        "body": "已完成，提交 `2846a8ef7b549e1b76423189cba3db01beec6793`（当前 main，尚未推送）。部署步骤在 README，验收结果、复现命令与原始日志在 `docs/validation/docker.md`、`docs/validation/docker/`。\n\n多阶段 Dockerfile 构建锁定的 Rust release 服务，校验官方 ORT 1.28.0 CPU 包；最终镜像以 UID/GID 65532 运行，保留证书、原生库和第三方许可证。构建白名单排除模型、导出工具、宿主产物与凭证文件。独立干净目录构建得到相同 image ID。\n\n[已验证/HIGH，Docker Desktop Linux ARM64、8 vCPU/12 GiB/swap=0、intra=1/inter=1/concurrency=1]\n\n- 固定 bundle 只读挂载，21 个官方 HTTP fixtures 通过；中英文三类型、混合问题和完整响应按既有门槛比较，health/ready/六个指标检查通过。\n- 实际 ldd、进程映射、镜像各层与 C API 探针已检查；唯一 provider 为 CPUExecutionProvider。镜像无模型权重、Python/Node/PyTorch/CUDA/GPU 运行时或编译工具。\n- 模型目录缺失退出 2；文件缺失、损坏、Linux 文件权限不足、ABI 符号不匹配退出 1。权限测试最初被宿主挂载层拒绝，改用 Linux volume 后验证应用自身失败，保留初次失败记录。\n- Docker stop 覆盖空闲、在途加排队、HTTP=504 后 CPU 仍运行。ready=503、排队请求=503；正常排空退出 0，grace 到期记录 inflight=1/tracked_tasks=1 并退出 1。所有容器 OOMKilled=false，测试容器/volume 已清理。\n- fmt、clippy 和完整 cargo test 通过：76 passed / 8 ignored。本次真实模型通过最终镜像 HTTP 验收，未逐个重跑七个模型/tokenizer 专项。Standards 与 Spec 独立评审均 0 项。\n\nOCI manifest digest：`sha256:e3df4c8b3864440240bf034daee4adbb8f8ff1a0a0ca4aefaa8b1567dd980c17`；image ID：`sha256:56128072f8b929ae37afe02ea1e3ce13505313908a23e76556ab80f5a4e26564`。模型与全部原生依赖摘要见验收记录。镜像未发布 registry，未运行 amd64、裸机、远程 CI 或稳态 benchmark。\n",
+        "createdAt": "2026-09-24T03:22:01Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/redwolf2019/laya-rs/issues/18#issuecomment-5806908209",
+        "viewerDidAuthor": true
+      }
+    ],
+    "number": 18,
+    "state": "CLOSED",
+    "title": "交付纯运行依赖的 Linux CPU Docker 镜像与部署说明"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjU0MjE1Mzcw",
+        "login": "redwolf2019",
+        "name": "",
+        "databaseId": 54215370
+      }
+    ],
+    "body": "## Question\n\n该固定MVP在实际验收环境中是否满足四阶段完成标准，其线程/并发建议有哪些实测依据？\n\n## 交付\n\n复用 [交付纯运行依赖的 Linux CPU Docker 镜像与部署说明](https://github.com/redwolf2019/laya-rs/issues/18) 镜像与 [生成固定官方参考的 token、logits 与完整答案 fixtures](https://github.com/redwolf2019/laya-rs/issues/10) 输入，提供最小可复现负载入口和 `docs/mvp-validation.md`，原始结果保存可追溯位置。工具优先现有/系统能力，不建设性能平台。\n\n## 验收\n\n- [ ] 先核验全部上游票的固定提交、模型manifest、镜像digest与真实对照结果；汇总功能、非法输入、资源上限、指标、退出、部署证据，不能仅按Issue关闭状态判定MVP通过。\n- [ ] 固定Linux kernel、CPU型号/架构、容器/虚拟化、CPU/RAM配额、ORT线程与真实执行槽、请求内容/类型/数量/token数、模型和依赖版本。\n- [ ] 对客户端并发1/2/4/8分别记录P50/P95/P99、QPS、CPU、RSS、queue与inflight；对不同服务线程/slot配置进行有边界的对比，并记录错误/超时/拒绝率，不能把请求并发混同为实际推理并发。\n- [ ] 固定测量协议：冷启动单列；每组先预热，再测至少60秒且至少100个已完成请求；若资源不支持某配置，记录OOM/失败与实际完成数，不填假的百分位或吞吐。保留原始样本和统计方法。\n- [ ] 给出基于实际Linux验收环境的建议与限制；虚拟机、ARM64或CI结果只能用于其已测范围，不声称16核/32GB或其他架构性能。\n- [ ] 没有预设延迟/QPS SLA；验收要求真实、可复现、资源有界、无错误兼容声明。数值/协议/生命周期任一强制门槛失败时不关闭地图。\n- [ ] 将README和方案状态更新为实际已完成/未完成，给出一套最终可执行构建、启动、curl、真实模型测试命令；报告已执行/未执行检查。\n- [ ] 所有强制项通过后发表本票resolution、关闭本票，并为地图补完成证据；关闭父地图前确认无未关闭范围内子票。\n\n验证：完整Linux模型对照、HTTP/资源/退出回归及上述负载矩阵实际运行，审核原始结果与文档引用。\n\n前置产物：[交付纯运行依赖的 Linux CPU Docker 镜像与部署说明](https://github.com/redwolf2019/laya-rs/issues/18)。原生阻塞关系全部解除且本票未分配时才可领取；先分配给执行者。\n\n地图：[MVP 路线图：从文档仓库到 Linux CPU 推理服务](https://github.com/redwolf2019/laya-rs/issues/1)。本票新增文件与命令是交付目标，执行前遵守仓库 AGENTS.md；完成后附验证结果再关闭。\n\n",
+    "comments": [],
+    "number": 19,
+    "state": "OPEN",
+    "title": "完成 Linux CPU benchmark 与 MVP 四阶段验收报告"
+  }
+]

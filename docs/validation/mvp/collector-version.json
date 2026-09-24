@@ -1,0 +1,4 @@
+{
+  "successful_matrix_collector_sha256": "c227c38293bb030fc321fa62cf38d278b7d8b17338a2cd58dd0db84ea1b09d7e",
+  "subsequent_changes": "Catch truncated HTTP responses and persist failure state/logs; successful measurement/statistics code unchanged."
+}
