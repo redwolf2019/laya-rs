@@ -82,7 +82,7 @@ laya-rs 行为依据 [API 兼容契约](docs/compatibility.md)；本项目未执
 | 磁盘 | 至少 5 GiB 可用空间，不含操作系统；用于程序、模型、下载解压和日志 |
 | GPU / 显存 | 不需要 |
 
-`[推断/MED]` 这是依据[安装验收](docs/validation/installer.md)、
+这是依据[安装验收](docs/validation/installer.md)、
 [模型体积](docs/model-manifest.json)和[性能记录](docs/mvp-validation.md)给出的起步建议，
 严格的硬件下限尚未测定。长文本、多问题或更高推理并发需要按实际负载验证并增加资源；
 日志长期保留也需另留磁盘空间。
