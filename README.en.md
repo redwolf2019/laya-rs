@@ -4,10 +4,10 @@
 
 **Self-host Laya on Linux CPUs. Classify, score, and evaluate propositions through a Rust HTTP service.**
 
-[![Rust application runtime](https://img.shields.io/badge/Rust-runtime-444444?logo=rust&logoColor=white)](#build-and-cli)
-[![Native deployment on Linux x86_64 and ARM64](https://img.shields.io/badge/Linux-x86__64%20%7C%20ARM64-444444?logo=linux&logoColor=white)](docs/installation.md)
-[![Docker supports Linux ARM64 only](https://img.shields.io/badge/Docker-ARM64-444444?logo=docker&logoColor=white)](#docker-deployment-linux-arm64-cpu)
-[![Original code is MIT licensed](https://img.shields.io/badge/License-MIT-444444)](LICENSE)
+[![Rust application runtime](https://img.shields.io/badge/Rust-runtime-F46623?logo=rust&logoColor=F46623&labelColor=24292F)](#build-and-cli)
+[![Native deployment on Linux x86_64 and ARM64](https://img.shields.io/badge/Linux-x86__64%20%7C%20ARM64-FCC624?logo=linux&logoColor=FCC624&labelColor=24292F)](docs/installation.md)
+[![Docker supports Linux ARM64 only](https://img.shields.io/badge/Docker-ARM64-2496ED?logo=docker&logoColor=2496ED&labelColor=24292F)](#docker-deployment-linux-arm64-cpu)
+[![Original code is MIT licensed](https://img.shields.io/badge/License-MIT-238636?labelColor=24292F)](LICENSE)
 
 `laya-rs` is a Rust inference runtime for Laya System One (System-1) models, served by the `laya-server` executable.
 Give it text or structured JSON and a set of typed questions to get choices, scores, or probabilities.

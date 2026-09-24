@@ -4,10 +4,10 @@
 
 **在 Linux CPU 上自托管 Laya，用 Rust HTTP 服务完成分类、评分和命题判断。**
 
-[![Rust 应用实现](https://img.shields.io/badge/Rust-runtime-444444?logo=rust&logoColor=white)](#构建与-cli)
-[![Linux x86_64 与 ARM64 原生部署](https://img.shields.io/badge/Linux-x86__64%20%7C%20ARM64-444444?logo=linux&logoColor=white)](docs/installation.md)
-[![Docker 仅支持 Linux ARM64](https://img.shields.io/badge/Docker-ARM64-444444?logo=docker&logoColor=white)](#docker-部署linux-arm64-cpu)
-[![原创代码采用 MIT 许可证](https://img.shields.io/badge/License-MIT-444444)](LICENSE)
+[![Rust 应用实现](https://img.shields.io/badge/Rust-runtime-F46623?logo=rust&logoColor=F46623&labelColor=24292F)](#构建与-cli)
+[![Linux x86_64 与 ARM64 原生部署](https://img.shields.io/badge/Linux-x86__64%20%7C%20ARM64-FCC624?logo=linux&logoColor=FCC624&labelColor=24292F)](docs/installation.md)
+[![Docker 仅支持 Linux ARM64](https://img.shields.io/badge/Docker-ARM64-2496ED?logo=docker&logoColor=2496ED&labelColor=24292F)](#docker-部署linux-arm64-cpu)
+[![原创代码采用 MIT 许可证](https://img.shields.io/badge/License-MIT-238636?labelColor=24292F)](LICENSE)
 
 `laya-rs` 是 Laya System One（System-1）模型的 Rust 推理运行时，服务程序名为 `laya-server`。
 输入文本或结构化 JSON，以及一组类型化问题，即可得到选项、评分或概率。
