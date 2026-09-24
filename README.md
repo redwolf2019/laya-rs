@@ -158,14 +158,6 @@ cargo build --release --locked
 将 `--ort-library` 替换为本机动态库的实际路径。
 全部参数与默认值见 `--help` 或 [CLI 契约](docs/compatibility.md#71-cli-与限制)。
 
-## 更多文档
-
-- [模型准备与对照](tools/model-prep/README.md)
-- [完整 API 与运行配置](docs/compatibility.md)
-- [Docker 部署细节与验收记录](docs/validation/docker.md)
-- [MVP 验收范围与 CPU 性能数据](docs/mvp-validation.md)
-- [服务设计方案](docs/laya-server-plan.md)
-
 ## License
 
 项目原创代码使用 [MIT License](LICENSE)，移植代码归属见 [NOTICE](NOTICE.md)。
