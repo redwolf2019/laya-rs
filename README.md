@@ -118,6 +118,8 @@ docker rm laya-server
 
 ## 调用 API
 
+以下示例假设客户端已配置 `LAYA_API_TOKEN`。使用一键安装时，可先按
+[检查与调用](docs/installation.md#检查与调用)读取安装配置并发出鉴权请求。
 服务启动后，发送一条包含三种问题的请求：
 
 ```sh

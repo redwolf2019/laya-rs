@@ -1,0 +1,31 @@
+{
+  "date": "2026-09-24",
+  "qemu": "11.1.1",
+  "vm_vcpus": 4,
+  "vm_memory_mib": 6144,
+  "vm_disk_gib": 16,
+  "arm64_acceleration": "HVF",
+  "x86_64_acceleration": "TCG (emulated, not performance evidence)",
+  "image_source": "https://cloud.debian.org/images/cloud/bookworm/latest/",
+  "image_sha512": {
+    "debian-12-genericcloud-amd64.qcow2": "3d94c9dd66d8a283fde060b8810373b7ae04038b956ee00d553d1ae564f6fbdeaa2fd6e7404e87e53348b5a9509170f3ea7c0731ba737590c5c4cb8d559a47f8",
+    "debian-12-genericcloud-arm64.qcow2": "89a752d5c7d8e88bee39a57d88d496cca574f7d1e8df5df7a169825435f99feb11ed13ab27ec7bee96fe1584be4ff9479358fbca6cc859efa109f4aba18724c8"
+  },
+  "systemd": "252.39-1~deb12u2",
+  "kernel_arm64": "6.1.0-53-cloud-arm64",
+  "kernel_x86_64": "6.1.0-53-cloud-amd64",
+  "staged_runtime_version": "v0.1.0",
+  "staged_runtime_sha256": {
+    "x86_64": "4e4ed1f32ccf1db8b48e55334a5159c38c2508d082fe4f380818c4b7564caeb6",
+    "aarch64": "a86c6263ba7603f7e409625944547c4064e786fdc7159036034cb04a408949c2"
+  },
+  "model_id": "3bff67d421ae27d4",
+  "model_archive_sha256": "699aae05cab2f36792859f59c533280daf8bcb96c57fae21d30850fc7ad8dfe5",
+  "published_release": "v0.1.1",
+  "release_ci": "https://github.com/redwolf2019/laya-rs/actions/runs/35965526227",
+  "published_runtime_sha256": {
+    "x86_64": "816170026b94a4115ecc3380a87b04f0f869dee9f004190fa64dfe832542a4f6",
+    "aarch64": "01b0bd1ab42341fe8262af3a8fe933e776439336fc11bb4cae7d95516d6247ba"
+  },
+  "public_arm64_install": "passed with verified model cache; script, metadata and program downloaded anonymously"
+}

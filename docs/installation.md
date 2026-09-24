@@ -25,6 +25,9 @@ root 所有、权限 `0600` 的 `/etc/laya-server/token.env`，其父目录权�
 sudo cat /etc/laya-server/token.env
 ```
 
+当前模型压缩包约 717 MiB，首次下载时间取决于到 GitHub 的网络；后续安装会复用校验通过的
+模型。网络需要代理时，可先在 root shell 中配置标准 `HTTPS_PROXY` 再运行命令。
+
 程序包内包含私有动态加载器、glibc、C/C++ 依赖、ONNX Runtime 和用于检查 API 的 jq。
 这些库仅供本程序使用，不替换系统库；支持 glibc/musl 主机的能力须以实际验证矩阵为准。
 基础下载/解包工具缺失时，先征求同意再调用系统包管理器安装。发行版自己的生命周期、
