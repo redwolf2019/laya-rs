@@ -35,6 +35,12 @@ Score 差异；21 个固定请求经 Rust 真实推理通过完整答案门槛�
 错误保留内部来源，对外使用静态类型化错误。21 个固定样例及失败恢复已通过 Linux CPU 对照，
 从零准备、专项命令和实际哈希见 [engine 验收](docs/validation/engine.md)。
 
+#15 的 [`scheduler`](src/scheduler.rs) 提供 FIFO 有界排队与独立 Session 执行槽，
+在 Tokio 阻塞任务中运行 engine；调用方取消或超时后，真实工作继续占槽。
+`Client` 提交请求并读取状态，`Scheduler::run` 持续回收任务，`close` 停止准入后排空。
+闭锁时序测试及 Linux N=1/2 的真实执行重叠与 RSS 见[调度验收](docs/validation/scheduler.md)。
+HTTP 路由、Prometheus 注册和进程信号/grace 处理仍由后续任务实现。
+
 ## 文档
 
 - [服务方案与验收条件](docs/laya-server-plan.md)

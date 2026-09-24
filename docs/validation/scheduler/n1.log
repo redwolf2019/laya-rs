@@ -1,0 +1,33 @@
+   Compiling laya-server v0.1.0 (/work)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.09s
+     Running unittests src/main.rs (/target/debug/deps/laya_server-560b488acf2188dc)
+
+running 1 test
+before_load: VmHWM:	    5108 kB
+before_load: VmRSS:	    5108 kB
+onnxruntime cpuid_info warning: Unknown CPU vendor. cpuinfo_vendor value: 0
+loaded: VmHWM:	  622664 kB
+loaded: VmRSS:	  617620 kB
+stress_elapsed_ms=2926
+after_stress: VmHWM:	  681796 kB
+after_stress: VmRSS:	  681796 kB
+run_event: ns=0 id=1 entering=true active=1
+run_event: ns=368556458 id=1 entering=false active=0
+run_event: ns=369742375 id=2 entering=true active=1
+run_event: ns=735440958 id=2 entering=false active=0
+run_event: ns=736567833 id=3 entering=true active=1
+run_event: ns=1100690375 id=3 entering=false active=0
+run_event: ns=1101831375 id=4 entering=true active=1
+run_event: ns=1466415625 id=4 entering=false active=0
+run_event: ns=1467567792 id=5 entering=true active=1
+run_event: ns=1827051292 id=5 entering=false active=0
+run_event: ns=1828282209 id=6 entering=true active=1
+run_event: ns=2183905501 id=6 entering=false active=0
+run_event: ns=2185103417 id=7 entering=true active=1
+run_event: ns=2550562334 id=7 entering=false active=0
+run_event: ns=2551731584 id=8 entering=true active=1
+run_event: ns=2922397459 id=8 entering=false active=0
+PASS: requests=8 native_runs=8 observed_max=1 configured_slots=1 threads_per_session=2 inter_op=1
+test model::tests::concurrency::linux_scheduler_concurrency ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 12 filtered out; finished in 13.26s

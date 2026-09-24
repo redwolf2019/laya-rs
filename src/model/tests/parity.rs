@@ -357,7 +357,7 @@ fn check_probabilities(
     }
 }
 
-fn check_answers(mut actual: Value, mut expected: Value, name: &str) {
+pub(super) fn check_answers(mut actual: Value, mut expected: Value, name: &str) {
     for (i, ((key, a), (ekey, e))) in actual["answers"]
         .as_object_mut()
         .unwrap()

@@ -95,8 +95,9 @@ pub fn system_one(
             "qtype" => Tensor::from_array(([batch.marker_shape[0]], batch.qtype))?,
         })
     };
-    let outputs = session
-        .run(make_inputs().map_err(Error::Runtime)?)
+    let inputs = make_inputs().map_err(Error::Runtime)?;
+    let outputs = tracing::info_span!("laya_session_run")
+        .in_scope(|| session.run(inputs))
         .map_err(Error::Runtime)?;
     decode_outputs(
         request,

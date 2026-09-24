@@ -55,6 +55,30 @@ fn main() -> ExitCode {
         model.sequence.tokenizer().get_vocab_size(true),
         model.config.max_len
     );
+    if let Err(error) = prepare_scheduler(model, &config) {
+        eprintln!("Scheduler initialization failed: {error}");
+        return ExitCode::FAILURE;
+    }
     eprintln!("Service not implemented: HTTP serving is unavailable");
     ExitCode::FAILURE
+}
+
+fn prepare_scheduler(model: model::Model, config: &config::Config) -> Result<(), &'static str> {
+    let mut scheduler = laya_server::scheduler::Scheduler::new(
+        model.sessions,
+        model.sequence,
+        model.config.calibration,
+        config.queue_capacity,
+        config.queue_timeout,
+        config.inference_timeout,
+    )?;
+    let runtime = tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .map_err(|_| "cannot create async runtime")?;
+    // HTTP is implemented separately; close and drain the assembled scheduler here.
+    scheduler.client().close();
+    runtime
+        .block_on(scheduler.run())
+        .map_err(|_| "blocking task failed")
 }

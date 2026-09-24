@@ -23,13 +23,6 @@ pub(crate) struct ModelConfig {
     pub max_len: usize,
     pub head_max_len: usize,
     #[serde(flatten)]
-    #[cfg_attr(
-        not(test),
-        expect(
-            dead_code,
-            reason = "retained for engine calls; the CLI only initializes resources"
-        )
-    )]
     pub calibration: Calibration,
 }
 

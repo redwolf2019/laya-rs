@@ -5,6 +5,7 @@ Sequence Builder 与五个批处理输入已实现并通过固定 tokenizer 对�
 已通过 #8 固定张量验收；#13 已修复 LayerNorm 数值差异，21 个固定请求的 Rust 真实推理
 与完整答案在 Linux ARM64 CPU 通过对照，见[后处理验收](validation/postprocess.md)。
 #14 已把该链路接入可复用 engine，失败恢复与运行记录见[engine 验收](validation/engine.md)。HTTP 尚待验收。
+#15 已接入有界 FIFO 调度、真实阻塞任务持槽和句柄回收，Linux N=1/2 实测见[调度验收](validation/scheduler.md)。
 版本日期：2026-09-23。
 
 字段、序列、校准、HTTP 错误、资源限制和验收阈值以
@@ -254,6 +255,10 @@ permit 必须覆盖真实 CPU 工作的整个生命周期：即使 HTTP 请求�
 固定候选 ort 的 `Session::run` 要求可变借用；实际并发 2 需要两个独立可运行的执行槽。
 槽持有 permit 到阻塞工作及输出处理结束；HTTP 超时或断开后仍接收后台结果并回收资源。
 测量多 Session 的额外 RSS 和实际并发收益；串行 Session 外 semaphore=2 不构成真实并发 2。
+
+当前 `scheduler::Client` 复用上述 Session，`Scheduler::run(&mut self)` 由服务所有者持续驱动，
+关闭准入后等待全部 JoinSet 结果；取消该驱动 future 不转移或丢弃句柄，须恢复驱动完成回收。
+CLI 已装配并关闭空闲调度器，仍未监听 HTTP。后续退出流程在 grace 到期时必须终止整个进程。
 
 ## 9. 可观测性与生命周期
 

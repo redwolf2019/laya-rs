@@ -75,7 +75,13 @@ impl Config {
             }
             Some("--threads") => self.threads = threads(value)?,
             Some("--inter-op-threads") => self.inter_op_threads = threads(value)?,
-            Some("--max-concurrency") => self.max_concurrency = integer(value, 1)?,
+            Some("--max-concurrency") => {
+                let count = integer(value, 1)?;
+                if count > tokio::sync::Semaphore::MAX_PERMITS {
+                    return Err("concurrency exceeds the semaphore range");
+                }
+                self.max_concurrency = count;
+            }
             Some("--max-body-bytes") => self.max_body_bytes = integer(value, 1)?,
             Some("--max-questions") => self.max_questions = integer(value, 1)?,
             Some("--max-options") => self.max_options = integer(value, 2)?,
@@ -201,6 +207,15 @@ mod tests {
         assert_eq!(
             parse(&["--model", ".", "--inter-op-threads", "2"]).inter_op_threads,
             2
+        );
+    }
+
+    #[test]
+    fn concurrency_cannot_exceed_the_runtime_semaphore_range() {
+        let value = (tokio::sync::Semaphore::MAX_PERMITS + 1).to_string();
+        assert!(
+            Config::from_args(["--model", ".", "--max-concurrency", &value].map(OsString::from))
+                .is_err()
         );
     }
 }

@@ -6,6 +6,8 @@
 [`src/system_one.rs`](../src/system_one.rs) 及 [`tests/system_one.rs`](../tests/system_one.rs)。
 尚未实现 HTTP 服务。#10 已生成[完整官方参考 fixtures](../tests/fixtures/README.md)，
 真实 ONNX 对照发现长选项 Score 四位舍入差异（4.5307 / 4.5306），未通过完整链路门槛。
+#15 的[调度层与验收](validation/scheduler.md)已实现本契约的排队、执行等待、取消及状态读取边界；
+HTTP 错误响应、指标注册与进程退出仍待后续任务验收。
 
 ## 1. 固定依据与边界
 
