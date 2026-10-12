@@ -23,7 +23,7 @@ Add-Type -AssemblyName System.Web.Extensions
 $Utf8 = New-Object Text.UTF8Encoding($false)
 $Sid = [Security.Principal.WindowsIdentity]::GetCurrent().User
 $InvocationParameters = $PSBoundParameters
-$Root = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Root)
+$Root = [IO.Path]::GetFullPath($ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Root))
 if ($Root.TrimEnd('\') -eq [IO.Path]::GetPathRoot($Root).TrimEnd('\')) { throw 'Use a dedicated deployment directory, not a volume root.' }
 $Root = $Root.TrimEnd('\')
 $Lock = $null
@@ -152,6 +152,7 @@ function Fetch-Asset([string]$Name, [string]$Target, [string]$Hash, [long]$Size,
 }
 
 function Archive-Path([string]$Destination, [string]$Name) {
+    $Destination = [IO.Path]::GetFullPath($Destination)
     $normalized = $Name.Replace('\','/').TrimEnd('/')
     if (-not $normalized -or $normalized.StartsWith('/') -or $normalized -match '[:\x00-\x1f]') { throw 'Unsafe archive path.' }
     foreach ($part in $normalized.Split('/')) {
