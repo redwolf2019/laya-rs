@@ -30,7 +30,8 @@ try {
     Copy-Item (Join-Path $ort 'lib\*.dll') $pkg
     $licenses = Join-Path $pkg 'licenses'
     New-Item -ItemType Directory $licenses | Out-Null
-    Copy-Item (Join-Path $ort 'LICENSE'),(Join-Path $ort 'ThirdPartyNotices.txt') $licenses
+    Copy-Item (Join-Path $ort 'LICENSE') (Join-Path $licenses 'ORT-LICENSE')
+    Copy-Item (Join-Path $ort 'ThirdPartyNotices.txt') $licenses
     Copy-Item (Join-Path $repo 'LICENSE'),(Join-Path $repo 'NOTICE.md'),(Join-Path $repo 'Cargo.lock') $licenses
     Copy-Item -Recurse (Join-Path $repo 'licenses') (Join-Path $licenses 'project')
     $cargoHome = if ($env:CARGO_HOME) { $env:CARGO_HOME } else { Join-Path $env:USERPROFILE '.cargo' }
