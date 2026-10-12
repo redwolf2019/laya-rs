@@ -43,6 +43,7 @@ ZIP 内有 exe、两份官方 DLL、文件大小/hash 清单、模型标识、�
 | 编译、fmt、clippy、全量无模型测试 | Windows 81 passed / 8 ignored；21 对照、HTTP、并发和 Tokenizer 另行执行，见下列专项。[原始日志](windows/rust-checks.log) |
 | 固定模型与 HTTP | 21 请求序列、marker、mask、usage 精确一致；logits、未舍入概率和 action 使用原容差；舍入字段和 Choice 精确一致。[模型/HTTP/资源日志](windows/model-parity.log) |
 | Tokenizer 与并发 | 三项固定 tokenizer/budget/最大请求检查通过；N=1/2 各 8 次真实 native run，实际最大重叠恰为 1/2，资源和任务回收为零。证据同上 |
+| 独立 inter-op=2 探针 | `linux_real_model_smoke` 单独执行通过：两个可复用 CPU Session，intra=2/inter-op=2；特殊 token IDs、tensor-L2 logits 和 act_probs 使用原参考断言与容差；1 passed / 0 failed，2.36 秒。[原始日志](windows/interop2.log) |
 | 进程级控制事件 | Ctrl+C / Ctrl+Break / 用户停止文件覆盖 idle、queue、inflight、HTTP timeout 后的 blocking work，exit=0/1 与日志计数检查通过。无模型部分明确使用受控 worker，证据在 Rust 日志 |
 | 真实 CPU drain/grace | 16 个长 Noul 的实际 CPU 工作：排队返回 503；正常排空 exit=0；HTTP 504 后仍 inflight=1，文件/Ctrl+C/Ctrl+Break 后 grace 到期 exit=1；端口可重新绑定。[入口](windows/lifecycle.ps1)、[日志](windows/lifecycle.log) |
 | 管理脚本 | 中文、带空格路径，默认 DLL 位于可执行程序目录、模型使用显式路径，不同工作目录；首次/重复 install/start/stop/update、重复 Start 保持旧 PID、A→B current/previous 指针、无模型归档候选复用外部模型、停止状态保持、模型/密钥不变、假 PID 拒绝、下载校验失败不停止旧进程。[完整日志](windows/deployment.log) |
@@ -50,10 +51,15 @@ ZIP 内有 exe、两份官方 DLL、文件大小/hash 清单、模型标识、�
 | 边界 | ZIP/tar 穿越、绝对路径、ADS、链接/PAX、重复元数据、损坏资产、操作锁、未完成事务、PS 5.1 空 opset key、VC++ 不足且用户拒绝。[入口](../../scripts/test-windows.ps1)、[日志](windows/script-boundaries.log) |
 | Linux / macOS 无模型回归 | Linux x86_64 Docker（ARM64 主机上的架构模拟）fmt/clippy/83 tests 通过；macOS fmt/clippy/83 tests 通过；Linux 安装器边界、Windows 发布元数据保持 Linux 字段检查通过。未借此声明 Linux 性能或新模型对照 |
 
-独立 `linux_real_model_smoke`（intra=2/inter-op=2 的 tensor-L2 参考容差入口）
-本轮未单独执行。真实加载均运行内置 tensor-L2 形状、有限值和概率检查，不能据此
-声称该独立参考容差测试已通过。最后一次 SSH 状态复查遭认证拒绝，未继续远程复查；
-部署日志已验证停止状态，测试和候选日志已保存。
+2026-10-12 补验独立 `linux_real_model_smoke` 通过，本次 SSH 连接成功。
+运行前确认远程 24 个源码/工具链文件 hash 与候选的 `source-files.json` 一致，
+使用候选包的官方 ORT DLL 和同一固定模型，未修改运行时代码、权重或参考容差。
+复现时按部署的 `current.json` 设置 `LAYA_TEST_MODEL` 为 `Model`、
+`LAYA_TEST_ORT` 为 `Program` 目录内的 `onnxruntime.dll`，运行：
+
+```powershell
+cargo test --release --locked --target x86_64-pc-windows-msvc --bin laya-server model::tests::linux_real_model_smoke -- --ignored --exact --nocapture --test-threads=1
+```
 
 Windows 默认 ORT 图优化曾使 `long-padding` Score 为 `4.5306`，参考要求 `4.5307`。
 关闭 Windows Session 图优化后，完整 21 请求及 HTTP 对照通过；保留原权重、容差和

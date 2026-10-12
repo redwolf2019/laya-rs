@@ -1,0 +1,26 @@
+{"Caption":"Microsoft Windows 11 专业工作站版","Version":"10.0.26300","BuildNumber":"26300"}
+PASS: 24 source hashes match verified candidate
+{"Algorithm":"SHA256","Hash":"18370C375F07357FA5874344A9D9AC17E6B6FE1EB18B1DD209D79483B4470257"}
+Command: cargo test --release --locked --target x86_64-pc-windows-msvc --bin laya-server model::tests::linux_real_model_smoke -- --ignored --exact --nocapture --test-threads=1
+
+running 1 test
+test model::tests::linux_real_model_smoke ... slot=0 repeated tensor-L2 inference: logits=[1.0814666, -1.0907897], act_probs=[1.0, 0.0]
+slot=1 repeated tensor-L2 inference: logits=[1.0814666, -1.0907897], act_probs=[1.0, 0.0]
+ORT Build Info: git-branch=HEAD, git-commit-id=da9b5e364c, fp8-kv-cache=1, build type=RelWithDebInfo
+PASS: verified bundle, CPUExecutionProvider, two reusable sessions, intra=2 inter=2, tensor-L2 reference tolerance
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 2.36s
+
+
+STDERR:
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+warning: linker stdout: 正在创建库 C:\Users\devts\laya-issue20\repo\target\x86_64-pc-windows-msvc\release\deps\laya_server-322d76a8c5abd8d7.lib 和对象 C:\Users\devts\laya-issue20\repo\target\x86_64-pc-windows-msvc\release\deps\laya_server-322d76a8c5abd8d7.exp
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `laya-server` (bin "laya-server" test) generated 1 warning
+    Finished `release` profile [optimized] target(s) in 0.14s
+     Running unittests src\main.rs (target\x86_64-pc-windows-msvc\release\deps\laya_server-322d76a8c5abd8d7.exe)
