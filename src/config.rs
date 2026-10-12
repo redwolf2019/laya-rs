@@ -96,16 +96,20 @@ impl Config {
     }
 }
 
-#[cfg(windows)]
+#[cfg(any(windows, target_os = "macos"))]
 fn default_ort_library() -> Result<PathBuf, &'static str> {
     let executable = std::env::current_exe().map_err(|_| "cannot locate executable directory")?;
     let directory = executable
         .parent()
         .ok_or("cannot locate executable directory")?;
-    Ok(directory.join("onnxruntime.dll"))
+    #[cfg(windows)]
+    let library = "onnxruntime.dll";
+    #[cfg(target_os = "macos")]
+    let library = "libonnxruntime.dylib";
+    Ok(directory.join(library))
 }
 
-#[cfg(not(windows))]
+#[cfg(not(any(windows, target_os = "macos")))]
 fn default_ort_library() -> Result<PathBuf, &'static str> {
     Ok(PathBuf::from("libonnxruntime.so"))
 }
@@ -148,8 +152,17 @@ mod tests {
     fn defaults_match_the_frozen_cli_contract() {
         let config = parse(&["--model", "."]);
         assert_eq!(config.model, PathBuf::from("."));
-        #[cfg(not(windows))]
+        #[cfg(not(any(windows, target_os = "macos")))]
         assert_eq!(config.ort_library, PathBuf::from("libonnxruntime.so"));
+        #[cfg(target_os = "macos")]
+        assert_eq!(
+            config.ort_library,
+            std::env::current_exe()
+                .unwrap()
+                .parent()
+                .unwrap()
+                .join("libonnxruntime.dylib")
+        );
         #[cfg(windows)]
         assert_eq!(
             config.ort_library,

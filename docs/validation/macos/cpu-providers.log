@@ -1,0 +1,3 @@
+ORT 1.28.0 API 28
+available provider: CPUExecutionProvider
+device provider: CPUExecutionProvider

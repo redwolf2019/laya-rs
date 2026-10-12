@@ -1,0 +1,28 @@
+    Finished `release` profile [optimized] target(s) in 0.06s
+     Running unittests src/main.rs (target/release/deps/laya_server-8b7172a57eaf37f1)
+
+running 1 test
+before_load: RSS_KiB CPU_TIME PERCENT_CPU: 2624   0:00.00   0.0
+loaded: RSS_KiB CPU_TIME PERCENT_CPU: 1443920   0:01.78  94.7
+stress_elapsed_ms=1524
+after_stress: RSS_KiB CPU_TIME PERCENT_CPU: 1509488   0:07.84 392.6
+run_event: ns=0 id=1 entering=true active=1
+run_event: ns=18291 id=2 entering=true active=2
+run_event: ns=382152500 id=1 entering=false active=1
+run_event: ns=382419583 id=3 entering=true active=2
+run_event: ns=392471333 id=2 entering=false active=1
+run_event: ns=392712791 id=4 entering=true active=2
+run_event: ns=757671458 id=3 entering=false active=1
+run_event: ns=757967250 id=5 entering=true active=2
+run_event: ns=767410833 id=4 entering=false active=1
+run_event: ns=767674208 id=6 entering=true active=2
+run_event: ns=1138464500 id=5 entering=false active=1
+run_event: ns=1138756000 id=7 entering=true active=2
+run_event: ns=1142447208 id=6 entering=false active=1
+run_event: ns=1142698291 id=8 entering=true active=2
+run_event: ns=1516132041 id=7 entering=false active=1
+run_event: ns=1523459083 id=8 entering=false active=0
+PASS: requests=8 native_runs=8 observed_max=2 configured_slots=2 threads_per_session=2 inter_op=1
+test model::tests::concurrency::linux_scheduler_concurrency ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 3.32s

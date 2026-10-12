@@ -1,0 +1,62 @@
+script_sha256=906a35d857f4e7667001b7e7143eec29f39854fcf8610d93115fc8b348a429cb
+PASS: install expected_failure=False
+Prepared v0.1.1-macos21. Run start in the terminal; install does not start a process.
+
+install_seconds=11.319
+PASS: start expected_failure=True
+laya: Candidate startup or real API validation failed; inspect run/*/server.log
+
+PASS: port conflict and interrupted first start do not adopt a listener or leave a child
+PASS: start Validated. log=/private/tmp/laya-macos21/中文 mac's reviewed-logs/command-1.log
+PASS: start expected_failure=True
+laya: A managed instance is already running
+
+PASS: stop expected_failure=True
+laya: PID ownership cannot be confirmed; refusing to stop or adopt it
+
+candidate=v0.1.2-test-api sha256=82bd3a3207973f8625a66ebd769742a7777fc0fb5d1aa15dbbde72034c019695 fault=api
+PASS: update expected_failure=True
+laya: Asset size or SHA-256 verification failed; old deployment is unchanged
+
+PASS: duplicate start, wrong PID and download failure preserve old live instance
+candidate=v0.1.2-test-version sha256=0c505a44b8a8f41b4a333c4300e84b6a029656a236c9cc518859b43a211640a0 fault=version
+PASS: update Validated. log=/private/tmp/laya-macos21/中文 mac's reviewed-logs/command-2.log
+PASS: stop expected_failure=False
+Managed process stopped
+
+PASS: start Validated. log=/private/tmp/laya-macos21/中文 mac's reviewed-logs/command-3.log
+candidate=v0.1.2-test-startup sha256=447a312179da1c4b4b149ee0b5c23c8aa04a7c213798552f9b7f8393f71658e7 fault=startup
+PASS: update Previous deployment restored and validated. log=/private/tmp/laya-macos21/中文 mac's reviewed-logs/command-4.log
+PASS: stop expected_failure=False
+Managed process stopped
+
+PASS: start Validated. log=/private/tmp/laya-macos21/中文 mac's reviewed-logs/command-5.log
+candidate=v0.1.2-test-api sha256=e5fd0bbdb66a449ab34827f0f2932e1906d45fb841d882281d230f0d935a4840 fault=api
+PASS: update Previous deployment restored and validated. log=/private/tmp/laya-macos21/中文 mac's reviewed-logs/command-6.log
+PASS: stop expected_failure=False
+Managed process stopped
+
+PASS: start Validated. log=/private/tmp/laya-macos21/中文 mac's reviewed-logs/command-7.log
+candidate=v0.1.2-test-architecture sha256=906480e99098d7cfd525bf1d18e25bdc88c2d0d4e43544abddb490350f195eef fault=architecture
+PASS: update Previous deployment restored and validated. log=/private/tmp/laya-macos21/中文 mac's reviewed-logs/command-8.log
+PASS: stop expected_failure=False
+Managed process stopped
+
+PASS: start Validated. log=/private/tmp/laya-macos21/中文 mac's reviewed-logs/command-9.log
+PASS: real A-to-B upgrade and startup/API-failure rollback
+PASS: update expected_failure=True
+laya: Operation lock exists. Check operation.lock/owner; see docs/macos.md for stale-lock recovery
+
+PASS: start expected_failure=True
+laya: Interrupted transaction detected; inspect it and run update --recover
+
+PASS: update Previous deployment restored and validated. log=/private/tmp/laya-macos21/中文 mac's reviewed-logs/command-11.log
+PASS: concurrent update rejected; interrupted real switch reclaims candidate; recovery validates old CPU inference
+PASS: stop expected_failure=False
+Managed process stopped
+
+PASS: update expected_failure=False
+PASS: Chinese Choice/Score/Noul real API response
+Committed v0.1.1-macos21; parameters, model and token preserved.
+
+PASS: stopped state, unchanged model cache and token; real deployment gate

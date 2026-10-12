@@ -1,0 +1,6 @@
+ORT 1.28.0 API 28
+available provider: CoreMLExecutionProvider
+available provider: WebGpuExecutionProvider
+available provider: CPUExecutionProvider
+device provider: CPUExecutionProvider
+device provider: WebGpuExecutionProvider

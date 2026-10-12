@@ -257,8 +257,9 @@ Tokenizer 和独立 CPU Sessions，并逐槽执行固定 `tensor-L2` 探针。�
 除鉴权密钥从 `LAYA_API_TOKEN` 环境变量读取外，运行配置使用 CLI，不实现第二套 YAML。
 `--model` 必须提供本地 bundle 目录；
 `--listen` 默认 `0.0.0.0:8080`，必须可解析为 IP 和非零端口。
-`--ort-library` 指定本地 ORT CPU 动态库文件；Unix 默认 `libonnxruntime.so`，
-Windows 默认可执行程序所在目录的 `onnxruntime.dll`，不依赖工作目录或全局 PATH。
+`--ort-library` 指定本地 ORT CPU 动态库文件；Linux 默认 `libonnxruntime.so`，
+Windows 默认可执行程序所在目录的 `onnxruntime.dll`；macOS 默认同目录的
+`libonnxruntime.dylib`，不依赖工作目录、Homebrew 或全局动态库搜索路径。
 显式路径覆盖默认值，建议使用绝对路径。
 这是 #8 加载器新增的 CLI 路径参数；不从环境变量选择运行库，不在启动时下载。
 
@@ -271,6 +272,12 @@ Ctrl+C、Ctrl+Break 及脚本的用户私有停止文件通知共用准入关闭
 直接运行 exe 可以不设置该变量。目录权限由创建通知的部署方负责。
 窗口关闭、注销、关机和外部强杀不承诺完整 grace。具体安装与恢复契约见
 [Windows 操作说明](windows.md)。本次 #20 的最低系统由用户改为 Windows 11 x64。
+
+macOS ARM64 便携入口见 [macOS 操作说明](macos.md)。install 仅准备资源；start 前台托管，
+stop 发送 SIGTERM，update 先准备再切换，通过真实三类型 API 才提交，失败重启旧版并重新验证。
+脚本默认 intra=2、inter=1、slots=1、grace=120，升级/回退保留配置和密钥；通用 CLI 默认值不变。
+最低构建目标为 14.0；本次按用户指令仅在 macOS 27.0.1 验收。
+固定源码 CPU-only ORT 1.28.0 和 macOS Session 保留现有 CPU provider 校验及图优化设置。
 
 | CLI 参数 | 默认 | 有效性 / 计量边界 |
 | --- | ---: | --- |

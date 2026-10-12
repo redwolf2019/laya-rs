@@ -1,0 +1,26 @@
+{
+  "laya-server": {
+    "bytes": 7049024,
+    "sha256": "a7de9b260477569f128c6d0e3cf71ed947300649073814ab494d1c69890f987e"
+  },
+  "libonnxruntime.dylib": {
+    "bytes": 26593664,
+    "sha256": "03f3b57da1bab1ee7cf1680a4ac3a0df5ba4b8fb64e2545e6d6e10ab8c024fcd"
+  },
+  "model-manifest.json": {
+    "bytes": 13197,
+    "sha256": "3bff67d421ae27d4f68a3904c3fe73074509d38e85417025bd51e703b11d8359"
+  },
+  "laya-server-macos-aarch64.tar.gz": {
+    "bytes": 10219389,
+    "sha256": "834b52aeb8bb82564940be32e83e21e406c888638997c130bffbc1ba110d6ecb"
+  },
+  "model-3bff67d421ae27d4.tar.gz": {
+    "bytes": 752018537,
+    "sha256": "699aae05cab2f36792859f59c533280daf8bcb96c57fae21d30850fc7ad8dfe5"
+  },
+  "laya-macos.sh": {
+    "bytes": 24583,
+    "sha256": "c12791e7558e28877b03af31ff0145eca0d44ddc4bbf52bfb49609223c6dc18a"
+  }
+}

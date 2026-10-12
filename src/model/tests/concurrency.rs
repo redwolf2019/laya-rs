@@ -76,7 +76,25 @@ fn rss(stage: &str) {
     println!("{stage}: {}", String::from_utf8(output.stdout).unwrap());
 }
 
-#[cfg(not(any(windows, target_os = "linux")))]
+#[cfg(target_os = "macos")]
+fn rss(stage: &str) {
+    let output = std::process::Command::new("/bin/ps")
+        .args([
+            "-p",
+            &std::process::id().to_string(),
+            "-o",
+            "rss=,time=,pcpu=",
+        ])
+        .output()
+        .unwrap();
+    assert!(output.status.success());
+    println!(
+        "{stage}: RSS_KiB CPU_TIME PERCENT_CPU: {}",
+        String::from_utf8(output.stdout).unwrap().trim()
+    );
+}
+
+#[cfg(not(any(windows, target_os = "linux", target_os = "macos")))]
 fn rss(stage: &str) {
     println!("{stage}: resource measurement unavailable on this platform");
 }

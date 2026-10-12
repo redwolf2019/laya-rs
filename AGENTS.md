@@ -5,9 +5,10 @@ Sequence Builder 已通过固定 tokenizer 对照，统一 engine 入口及 21 �
 
 ## 核心边界
 
-- 部署目标为 Linux 与 Windows 11 x64 CPU-only，应用使用 Rust；运行服务不依赖 Python、Node.js、PyTorch、CUDA 或 GPU。
+- 部署目标为 Linux、Windows 11 x64 与 macOS 14+ Apple Silicon CPU-only，应用使用 Rust；运行服务不依赖 Python、Node.js、PyTorch、CUDA 或 GPU。
   使用预导出的 ONNX bundle；ONNX Runtime 是原生依赖，“纯 Rust”仅指应用实现。
   Windows 便携版的发布门禁、控制台边界和实际验证范围见 [Windows 说明](docs/windows.md)。
+  macOS 便携版及未公证分发见 [macOS 说明](docs/macos.md)；本次按用户要求只验本机 macOS 27.0.1，不将最低目标 14 标为实测。
 - 默认模型为 `laya-multilingual`，支持中文、英文及模型支持的其他语言。
   固定参考实现、模型来源、revision 与校验值，权重不入 Git。
 - Sequence Builder、tokenizer、模型输入输出和校准行为须对齐固定参考版本；

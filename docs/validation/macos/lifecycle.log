@@ -1,0 +1,16 @@
+idle-SIGINT cold_start_seconds=1.533
+PASS: idle-SIGINT, signal=SIGINT, exit=0, port rebind
+drain-SIGINT cold_start_seconds=1.578
+1051984   0:01.48  69.0
+PASS: drain-SIGINT, signal=SIGINT, exit=0, port rebind
+timed-SIGINT cold_start_seconds=1.492
+1078784   0:01.43  73.0
+PASS: timed-SIGINT, signal=SIGINT, exit=1, port rebind
+idle-SIGTERM cold_start_seconds=1.533
+PASS: idle-SIGTERM, signal=SIGTERM, exit=0, port rebind
+drain-SIGTERM cold_start_seconds=1.556
+1079776   0:01.49  74.3
+PASS: drain-SIGTERM, signal=SIGTERM, exit=0, port rebind
+timed-SIGTERM cold_start_seconds=1.530
+1066496   0:01.46  71.3
+PASS: timed-SIGTERM, signal=SIGTERM, exit=1, port rebind

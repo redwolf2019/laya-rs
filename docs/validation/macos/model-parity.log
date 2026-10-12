@@ -1,0 +1,32 @@
+    Blocking waiting for file lock on package cache
+   Compiling laya-server v0.1.1 (/Users/redwolf/MyProjects/laya-rs)
+    Finished `release` profile [optimized] target(s) in 3.60s
+     Running unittests src/main.rs (target/release/deps/laya_server-8b7172a57eaf37f1)
+
+running 1 test
+PASS: en-choice.json, slot=0
+PASS: en-noul.json, slot=1
+PASS: en-score.json, slot=0
+PASS: huge-integer.json, slot=1
+PASS: json-order-numbers.json, slot=0
+PASS: long-padding.json, slot=1
+PASS: marker.json, slot=0
+PASS: mixed-16.json, slot=1
+PASS: mixed-6.json, slot=0
+PASS: normalization.json, slot=1
+PASS: options-10.json, slot=0
+PASS: options-11.json, slot=1
+PASS: options-2.json, slot=0
+PASS: options-3.json, slot=1
+PASS: options-32.json, slot=0
+PASS: options-5.json, slot=1
+PASS: options-6.json, slot=0
+PASS: scalars.json, slot=1
+PASS: zh-choice.json, slot=0
+PASS: zh-noul.json, slot=1
+PASS: zh-score.json, slot=0
+PASS: artificial native shape/NaN outputs rejected; same probe Session recovers
+PASS: typed sequence/native failures; same real Session recovers without reloading
+test model::tests::parity::linux_system_one_model_parity ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 9.00s

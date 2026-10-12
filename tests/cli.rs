@@ -44,6 +44,7 @@ fn help_runs_without_model_and_lists_the_frozen_options() {
     assert!(output.stderr.is_empty());
     let help = String::from_utf8(output.stdout).unwrap();
     assert!(help.contains("Windows: executable directory/onnxruntime.dll"));
+    assert!(help.contains("macOS: executable directory/libonnxruntime.dylib"));
     for flag in [
         "--model",
         "--ort-library",

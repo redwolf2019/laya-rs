@@ -12,8 +12,8 @@ with tempfile.TemporaryDirectory() as temp:
     out = Path(temp)
     model_id = subprocess.check_output([sys.executable, str(ROOT / "tools/release/package.py"), "id"], text=True).strip()
     (out / f"model-{model_id}.tar.gz").write_bytes(b"test-only model archive")
-    for arch in ("x86_64", "aarch64"):
-        with tarfile.open(out / f"laya-server-linux-{arch}.tar.gz", "w:gz") as archive:
+    for platform in ("linux-x86_64", "linux-aarch64", "macos-aarch64"):
+        with tarfile.open(out / f"laya-server-{platform}.tar.gz", "w:gz") as archive:
             for name, value in (("VERSION", "v0.1.2"), ("MODEL_ID", model_id)):
                 data = (value + "\n").encode()
                 info = tarfile.TarInfo("./" + name)
@@ -30,6 +30,11 @@ with tempfile.TemporaryDirectory() as temp:
     checksums = (out / "SHA256SUMS").read_text()
     assert "laya-server-windows-x86_64.zip" in checksums
     assert "laya.ps1" in checksums
+    assert len(metadata["MACOS_aarch64_SHA256"]) == 64
+    assert int(metadata["MACOS_aarch64_BYTES"]) > 0
+    assert "laya-server-macos-aarch64.tar.gz" in checksums
+    assert "laya-macos.sh" in checksums
+    assert (out / "laya-macos.sh").is_file()
     # Windows metadata stays separate; Linux installers retain their existing fields.
     assert "RUNTIME_x86_64_SHA256" in metadata and "RUNTIME_aarch64_SHA256" in metadata
-print("PASS: Windows assets and Linux metadata compatibility")
+print("PASS: macOS/Windows assets and Linux metadata compatibility")

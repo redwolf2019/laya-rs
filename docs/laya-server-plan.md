@@ -16,7 +16,7 @@ Sequence Builder 与五个批处理输入已实现并通过固定 tokenizer 对�
 
 ## 1. 目标与边界
 
-构建名为 `laya-server` 的 Rust HTTP 服务，在 Linux 或 Windows 11 x64 CPU 上加载一个共享的
+构建名为 `laya-server` 的 Rust HTTP 服务，在 Linux、Windows 11 x64 或 macOS Apple Silicon CPU 上加载一个共享的
 Laya multilingual 模型，为多个客户端回答类型化问题。
 
 目标能力：
@@ -38,6 +38,12 @@ Python 仅可用于该准备环节和开发期参考对照，不进入服务构�
 普通用户、干净环境/VC-UAC 及公开候选验收按用户要求暂缓，
 #20 按已完成的 Windows 11 实现和现有实测收口。
 Windows 沿用同一固定模型、CPU provider、HTTP/鉴权契约和 drain，不引入 GPU、SCM 或自启。
+
+#21 新增 macOS ARM64 便携程序与 Shell install/start/stop/update 入口，最低构建目标 14.0。
+本次用户将验收限定在本机 macOS 27.0.1；14.0 仅为构建目标，未声明实测支持。
+官方 ORT 包暴露 WebGPU device，使用固定 ORT v1.28.0 源码准备 CPU-only dylib，保留 provider 检查。
+模型、HTTP、鉴权、数值阈值和 Unix drain 共用现有实现，不启用 GPU/ANE 或 launchd。
+操作、密钥、回退、未公证边界见 [macOS 说明](macos.md)与[验收记录](validation/macos.md)。
 
 Laya 的职责是有限答案空间上的判断，不是聊天或文本生成，也不替代通用 LLM。
 典型用途包括工具路由、工单分类、任务风险评分和是否升级到人工或更大模型的判断。

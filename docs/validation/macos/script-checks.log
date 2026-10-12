@@ -1,0 +1,7 @@
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 6.644s
+
+OK
+PASS: macOS/Windows assets and Linux metadata compatibility
+PASS: validation, noninteractive refusal, archive traversal/link rejection, metadata and service failure propagation

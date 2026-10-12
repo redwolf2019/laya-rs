@@ -1,0 +1,156 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.26
+   Compiling libc v0.2.189
+   Compiling cfg-if v1.0.5
+   Compiling serde_core v1.0.229
+   Compiling itoa v1.0.18
+   Compiling serde v1.0.229
+   Compiling pin-project-lite v0.2.17
+   Compiling bytes v1.12.1
+   Compiling smallvec v1.16.1
+   Compiling memchr v2.8.3
+   Compiling crossbeam-utils v0.8.23
+   Compiling futures-core v0.3.34
+   Compiling crossbeam-epoch v0.9.21
+   Compiling once_cell v1.21.4
+   Compiling getrandom v0.3.4
+   Compiling fnv v1.0.7
+   Compiling ident_case v1.0.1
+   Compiling zerocopy v0.8.57
+   Compiling strsim v0.11.1
+   Compiling http v1.5.0
+   Compiling zmij v1.0.23
+   Compiling shlex v2.0.1
+   Compiling crossbeam-deque v0.8.8
+   Compiling find-msvc-tools v0.1.13
+   Compiling cc v1.4.7
+   Compiling http-body v1.1.0
+   Compiling typenum v1.20.1
+   Compiling rustversion v1.0.23
+   Compiling httparse v1.10.1
+   Compiling rayon-core v1.13.0
+   Compiling serde_json v1.0.151
+   Compiling pkg-config v0.3.34
+   Compiling onig_sys v69.9.3
+   Compiling errno v0.3.14
+   Compiling mio v1.2.3
+   Compiling signal-hook-registry v1.4.8
+   Compiling socket2 v0.6.5
+   Compiling hybrid-array v0.4.15
+   Compiling parking_lot_core v0.9.12
+   Compiling either v1.18.0
+   Compiling version_check v0.9.5
+   Compiling tower-service v0.3.3
+   Compiling rand_core v0.9.5
+   Compiling syn v3.0.6
+   Compiling syn v2.0.119
+   Compiling ahash v0.8.12
+   Compiling tracing-core v0.1.36
+   Compiling aho-corasick v1.1.5
+   Compiling futures-channel v0.3.34
+   Compiling scopeguard v1.2.0
+   Compiling futures-task v0.3.34
+   Compiling slab v0.4.12
+   Compiling esaxx-rs v0.1.10
+   Compiling regex-syntax v0.8.11
+   Compiling thiserror v2.0.20
+   Compiling paste v1.0.15
+   Compiling tower-layer v0.3.3
+   Compiling httpdate v1.0.3
+   Compiling minimal-lexical v0.2.1
+   Compiling ort-sys v2.0.0-rc.13
+   Compiling sync_wrapper v1.0.2
+   Compiling atomic-waker v1.1.2
+   Compiling nom v7.1.3
+   Compiling darling_core v0.20.11
+   Compiling ppv-lite86 v0.2.21
+   Compiling regex-automata v0.4.18
+   Compiling rand_chacha v0.9.0
+   Compiling serde_derive v1.0.229
+   Compiling tokio-macros v2.7.2
+   Compiling thiserror-impl v2.0.20
+   Compiling monostate-impl v0.1.18
+   Compiling rayon v1.12.0
+   Compiling futures-util v0.3.34
+   Compiling tokio v1.53.1
+   Compiling lock_api v0.4.14
+   Compiling castaway v0.2.4
+   Compiling block-buffer v0.12.1
+   Compiling darling_macro v0.20.11
+   Compiling crypto-common v0.2.2
+   Compiling itertools v0.14.0
+   Compiling darling v0.20.11
+   Compiling http-body-util v0.1.5
+   Compiling base64 v0.13.1
+   Compiling pastey v0.2.3
+   Compiling bitflags v2.13.2
+   Compiling const-oid v0.10.2
+   Compiling mime v0.3.17
+   Compiling lazy_static v1.5.0
+   Compiling static_assertions v1.1.0
+   Compiling ryu v1.0.23
+   Compiling prometheus-client v0.25.0
+   Compiling unicode-segmentation v1.13.3
+   Compiling macro_rules_attribute-proc_macro v0.2.3
+   Compiling derive_builder_core v0.20.2
+   Compiling rayon-cond v0.4.0
+   Compiling axum-core v0.5.6
+   Compiling sharded-slab v0.1.7
+   Compiling macro_rules_attribute v0.2.3
+   Compiling digest v0.11.3
+   Compiling spm_precompiled v0.1.4
+   Compiling tracing-serde v0.2.0
+   Compiling compact_str v0.9.1
+   Compiling dary_heap v0.3.9
+   Compiling regex v1.13.1
+   Compiling derive_builder_macro v0.20.2
+   Compiling parking_lot v0.12.5
+   Compiling monostate v0.1.18
+   Compiling derive_builder v0.20.2
+   Compiling rand v0.9.5
+   Compiling prometheus-client-derive-encode v0.5.1
+   Compiling serde_path_to_error v0.1.20
+   Compiling cpufeatures v0.3.1
+   Compiling unicode-normalization-alignments v0.1.12
+   Compiling libloading v0.9.0
+   Compiling thread_local v1.1.10
+   Compiling matchit v0.8.4
+   Compiling percent-encoding v2.3.2
+   Compiling hyper v1.11.1
+   Compiling tower v0.5.3
+   Compiling log v0.4.34
+   Compiling unicode_categories v0.1.1
+   Compiling daachorse v3.0.3
+   Compiling dtoa v1.0.11
+   Compiling tracing-subscriber v0.3.23
+   Compiling ort v2.0.0-rc.13
+   Compiling sha2 v0.11.0
+   Compiling tracing v0.1.44
+   Compiling subtle v2.6.1
+   Compiling mediatype v0.23.0
+   Compiling onig v6.5.3
+   Compiling hyper-util v0.1.20
+   Compiling tokenizers v0.23.2
+   Compiling axum v0.8.9
+   Compiling laya-server v0.1.1 (/Users/redwolf/MyProjects/laya-rs)
+    Finished `release` profile [optimized] target(s) in 23.76s
+     Running unittests src/main.rs (target/release/deps/laya_server-8b7172a57eaf37f1)
+
+running 1 test
+
+thread 'model::tests::linux_real_model_smoke' (5587396) panicked at src/model/tests.rs:119:42:
+called `Result::unwrap()` on an `Err` value: Error { message: "native runtime exposes a non-CPU provider", source: None }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test model::tests::linux_real_model_smoke ... FAILED
+
+failures:
+
+failures:
+    model::tests::linux_real_model_smoke
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 13 filtered out; finished in 2.26s
+
+error: test failed, to rerun pass `--bin laya-server`

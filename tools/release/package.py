@@ -65,12 +65,23 @@ def release(version, out):
             if archive.read("MODEL_ID").decode().strip() != model_id():
                 raise ValueError("Wrong Windows model version")
         lines += [f"WINDOWS_x86_64_SHA256={digest(windows)}", f"WINDOWS_x86_64_BYTES={windows.stat().st_size}"]
+    macos = out / "laya-server-macos-aarch64.tar.gz"
+    if macos.exists():
+        with tarfile.open(macos) as archive:
+            if archive.extractfile("./VERSION").read().decode().strip() != version:
+                raise ValueError("Wrong macOS program version")
+            if archive.extractfile("./MODEL_ID").read().decode().strip() != model_id():
+                raise ValueError("Wrong macOS model version")
+        lines += [f"MACOS_aarch64_SHA256={digest(macos)}", f"MACOS_aarch64_BYTES={macos.stat().st_size}"]
     (out / "release.env").write_text("\n".join(lines) + "\n")
     shutil.copyfile(ROOT / "scripts/install.sh", out / "install.sh")
     assets = [out / "release.env", out / "install.sh"]
     if windows.exists():
         shutil.copyfile(ROOT / "scripts/laya.ps1", out / "laya.ps1")
         assets += [windows, out / "laya.ps1"]
+    if macos.exists():
+        shutil.copyfile(ROOT / "scripts/laya-macos.sh", out / "laya-macos.sh")
+        assets += [macos, out / "laya-macos.sh"]
     assets += sorted(out.glob("laya-server-linux-*.tar.gz"))
     assets += sorted(out.glob("runtime-sources-*.tar.gz"))
     (out / "SHA256SUMS").write_text("".join(f"{digest(p)}  {p.name}\n" for p in assets))

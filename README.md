@@ -68,6 +68,7 @@ laya-rs 行为依据 [API 兼容契约](docs/compatibility.md)；本项目未执
 | [Docker 部署](#docker-部署linux-arm64-cpu) | Linux ARM64 容器 | Docker、固定模型包；在本地构建镜像 |
 | [源码构建](#构建与-cli) | Linux 开发环境 | Rust 工具链、固定模型包、ONNX Runtime CPU 动态库 |
 | [Windows 便携版](docs/windows.md) | Windows 11 x64，CPU | PowerShell 5.1、固定模型包、VC++ x64 运行库；候选与实测范围见说明 |
+| [macOS 便携版](docs/macos.md) | Apple Silicon ARM64，CPU；最低构建目标 14，实测 27.0.1 | 系统 Shell，用户目录运行；自动生成密钥、显式升级与失败回退；未公证 |
 
 运行服务不需要 Python、Node.js、PyTorch 或 GPU。ONNX Runtime 是原生依赖，
 “Rust 实现”指应用代码；自行导出模型时，才需要独立的 Python/PyTorch 准备环境。

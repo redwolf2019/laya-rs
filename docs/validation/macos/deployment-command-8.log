@@ -1,0 +1,4 @@
+Candidate failed; restoring the previous deployment.
+PASS: Chinese Choice/Score/Noul real API response
+Previous deployment restored and validated.
+Validated. This terminal owns the process; closing it can stop service. Use stop from another terminal.

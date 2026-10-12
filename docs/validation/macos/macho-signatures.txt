@@ -1,0 +1,80 @@
+/private/tmp/laya-macos21/release/macos-build-dd5ktphk/laya-server:
+Load command 11
+      cmd LC_BUILD_VERSION
+  cmdsize 32
+ platform MACOS
+    minos 14.0
+      sdk 27.0
+   ntools 1
+     tool LD
+  version 27037.1
+/private/tmp/laya-macos21/release/macos-build-dd5ktphk/laya-server:
+	/usr/lib/libiconv.2.dylib (compatibility version 7.0.0, current version 7.0.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.0.0)
+Executable=/private/tmp/laya-macos21/release/macos-build-dd5ktphk/laya-server
+Identifier=laya-server-555549447b7af0c46b103cf7ae2002c485633fd6
+Format=Mach-O thin (arm64)
+CodeDirectory v=20400 size=13965 flags=0x2(adhoc) hashes=430+2 location=embedded
+VersionPlatform=1
+VersionMin=917504
+VersionSDK=1769472
+Hash type=sha256 size=32
+CandidateCDHash sha256=de6c57f2c817dd0d217664975c76f2bbee9c38fc
+CandidateCDHashFull sha256=de6c57f2c817dd0d217664975c76f2bbee9c38fc55198348330944b2c2261eab
+Hash choices=sha256
+CMSDigest=de6c57f2c817dd0d217664975c76f2bbee9c38fc55198348330944b2c2261eab
+CMSDigestType=2
+Executable Segment base=0
+Executable Segment limit=4620288
+Executable Segment flags=0x1
+Page size=16384
+CDHash=de6c57f2c817dd0d217664975c76f2bbee9c38fc
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements count=0 size=12
+Total signatures=1
+Chosen signature=1
+/private/tmp/laya-macos21/release/macos-build-dd5ktphk/libonnxruntime.dylib:
+Load command 10
+      cmd LC_BUILD_VERSION
+  cmdsize 32
+ platform MACOS
+    minos 14.0
+      sdk 27.0
+   ntools 1
+     tool LD
+  version 27037.1
+/private/tmp/laya-macos21/release/macos-build-dd5ktphk/libonnxruntime.dylib:
+	@rpath/libonnxruntime.1.dylib (compatibility version 1.0.0, current version 1.28.0)
+	/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation (compatibility version 300.0.0, current version 5027.0.69)
+	/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation (compatibility version 150.0.0, current version 5027.0.69)
+	/usr/lib/libiconv.2.dylib (compatibility version 7.0.0, current version 7.0.0)
+	/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2200.27.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.0.0)
+Executable=/private/tmp/laya-macos21/release/macos-build-dd5ktphk/libonnxruntime.dylib
+Identifier=libonnxruntime-55554944c84276dd9fb23212abcf9890a151070a
+Format=Mach-O thin (arm64)
+CodeDirectory v=20400 size=52048 flags=0x2(adhoc) hashes=1620+2 location=embedded
+VersionPlatform=1
+VersionMin=917504
+VersionSDK=1769472
+Hash type=sha256 size=32
+CandidateCDHash sha256=932609aaf1960b92bfb52262d95a889bb88c2972
+CandidateCDHashFull sha256=932609aaf1960b92bfb52262d95a889bb88c29725741820339f2b3c45b64ef04
+Hash choices=sha256
+CMSDigest=932609aaf1960b92bfb52262d95a889bb88c29725741820339f2b3c45b64ef04
+CMSDigestType=2
+Executable Segment base=0
+Executable Segment limit=16433152
+Executable Segment flags=0x0
+Page size=16384
+CDHash=932609aaf1960b92bfb52262d95a889bb88c2972
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements count=0 size=12
+Total signatures=1
+Chosen signature=1

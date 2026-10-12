@@ -11,6 +11,65 @@ permissions:
   contents: read
 
 jobs:
+  macos:
+    runs-on: macos-15
+    env:
+      MACOSX_DEPLOYMENT_TARGET: '14.0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ inputs.version }}
+      - name: Fixed source and native ARM64 toolchain
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          [[ "$VERSION" =~ ^v[0-9]+[A-Za-z0-9.+-]*$ ]]
+          test "$(git describe --tags --exact-match)" = "$VERSION"
+          test "$(uname -m)" = arm64
+          test "$(sysctl -in sysctl.proc_translated 2>/dev/null || true)" != 1
+          sw_vers
+          xcodebuild -version
+          xcrun --show-sdk-version
+          rustup show active-toolchain
+      - run: cargo fmt --check
+      - run: cargo clippy --locked --all-targets -- -D warnings
+      - run: cargo test --locked
+      - run: shellcheck scripts/laya-macos.sh tools/release/prepare-ort-macos.sh
+      - run: python3 scripts/test-macos.py
+      - name: Prepare fixed CPU-only ORT and signed Mach-O package
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          bash tools/release/prepare-ort-macos.sh "$RUNNER_TEMP/ort-source" "$RUNNER_TEMP/cpu-ort"
+          python3 tools/release/build-macos.py --version "$VERSION" --ort "$RUNNER_TEMP/cpu-ort"
+      - name: Real deployment, update and rollback
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          id=$(python3 tools/release/package.py id)
+          gh release download "model-$id" --pattern "model-$id.tar.gz" --dir dist
+          model="dist/model-$id.tar.gz"
+          program=dist/laya-server-macos-aarch64.tar.gz
+          printf '%s\n' "VERSION=$VERSION" "MODEL_ID=$id" \
+            "MODEL_SHA256=$(shasum -a 256 "$model" | cut -d ' ' -f 1)" "MODEL_BYTES=$(stat -f %z "$model")" \
+            "MACOS_aarch64_SHA256=$(shasum -a 256 "$program" | cut -d ' ' -f 1)" "MACOS_aarch64_BYTES=$(stat -f %z "$program")" > dist/release.env
+          python3 tools/release/smoke-macos.py --release-directory dist --root "$RUNNER_TEMP/中文 mac's deployment"
+          echo "LAYA_TEST_MODEL=$(sed -n 's/^MODEL=//p' "$RUNNER_TEMP/中文 mac's deployment/current.env")" >> "$GITHUB_ENV"
+          echo "LAYA_TEST_ORT=$(sed -n 's/^PROGRAM=//p' "$RUNNER_TEMP/中文 mac's deployment/current.env")/libonnxruntime.dylib" >> "$GITHUB_ENV"
+      - name: Fixed model and real HTTP parity, CPU lifecycle
+        run: |
+          cargo test --release --locked --bin laya-server linux_system_one_model_parity -- --ignored --nocapture
+          cargo test --release --locked --bin laya-server linux_http_model_parity_and_disconnect -- --ignored --nocapture
+          for slots in 1 2; do
+            LAYA_TEST_CONCURRENCY=$slots cargo test --release --locked --bin laya-server linux_scheduler_concurrency -- --ignored --nocapture
+          done
+          python3 docs/validation/macos/lifecycle.py --program "$(dirname "$LAYA_TEST_ORT")" --model "$LAYA_TEST_MODEL" --out "$RUNNER_TEMP/lifecycle"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: native-macos-aarch64
+          path: dist/laya-server-macos-aarch64.tar.gz
+          if-no-files-found: error
   windows:
     runs-on: windows-2025
     defaults:
@@ -120,7 +179,7 @@ jobs:
           if-no-files-found: error
 
   draft:
-    needs: [build, windows]
+    needs: [build, windows, macos]
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -146,4 +205,5 @@ jobs:
             --notes-file tools/release/RELEASE-NOTES.md \
             dist/install.sh dist/release.env dist/SHA256SUMS \
             dist/laya-server-linux-*.tar.gz dist/runtime-sources-*.tar.gz \
-            dist/laya-server-windows-x86_64.zip dist/laya.ps1
+            dist/laya-server-windows-x86_64.zip dist/laya.ps1 \
+            dist/laya-server-macos-aarch64.tar.gz dist/laya-macos.sh
