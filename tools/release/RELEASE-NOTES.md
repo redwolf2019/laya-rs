@@ -20,5 +20,5 @@ macOS Apple Silicon ARM64 候选使用 Shell 的 install/start/stop/update，运
 发布前须更新 docs/validation/installer.md，记录实际运行的宿主机/虚拟机安装、
 重启自启、升级回退、卸载验收。构建工作流通过只证明双架构程序真实推理及静态检查，
 不能代替服务管理器和所有 Linux 发行版的部署验收。
-Windows 发布仍为 draft；转为正式发布前必须在 Windows 11 x64 上复验同一 ZIP 哈希，
+发布工作流先创建 draft；转为正式发布前必须在 Windows 11 x64 上复验同一 ZIP 哈希，
 更新 docs/validation/windows.md。Windows Server CI 的模型门禁不替代该验收。
