@@ -1,8 +1,8 @@
 """Exercise release metadata through the packaging CLI, without learned weights."""
 import io
-import importlib.util
 import os
 from pathlib import Path
+import runpy
 import subprocess
 import sys
 import tarfile
@@ -43,9 +43,7 @@ with tempfile.TemporaryDirectory() as temp:
 print("PASS: macOS/Windows assets and Linux metadata compatibility")
 
 if os.name == "posix":
-    spec = importlib.util.spec_from_file_location("build_macos", ROOT / "tools/release/build-macos.py")
-    build_macos = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(build_macos)
+    build_macos = runpy.run_path(ROOT / "tools/release/build-macos.py")
     with tempfile.TemporaryDirectory() as temp:
         directory = Path(temp)
         package, ort, commands = (directory / name for name in ("package", "ort", "bin"))
@@ -64,7 +62,7 @@ if os.name == "posix":
         for path in (cargo, rustc):
             path.chmod(0o755)
         with patch.dict(os.environ, PATH=str(commands) + os.pathsep + os.environ["PATH"]):
-            build_macos.licenses(package, ort)
+            build_macos["licenses"](package, ort)
         assert (package / "licenses/ORT-LICENSE").read_text() == "ORT test license\n"
         assert (package / "licenses/rust/test.txt").read_text() == "Rust test license\n"
     print("PASS: macOS license collection parses stdout despite metadata diagnostics")
