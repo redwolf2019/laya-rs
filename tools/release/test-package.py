@@ -1,0 +1,35 @@
+"""Exercise release metadata through the packaging CLI, without learned weights."""
+import io
+from pathlib import Path
+import subprocess
+import sys
+import tarfile
+import tempfile
+import zipfile
+
+ROOT = Path(__file__).resolve().parents[2]
+with tempfile.TemporaryDirectory() as temp:
+    out = Path(temp)
+    model_id = subprocess.check_output([sys.executable, str(ROOT / "tools/release/package.py"), "id"], text=True).strip()
+    (out / f"model-{model_id}.tar.gz").write_bytes(b"test-only model archive")
+    for arch in ("x86_64", "aarch64"):
+        with tarfile.open(out / f"laya-server-linux-{arch}.tar.gz", "w:gz") as archive:
+            for name, value in (("VERSION", "v0.1.2"), ("MODEL_ID", model_id)):
+                data = (value + "\n").encode()
+                info = tarfile.TarInfo("./" + name)
+                info.size = len(data)
+                archive.addfile(info, io.BytesIO(data))
+    with zipfile.ZipFile(out / "laya-server-windows-x86_64.zip", "w") as archive:
+        archive.writestr("VERSION", "v0.1.2\n")
+        archive.writestr("MODEL_ID", model_id + "\n")
+    subprocess.run([sys.executable, str(ROOT / "tools/release/package.py"), "release", "--version", "v0.1.2", "--out", str(out)], check=True)
+    metadata = dict(line.split("=", 1) for line in (out / "release.env").read_text().splitlines())
+    assert len(metadata["WINDOWS_x86_64_SHA256"]) == 64
+    assert int(metadata["WINDOWS_x86_64_BYTES"]) > 0
+    assert (out / "laya.ps1").is_file()
+    checksums = (out / "SHA256SUMS").read_text()
+    assert "laya-server-windows-x86_64.zip" in checksums
+    assert "laya.ps1" in checksums
+    # Windows metadata stays separate; Linux installers retain their existing fields.
+    assert "RUNTIME_x86_64_SHA256" in metadata and "RUNTIME_aarch64_SHA256" in metadata
+print("PASS: Windows assets and Linux metadata compatibility")

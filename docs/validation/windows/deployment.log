@@ -1,0 +1,30 @@
+PASS: Install (expected failure=False)
+install_ms=17916
+PASS: Start (expected failure=False)
+cold_start_and_three_type_validation_ms=6276
+PASS: repeated Start rejects conflict and preserves old process
+{"WorkingSet64":616718336,"PeakWorkingSet64":626270208,"TotalProcessorTime":{"Ticks":32343750,"Days":0,"Hours":0,"Milliseconds":234,"Minutes":0,"Seconds":3,"TotalDays":3.743489583333333E-05,"TotalHours":0.00089843749999999993,"TotalMilliseconds":3234.375,"TotalMinutes":0.05390625,"TotalSeconds":3.234375}}
+PASS: wrong PID ownership rejected
+Prepared api candidate; SHA256=B6A4D38E2BE15EFD3C100BC65A036AAA04999CF2A526B7AB36EEAB665F914990
+PASS: asset verification failure preserves old process
+PASS: Stop (expected failure=False)
+PASS: Install (expected failure=False)
+PASS: Start (expected failure=False)
+Prepared version candidate; SHA256=EBFD47A990C3B97007805C9E156D69BECF62C6D12B6AE05D6CBB773215DE53FC
+PASS: Update (expected failure=False)
+PASS: A-to-B version switch and external model reuse without model archive
+PASS: Update (expected failure=False)
+PASS: Update (expected failure=False)
+Prepared startup candidate; SHA256=96A717681CEFFC7075CA913F4850EF40DE0F585BF742F9FB32BE2C56F2D55D32
+PASS: Update (expected failure=True)
+Prepared api candidate; SHA256=BDAFC72CD51CBEEA54FD830F6C99D611577A14388119565B99BB8BF30D4E62C1
+PASS: Update (expected failure=True)
+PASS: Update (expected failure=False)
+PASS: Stop (expected failure=False)
+PASS: Update (expected failure=False)
+PASS: real install/start/stop/update, startup/API rollback, recovery, stopped-state and model/token reuse
+
+STDERR:
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html

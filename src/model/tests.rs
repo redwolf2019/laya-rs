@@ -99,9 +99,8 @@ fn missing_native_library_returns_a_sanitized_error_without_panicking() {
 }
 
 #[test]
-#[ignore = "requires Linux, real #7 bundle and official ORT 1.28 CPU library; see docs/validation/model-loader.md"]
+#[ignore = "requires real #7 bundle and official ORT 1.28 CPU library; see docs/validation/model-loader.md"]
 fn linux_real_model_smoke() {
-    assert_eq!(std::env::consts::OS, "linux", "Linux acceptance only");
     let directory =
         std::env::var_os("LAYA_TEST_MODEL").expect("set LAYA_TEST_MODEL to the real bundle");
     let library =

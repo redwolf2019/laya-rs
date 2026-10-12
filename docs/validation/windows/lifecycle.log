@@ -1,0 +1,9 @@
+PASS: real CPU drain; timed=False queued=503 exit=0; port rebind
+PASS: real CPU timed-file; timed=True queued=503 exit=1; port rebind
+PASS: real CPU timed-ctrl-c; timed=True queued=503 exit=1; port rebind
+PASS: real CPU timed-ctrl-break; timed=True queued=503 exit=1; port rebind
+
+STDERR:
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html

@@ -8,6 +8,28 @@ permissions:
   contents: read
 
 jobs:
+  windows:
+    runs-on: windows-2025
+    defaults:
+      run:
+        shell: powershell
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Install the repository toolchain
+        run: rustup show active-toolchain
+      - run: cargo fmt --check
+      - run: cargo clippy --locked --all-targets -- -D warnings
+      - run: cargo test --locked
+      - run: cargo build --release --locked --target x86_64-pc-windows-msvc
+      - name: PowerShell 5.1 boundaries
+        run: |
+          $os = Get-CimInstance Win32_OperatingSystem
+          $os | Select-Object Caption,Version,BuildNumber | Format-List
+          & scripts/test-windows.ps1
+      - name: Real model validation - NOT RUN
+        if: always()
+        run: |
+          'NOT RUN: real model, tokenizer, native ORT parity and deployment checks; no weights or DLLs. Server CI does not establish Windows 11 support.' | Out-File -Append $env:GITHUB_STEP_SUMMARY
   cli:
     runs-on: ubuntu-24.04
     steps:

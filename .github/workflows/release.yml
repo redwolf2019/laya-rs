@@ -11,6 +11,64 @@ permissions:
   contents: read
 
 jobs:
+  windows:
+    runs-on: windows-2025
+    defaults:
+      run:
+        shell: powershell
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ inputs.version }}
+      - name: Fixed source, toolchain and native MSVC environment
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          if ($env:VERSION -notmatch '^v[0-9]+[A-Za-z0-9.+-]*$' -or (git describe --tags --exact-match) -ne $env:VERSION) { throw 'Source tag mismatch' }
+          rustup show active-toolchain
+          $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -property installationPath
+          cmd /s /c "`"$vs\Common7\Tools\VsDevCmd.bat`" -arch=x64 >nul && set" | ForEach-Object {
+            if ($_ -match '^([^=]+)=(.*)$') { [Environment]::SetEnvironmentVariable($Matches[1],$Matches[2],'Process') }
+          }
+          foreach ($name in @('VCToolsRedistDir','VCToolsVersion','WindowsSDKVersion','PATH','INCLUDE','LIB','LIBPATH')) {
+            "$name=$([Environment]::GetEnvironmentVariable($name,'Process'))" | Out-File -Append -Encoding utf8 $env:GITHUB_ENV
+          }
+      - run: cargo fmt --check
+      - run: cargo clippy --locked --all-targets -- -D warnings
+      - run: cargo test --locked
+      - run: '& scripts/test-windows.ps1'
+      - name: Build verified CPU DLL package and inspect PE dependencies
+        env:
+          VERSION: ${{ inputs.version }}
+        run: '& tools/release/build-windows.ps1 -Version $env:VERSION'
+      - name: Fixed model and real install/update/rollback gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          $id = (Get-FileHash docs/model-manifest.json).Hash.ToLowerInvariant().Substring(0,16)
+          gh release download "model-$id" --pattern "model-$id.tar.gz" --dir dist
+          if ($LASTEXITCODE) { throw 'Model download failed' }
+          $model = Get-Item "dist/model-$id.tar.gz"
+          $program = Get-Item dist/laya-server-windows-x86_64.zip
+          @("VERSION=$env:VERSION","MODEL_ID=$id","MODEL_SHA256=$((Get-FileHash $model.FullName).Hash.ToLowerInvariant())","MODEL_BYTES=$($model.Length)",
+            "WINDOWS_x86_64_SHA256=$((Get-FileHash $program.FullName).Hash.ToLowerInvariant())","WINDOWS_x86_64_BYTES=$($program.Length)") | Set-Content -Encoding ascii dist/release.env
+          & tools/release/smoke-windows.ps1 -ReleaseDirectory dist -Root "$env:TEMP/laya-windows-release"
+          $current = Get-Content "$env:TEMP/laya-windows-release/current.json" -Raw | ConvertFrom-Json
+          $env:LAYA_TEST_MODEL = $current.Model
+          $env:LAYA_TEST_ORT = Join-Path $current.Program onnxruntime.dll
+          cargo test --release --locked --target x86_64-pc-windows-msvc --bin laya-server model::tests::parity::linux_system_one_model_parity -- --ignored --nocapture
+          if ($LASTEXITCODE) { throw 'Fixed model parity failed' }
+          cargo test --release --locked --target x86_64-pc-windows-msvc --bin laya-server model::tests::http::linux_http_model_parity_and_disconnect -- --ignored --nocapture
+          if ($LASTEXITCODE) { throw 'Real HTTP parity failed' }
+          & docs/validation/windows/lifecycle.ps1 -Program $current.Program -Model $current.Model -Work "$env:TEMP/laya-windows-release/logs/lifecycle"
+          if ($LASTEXITCODE) { throw 'Real CPU lifecycle failed' }
+          'Windows Server runner: native CPU gates passed here; publish only after the same ZIP hash passes Windows 11 acceptance.' | Out-File -Append $env:GITHUB_STEP_SUMMARY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: native-windows-x86_64
+          path: dist/laya-server-windows-x86_64.zip
+          if-no-files-found: error
   build:
     strategy:
       fail-fast: false
@@ -62,7 +120,7 @@ jobs:
           if-no-files-found: error
 
   draft:
-    needs: build
+    needs: [build, windows]
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -83,7 +141,9 @@ jobs:
           id=$(python3 tools/release/package.py id)
           gh release download "model-$id" --pattern "model-$id.tar.gz" --dir dist
           python3 tools/release/package.py release --version "$VERSION"
+          python3 tools/release/test-package.py
           gh release create "$VERSION" --verify-tag --draft --title "$VERSION" \
             --notes-file tools/release/RELEASE-NOTES.md \
             dist/install.sh dist/release.env dist/SHA256SUMS \
-            dist/laya-server-linux-*.tar.gz dist/runtime-sources-*.tar.gz
+            dist/laya-server-linux-*.tar.gz dist/runtime-sources-*.tar.gz \
+            dist/laya-server-windows-x86_64.zip dist/laya.ps1

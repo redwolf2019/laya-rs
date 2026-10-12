@@ -1,4 +1,4 @@
-//! Real Linux CPU regression: fixed requests -> Rust sequence -> ORT -> typed answers.
+//! Real native CPU regression: fixed requests -> Rust sequence -> ORT -> typed answers.
 use super::*;
 use laya_server::{
     engine,
@@ -8,9 +8,8 @@ use laya_server::{
 use serde_json::Value;
 
 #[test]
-#[ignore = "requires Linux, verified bundle and ORT; set LAYA_TEST_MODEL / LAYA_TEST_ORT"]
+#[ignore = "requires verified bundle and ORT; set LAYA_TEST_MODEL / LAYA_TEST_ORT"]
 fn linux_system_one_model_parity() {
-    assert_eq!(std::env::consts::OS, "linux");
     let config = Config::from_args([
         "--model".into(),
         std::env::var_os("LAYA_TEST_MODEL").unwrap(),

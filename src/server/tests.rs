@@ -74,6 +74,12 @@ impl Process {
             NEXT.fetch_add(1, std::sync::atomic::Ordering::Relaxed)
         ));
         let mut command = Command::new(std::env::current_exe().unwrap());
+        #[cfg(windows)]
+        {
+            use std::os::windows::process::CommandExt;
+            command.creation_flags(0x10); // Dedicated console; control tests never signal cargo.
+            command.env("LAYA_STOP_FILE", log.with_extension("stop"));
+        }
         if timed {
             command.env("LAYA_TIMED_FIXTURE", "1");
         }
@@ -119,6 +125,7 @@ impl Process {
         }
     }
 
+    #[cfg(unix)]
     fn signal(&self, signal: &str) {
         assert!(
             Command::new("sh")
@@ -133,6 +140,31 @@ impl Process {
                 .unwrap()
                 .success()
         );
+    }
+
+    #[cfg(windows)]
+    fn signal(&self, signal: &str) {
+        if signal == "-TERM" {
+            std::fs::write(self.log.with_extension("stop"), b"").unwrap();
+        } else {
+            assert!(
+                Command::new("powershell.exe")
+                    .args([
+                        "-NoProfile",
+                        "-ExecutionPolicy",
+                        "RemoteSigned",
+                        "-File",
+                        "tools/release/send-console-event.ps1",
+                        "-TargetPid",
+                        &self.child.id().to_string(),
+                        "-Event",
+                        if signal == "-INT" { "0" } else { "1" }
+                    ])
+                    .status()
+                    .unwrap()
+                    .success()
+            );
+        }
     }
 
     async fn exit(&mut self) -> std::process::ExitStatus {
@@ -157,12 +189,16 @@ impl Drop for Process {
         }
         std::fs::remove_file(&self.log).unwrap();
         std::fs::remove_file(self.log.with_extension("stdout")).unwrap();
+        #[cfg(windows)]
+        if self.log.with_extension("stop").exists() {
+            std::fs::remove_file(self.log.with_extension("stop")).unwrap();
+        }
     }
 }
 
 #[tokio::test]
 async fn signals_drain_idle_process_and_allow_restart() {
-    for signal in ["-TERM", "-INT"] {
+    for signal in signals() {
         let mut process = Process::start(false).await;
         assert_eq!(http::get(process.address, "/readyz").await.0, 200);
         process.signal(signal);
@@ -292,11 +328,22 @@ async fn check_exit(process: &mut Process, force: bool) {
 
 #[tokio::test]
 async fn signals_drain_or_terminate_actual_work_and_clear_queue() {
-    for signal in ["-TERM", "-INT"] {
+    for signal in signals() {
         work_scenario(signal, false, false, false).await;
         work_scenario(signal, true, false, false).await;
         work_scenario(signal, true, true, false).await;
         work_scenario(signal, true, false, true).await;
         work_scenario(signal, true, true, true).await;
+    }
+}
+
+fn signals() -> &'static [&'static str] {
+    #[cfg(unix)]
+    {
+        &["-TERM", "-INT"]
+    }
+    #[cfg(windows)]
+    {
+        &["-TERM", "-INT", "-BREAK"]
     }
 }

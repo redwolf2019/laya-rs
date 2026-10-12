@@ -1,4 +1,4 @@
-//! Real Linux HTTP acceptance; synthetic route tests do not prove model parity.
+//! Real native HTTP acceptance; synthetic route tests do not prove model parity.
 use super::*;
 use laya_server::{
     api, engine,
@@ -36,9 +36,8 @@ impl tracing::Subscriber for NativeLogs {
 mod wire;
 
 #[test]
-#[ignore = "Linux real bundle/ORT; set LAYA_TEST_MODEL and LAYA_TEST_ORT"]
+#[ignore = "Native real bundle/ORT; set LAYA_TEST_MODEL and LAYA_TEST_ORT"]
 fn linux_http_model_parity_and_disconnect() {
-    assert_eq!(std::env::consts::OS, "linux");
     let logs = std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
     tracing::subscriber::set_global_default(NativeLogs(logs.clone())).unwrap();
     let config = Config::from_args([

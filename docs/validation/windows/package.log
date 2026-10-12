@@ -1,0 +1,22 @@
+
+Algorithm       Hash                                                                   Path
+---------       ----                                                                   ----
+SHA256          D28A5F51D68276FC6C603EED8418CF179809A57910C0F6CC18077EA72FE924FE       C:\Users\devts\laya-issue20\r...
+{
+    "Name":  "laya-server-windows-x86_64.zip",
+    "Length":  9290375
+}
+
+
+
+STDERR:
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+   Compiling laya-server v0.1.1 (C:\Users\devts\laya-issue20\repo)
+warning: linker stdout: 正在创建库 C:\Users\devts\laya-issue20\repo\target\x86_64-pc-windows-msvc\release\deps\laya_server.lib 和对象 C:\Users\devts\laya-issue20\repo\target\x86_64-pc-windows-msvc\release\deps\laya_server.exp
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `laya-server` (bin "laya-server") generated 1 warning
+    Finished `release` profile [optimized] target(s) in 4.47s

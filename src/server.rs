@@ -1,4 +1,4 @@
-//! HTTP and scheduler lifetime: SIGINT/SIGTERM close admission, drain actual work,
+//! HTTP and scheduler lifetime: platform stop notifications close admission, drain actual work,
 //! then close connections. Grace expiry terminates the process with unfinished counts.
 use crate::{scheduler::Scheduler, system_one::Limits};
 use std::{error::Error, fmt, io, time::Duration};
@@ -31,7 +31,7 @@ impl Error for ServiceError {
     }
 }
 
-/// Drive HTTP and every blocking task until a Unix signal or resource failure.
+/// Drive HTTP and every blocking task until a platform stop notification or resource failure.
 /// # Errors
 /// Listener/signal I/O failures or failed scheduler tasks. Grace expiry exits 1.
 pub async fn serve(
@@ -42,11 +42,6 @@ pub async fn serve(
     api_token: crate::api::ApiToken,
 ) -> Result<(), ServiceError> {
     use std::future::IntoFuture;
-    use tokio::signal::unix::{SignalKind, signal};
-    let mut terminate = signal(SignalKind::terminate())
-        .map_err(|e| ServiceError::Io("cannot register SIGTERM", e))?;
-    let mut interrupt = signal(SignalKind::interrupt())
-        .map_err(|e| ServiceError::Io("cannot register SIGINT", e))?;
     let client = scheduler.client();
     let (stop, stopped) = tokio::sync::oneshot::channel::<()>();
     let mut http = std::pin::pin!(
@@ -64,8 +59,7 @@ pub async fn serve(
     tracing::info!(event = "http_started");
     let mut http_done = false;
     let result = tokio::select! {
-        _ = terminate.recv() => Ok(()),
-        _ = interrupt.recv() => Ok(()),
+        result = stop_notification() => result,
         result = &mut http => {
             http_done = true;
             result.map_err(|e| ServiceError::Io("HTTP server failed", e)).and(Err(ServiceError::Stopped))
@@ -81,6 +75,68 @@ pub async fn serve(
     );
     drain(scheduler, &client, http, http_done, stop, grace).await?;
     result
+}
+
+#[cfg(unix)]
+async fn stop_notification() -> Result<(), ServiceError> {
+    use tokio::signal::unix::{SignalKind, signal};
+    let mut terminate = signal(SignalKind::terminate())
+        .map_err(|e| ServiceError::Io("cannot register SIGTERM", e))?;
+    let mut interrupt = signal(SignalKind::interrupt())
+        .map_err(|e| ServiceError::Io("cannot register SIGINT", e))?;
+    tokio::select! {
+        _ = terminate.recv() => Ok(()),
+        _ = interrupt.recv() => Ok(()),
+    }
+}
+
+#[cfg(windows)]
+async fn stop_notification() -> Result<(), ServiceError> {
+    let mut interrupt = tokio::signal::windows::ctrl_c()
+        .map_err(|e| ServiceError::Io("cannot register Ctrl+C", e))?;
+    let mut terminate = tokio::signal::windows::ctrl_break()
+        .map_err(|e| ServiceError::Io("cannot register Ctrl+Break", e))?;
+    #[link(name = "Kernel32")]
+    unsafe extern "system" {
+        fn SetConsoleCtrlHandler(
+            handler: Option<unsafe extern "system" fn(u32) -> i32>,
+            add: i32,
+        ) -> i32;
+    }
+    // A launcher can pass down the ignore-Ctrl+C flag. The null handler only
+    // clears that flag; Tokio's registered callback continues to own delivery.
+    // SAFETY: null/false is the documented toggle and borrows no Rust memory.
+    if unsafe { SetConsoleCtrlHandler(None, 0) } == 0 {
+        return Err(ServiceError::Io(
+            "cannot enable Ctrl+C",
+            io::Error::last_os_error(),
+        ));
+    }
+    tokio::select! {
+        _ = interrupt.recv() => Ok(()),
+        _ = terminate.recv() => Ok(()),
+        result = stop_file() => result,
+    }
+}
+
+#[cfg(windows)]
+async fn stop_file() -> Result<(), ServiceError> {
+    let Some(path) = std::env::var_os("LAYA_STOP_FILE") else {
+        return std::future::pending().await;
+    };
+    loop {
+        match std::fs::metadata(&path) {
+            Ok(_) => return Ok(()),
+            Err(error) if error.kind() == io::ErrorKind::NotFound => {}
+            Err(error) => {
+                return Err(ServiceError::Io(
+                    "cannot read local stop notification",
+                    error,
+                ));
+            }
+        }
+        tokio::time::sleep(Duration::from_millis(100)).await;
+    }
 }
 
 async fn drain(

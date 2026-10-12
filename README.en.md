@@ -68,6 +68,7 @@ For an existing JEV integration, start with your business question definitions, 
 | [One-command installation](#one-command-installation--uninstallation-linux-x86_64-arm64) | Linux x86_64 / ARM64 host or virtual machine | Interactive terminal, root or sudo; downloads the program, runtime libraries, and model automatically |
 | [Docker deployment](#docker-deployment-linux-arm64-cpu) | Linux ARM64 container | Docker and the fixed model bundle; build the image locally |
 | [Build from source](#build-and-cli) | Linux development environment | Rust toolchain, fixed model bundle, and ONNX Runtime CPU shared library |
+| [Windows portable build](docs/windows.md) | Windows 11 x64, CPU | PowerShell 5.1, fixed model and VC++ x64 runtime; candidate releases and validation scope in the guide |
 
 Running the service requires no Python, Node.js, PyTorch, or GPU. ONNX Runtime is a native dependency;
 the Rust implementation refers to the application code. Exporting the model yourself requires a separate Python/PyTorch preparation environment.

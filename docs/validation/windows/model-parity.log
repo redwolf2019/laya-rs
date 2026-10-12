@@ -1,0 +1,272 @@
+
+running 1 test
+PASS: en-choice.json, slot=0
+PASS: en-noul.json, slot=1
+PASS: en-score.json, slot=0
+PASS: huge-integer.json, slot=1
+PASS: json-order-numbers.json, slot=0
+PASS: long-padding.json, slot=1
+PASS: marker.json, slot=0
+PASS: mixed-16.json, slot=1
+PASS: mixed-6.json, slot=0
+PASS: normalization.json, slot=1
+PASS: options-10.json, slot=0
+PASS: options-11.json, slot=1
+PASS: options-2.json, slot=0
+PASS: options-3.json, slot=1
+PASS: options-32.json, slot=0
+PASS: options-5.json, slot=1
+PASS: options-6.json, slot=0
+PASS: scalars.json, slot=1
+PASS: zh-choice.json, slot=0
+PASS: zh-noul.json, slot=1
+PASS: zh-score.json, slot=0
+PASS: artificial native shape/NaN outputs rejected; same probe Session recovers
+PASS: typed sequence/native failures; same real Session recovers without reloading
+test model::tests::parity::linux_system_one_model_parity ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 24.50s
+
+
+running 1 test
+PASS HTTP/engine/official: "en-choice.json"
+PASS HTTP/engine/official: "en-noul.json"
+PASS HTTP/engine/official: "en-score.json"
+PASS HTTP/engine/official: "huge-integer.json"
+PASS HTTP/engine/official: "json-order-numbers.json"
+PASS HTTP/engine/official: "long-padding.json"
+PASS HTTP/engine/official: "marker.json"
+PASS HTTP/engine/official: "mixed-16.json"
+PASS HTTP/engine/official: "mixed-6.json"
+PASS HTTP/engine/official: "normalization.json"
+PASS HTTP/engine/official: "options-10.json"
+PASS HTTP/engine/official: "options-11.json"
+PASS HTTP/engine/official: "options-2.json"
+PASS HTTP/engine/official: "options-3.json"
+PASS HTTP/engine/official: "options-32.json"
+PASS HTTP/engine/official: "options-5.json"
+PASS HTTP/engine/official: "options-6.json"
+PASS HTTP/engine/official: "scalars.json"
+PASS HTTP/engine/official: "zh-choice.json"
+PASS HTTP/engine/official: "zh-noul.json"
+PASS HTTP/engine/official: "zh-score.json"
+PASS HTTP/engine/official: "mixed-6.json"
+PASS HTTP/engine/official: "mixed-6.json"
+PASS HTTP/engine/official: "mixed-6.json"
+PASS HTTP/engine/official: "mixed-6.json"
+PASS: chunked body >1 MiB rejected before terminal chunk
+TCP closed during real work: inflight=1
+PASS: disconnected CPU work completed and owner reaped it
+PASS: real native inference failure returns a static 500 envelope
+PASS HTTP/engine/official: "mixed-6.json"
+METRICS after real runs:
+# HELP laya_requests System One HTTP requests.
+# TYPE laya_requests counter
+laya_requests_total 29
+# HELP laya_request_duration_seconds HTTP time including queue.
+# TYPE laya_request_duration_seconds histogram
+laya_request_duration_seconds_sum 31.595103700000004
+laya_request_duration_seconds_count 29
+laya_request_duration_seconds_bucket{le="0.005"} 3
+laya_request_duration_seconds_bucket{le="0.01"} 3
+laya_request_duration_seconds_bucket{le="0.025"} 3
+laya_request_duration_seconds_bucket{le="0.05"} 3
+laya_request_duration_seconds_bucket{le="0.1"} 8
+laya_request_duration_seconds_bucket{le="0.25"} 17
+laya_request_duration_seconds_bucket{le="0.5"} 19
+laya_request_duration_seconds_bucket{le="1.0"} 22
+laya_request_duration_seconds_bucket{le="2.5"} 26
+laya_request_duration_seconds_bucket{le="5.0"} 28
+laya_request_duration_seconds_bucket{le="10.0"} 28
+laya_request_duration_seconds_bucket{le="30.0"} 29
+laya_request_duration_seconds_bucket{le="60.0"} 29
+laya_request_duration_seconds_bucket{le="120.0"} 29
+laya_request_duration_seconds_bucket{le="+Inf"} 29
+# HELP laya_inference_duration_seconds Actual Session run time.
+# TYPE laya_inference_duration_seconds histogram
+laya_inference_duration_seconds_sum 27.8675528
+laya_inference_duration_seconds_count 28
+laya_inference_duration_seconds_bucket{le="0.005"} 1
+laya_inference_duration_seconds_bucket{le="0.01"} 1
+laya_inference_duration_seconds_bucket{le="0.025"} 1
+laya_inference_duration_seconds_bucket{le="0.05"} 1
+laya_inference_duration_seconds_bucket{le="0.1"} 6
+laya_inference_duration_seconds_bucket{le="0.25"} 15
+laya_inference_duration_seconds_bucket{le="0.5"} 17
+laya_inference_duration_seconds_bucket{le="1.0"} 24
+laya_inference_duration_seconds_bucket{le="2.5"} 26
+laya_inference_duration_seconds_bucket{le="5.0"} 27
+laya_inference_duration_seconds_bucket{le="10.0"} 27
+laya_inference_duration_seconds_bucket{le="30.0"} 28
+laya_inference_duration_seconds_bucket{le="60.0"} 28
+laya_inference_duration_seconds_bucket{le="120.0"} 28
+laya_inference_duration_seconds_bucket{le="+Inf"} 28
+# HELP laya_errors Failed HTTP requests by terminal reason.
+# TYPE laya_errors counter
+laya_errors_total{reason="client_cancelled"} 1
+laya_errors_total{reason="inference_failed"} 1
+laya_errors_total{reason="payload_too_large"} 1
+# HELP laya_queue_size Waiting requests.
+# TYPE laya_queue_size gauge
+laya_queue_size 0
+# HELP laya_inference_inflight Occupied execution slots.
+# TYPE laya_inference_inflight gauge
+laya_inference_inflight 0
+# EOF
+
+PASS: 21 HTTP/engine/official fixtures, 4 concurrent repeats, chunked 413, TCP disconnect, recovery, all tasks reaped
+PASS: native log fields contain only a static event and typed severity
+test model::tests::http::linux_http_model_parity_and_disconnect ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 52.10s
+
+
+running 1 test
+before_load: {"WorkingSet64":5873664,"PeakWorkingSet64":5873664,"TotalProcessorTime":{"Ticks":0,"Days":0,"Hours":0,"Milliseconds":0,"Minutes":0,"Seconds":0,"TotalDays":0,"TotalHours":0,"TotalMilliseconds":0,"TotalMinutes":0,"TotalSeconds":0}}
+
+loaded: {"WorkingSet64":614592512,"PeakWorkingSet64":619368448,"TotalProcessorTime":{"Ticks":22812500,"Days":0,"Hours":0,"Milliseconds":281,"Minutes":0,"Seconds":2,"TotalDays":2.6403356481481481E-05,"TotalHours":0.00063368055555555552,"TotalMilliseconds":2281.25,"TotalMinutes":0.038020833333333337,"TotalSeconds":2.28125}}
+
+stress_elapsed_ms=4504
+after_stress: {"WorkingSet64":617648128,"PeakWorkingSet64":641667072,"TotalProcessorTime":{"Ticks":114687500,"Days":0,"Hours":0,"Milliseconds":468,"Minutes":0,"Seconds":11,"TotalDays":0.00013274016203703703,"TotalHours":0.0031857638888888886,"TotalMilliseconds":11468.75,"TotalMinutes":0.19114583333333335,"TotalSeconds":11.46875}}
+
+run_event: ns=0 id=1 entering=true active=1
+run_event: ns=270811200 id=1 entering=false active=0
+run_event: ns=271233200 id=2 entering=true active=1
+run_event: ns=540550800 id=2 entering=false active=0
+run_event: ns=540953300 id=3 entering=true active=1
+run_event: ns=810492200 id=3 entering=false active=0
+run_event: ns=810865700 id=4 entering=true active=1
+run_event: ns=1542115600 id=4 entering=false active=0
+run_event: ns=1542733600 id=5 entering=true active=1
+run_event: ns=2281994200 id=5 entering=false active=0
+run_event: ns=2282547500 id=6 entering=true active=1
+run_event: ns=3022823600 id=6 entering=false active=0
+run_event: ns=3023461000 id=7 entering=true active=1
+run_event: ns=3762766200 id=7 entering=false active=0
+run_event: ns=3763355100 id=8 entering=true active=1
+run_event: ns=4503668800 id=8 entering=false active=0
+PASS: requests=8 native_runs=8 observed_max=1 configured_slots=1 threads_per_session=2 inter_op=1
+test model::tests::concurrency::linux_scheduler_concurrency ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 6.91s
+
+
+running 1 test
+before_load: {"WorkingSet64":5890048,"PeakWorkingSet64":5890048,"TotalProcessorTime":{"Ticks":0,"Days":0,"Hours":0,"Milliseconds":0,"Minutes":0,"Seconds":0,"TotalDays":0,"TotalHours":0,"TotalMilliseconds":0,"TotalMinutes":0,"TotalSeconds":0}}
+
+loaded: {"WorkingSet64":1131270144,"PeakWorkingSet64":1136766976,"TotalProcessorTime":{"Ticks":34218750,"Days":0,"Hours":0,"Milliseconds":421,"Minutes":0,"Seconds":3,"TotalDays":3.960503472222222E-05,"TotalHours":0.00095052083333333327,"TotalMilliseconds":3421.875,"TotalMinutes":0.05703125,"TotalSeconds":3.421875}}
+
+stress_elapsed_ms=2424
+after_stress: {"WorkingSet64":1135898624,"PeakWorkingSet64":1183956992,"TotalProcessorTime":{"Ticks":134218750,"Days":0,"Hours":0,"Milliseconds":421,"Minutes":0,"Seconds":13,"TotalDays":0.00015534577546296295,"TotalHours":0.003728298611111111,"TotalMilliseconds":13421.875,"TotalMinutes":0.22369791666666666,"TotalSeconds":13.421875}}
+
+run_event: ns=0 id=1 entering=true active=1
+run_event: ns=88800 id=2 entering=true active=2
+run_event: ns=278355700 id=2 entering=false active=1
+run_event: ns=278714600 id=3 entering=true active=2
+run_event: ns=284152200 id=1 entering=false active=1
+run_event: ns=284452800 id=4 entering=true active=2
+run_event: ns=918237600 id=3 entering=false active=1
+run_event: ns=918811100 id=5 entering=true active=2
+run_event: ns=934643500 id=4 entering=false active=1
+run_event: ns=935267800 id=6 entering=true active=2
+run_event: ns=1669211700 id=5 entering=false active=1
+run_event: ns=1669845200 id=7 entering=true active=2
+run_event: ns=1681431800 id=6 entering=false active=1
+run_event: ns=1681957700 id=8 entering=true active=2
+run_event: ns=2413811800 id=7 entering=false active=1
+run_event: ns=2422973900 id=8 entering=false active=0
+PASS: requests=8 native_runs=8 observed_max=2 configured_slots=2 threads_per_session=2 inter_op=1
+test model::tests::concurrency::linux_scheduler_concurrency ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 5.33s
+
+
+running 3 tests
+test real_tokenizer_matches_all_official_sequence_fixtures ... ok
+test maximum_request_resources_preserve_every_question_and_option ... ok
+test real_tokenizer_matches_synthetic_budget_oracle ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 1.52s
+
+
+STDERR:
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+   Compiling laya-server v0.1.1 (C:\Users\devts\laya-issue20\repo)
+warning: linker stdout: 正在创建库 C:\Users\devts\laya-issue20\repo\target\x86_64-pc-windows-msvc\release\deps\laya_server-322d76a8c5abd8d7.lib 和对象 C:\Users\devts\laya-issue20\repo\target\x86_64-pc-windows-msvc\release\deps\laya_server-322d76a8c5abd8d7.exp
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `laya-server` (bin "laya-server" test) generated 1 warning
+    Finished `release` profile [optimized] target(s) in 5.46s
+     Running unittests src\main.rs (target\x86_64-pc-windows-msvc\release\deps\laya_server-322d76a8c5abd8d7.exe)
+warning: linker stdout: 正在创建库 C:\Users\devts\laya-issue20\repo\target\x86_64-pc-windows-msvc\release\deps\laya_server-322d76a8c5abd8d7.lib 和对象 C:\Users\devts\laya-issue20\repo\target\x86_64-pc-windows-msvc\release\deps\laya_server-322d76a8c5abd8d7.exp
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `laya-server` (bin "laya-server" test) generated 1 warning
+    Finished `release` profile [optimized] target(s) in 0.10s
+     Running unittests src\main.rs (target\x86_64-pc-windows-msvc\release\deps\laya_server-322d76a8c5abd8d7.exe)
+warning: linker stdout: 正在创建库 C:\Users\devts\laya-issue20\repo\target\x86_64-pc-windows-msvc\release\deps\laya_server-322d76a8c5abd8d7.lib 和对象 C:\Users\devts\laya-issue20\repo\target\x86_64-pc-windows-msvc\release\deps\laya_server-322d76a8c5abd8d7.exp
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `laya-server` (bin "laya-server" test) generated 1 warning
+    Finished `release` profile [optimized] target(s) in 0.10s
+     Running unittests src\main.rs (target\x86_64-pc-windows-msvc\release\deps\laya_server-322d76a8c5abd8d7.exe)
+warning: linker stdout: 正在创建库 C:\Users\devts\laya-issue20\repo\target\x86_64-pc-windows-msvc\release\deps\laya_server-322d76a8c5abd8d7.lib 和对象 C:\Users\devts\laya-issue20\repo\target\x86_64-pc-windows-msvc\release\deps\laya_server-322d76a8c5abd8d7.exp
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `laya-server` (bin "laya-server" test) generated 1 warning
+    Finished `release` profile [optimized] target(s) in 0.10s
+     Running unittests src\main.rs (target\x86_64-pc-windows-msvc\release\deps\laya_server-322d76a8c5abd8d7.exe)
+   Compiling laya-server v0.1.1 (C:\Users\devts\laya-issue20\repo)
+warning: linker stdout: 正在创建库 C:\Users\devts\laya-issue20\repo\target\x86_64-pc-windows-msvc\release\deps\sequence-5afdd0ed87e8a795.lib 和对象 C:\Users\devts\laya-issue20\repo\target\x86_64-pc-windows-msvc\release\deps\sequence-5afdd0ed87e8a795.exp
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `laya-server` (test "sequence") generated 1 warning
+warning: linker stdout: 正在创建库 C:\Users\devts\laya-issue20\repo\target\x86_64-pc-windows-msvc\release\deps\laya_server.lib 和对象 C:\Users\devts\laya-issue20\repo\target\x86_64-pc-windows-msvc\release\deps\laya_server.exp
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `laya-server` (bin "laya-server") generated 1 warning
+    Finished `release` profile [optimized] target(s) in 4.50s
+     Running tests\sequence.rs (target\x86_64-pc-windows-msvc\release\deps\sequence-5afdd0ed87e8a795.exe)
+checking "en-choice.json"
+checking "en-noul.json"
+checking "en-score.json"
+checking "huge-integer.json"
+checking "json-order-numbers.json"
+checking "long-padding.json"
+checking "marker.json"
+checking "mixed-16.json"
+checking "mixed-6.json"
+checking "normalization.json"
+checking "options-10.json"
+checking "options-11.json"
+checking "options-2.json"
+checking "options-3.json"
+checking "options-32.json"
+checking "options-5.json"
+checking "options-6.json"
+checking "scalars.json"
+checking "zh-choice.json"
+checking "zh-noul.json"
+checking "zh-score.json"
+checking empty-state
+checking short-state
+checking room-zero
+checking room-one
+checking last-marker-kept
+checking last-marker-out-of-bounds
+checking all-markers-lost
+checking head-0
+checking head-15
+checking head-16
+checking head-23
+checking head-24
+checking head-113
+checking head-114

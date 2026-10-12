@@ -16,7 +16,7 @@ Sequence Builder 与五个批处理输入已实现并通过固定 tokenizer 对�
 
 ## 1. 目标与边界
 
-构建名为 `laya-server` 的 Rust HTTP 服务，在 Linux CPU 上加载一个共享的
+构建名为 `laya-server` 的 Rust HTTP 服务，在 Linux 或 Windows 11 x64 CPU 上加载一个共享的
 Laya multilingual 模型，为多个客户端回答类型化问题。
 
 目标能力：
@@ -31,6 +31,11 @@ Laya multilingual 模型，为多个客户端回答类型化问题。
 仅包含 Rust。优先使用经核验的现成 ONNX bundle；若没有满足固定参考版本的
 multilingual bundle，允许在独立的模型准备环节进行一次性离线导出。
 Python 仅可用于该准备环节和开发期参考对照，不进入服务构建、启动或推理流程。
+
+#20 的 Windows 最低系统已按用户指令改为 Windows 11 x64。
+原生 MSVC 便携程序和 PowerShell 5.1 入口、升级回退及发布门禁见
+[Windows 操作说明](windows.md)；实测范围见 [Windows 验收](validation/windows.md)。
+Windows 沿用同一固定模型、CPU provider、HTTP/鉴权契约和 drain，不引入 GPU、SCM 或自启。
 
 Laya 的职责是有限答案空间上的判断，不是聊天或文本生成，也不替代通用 LLM。
 典型用途包括工具路由、工单分类、任务风险评分和是否升级到人工或更大模型的判断。

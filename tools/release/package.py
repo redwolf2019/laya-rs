@@ -7,6 +7,7 @@ from pathlib import Path
 import re
 import shutil
 import tarfile
+import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -56,9 +57,20 @@ def release(version, out):
             if archive.extractfile("./MODEL_ID").read().decode().strip() != model_id():
                 raise ValueError(f"Wrong model version: {arch}")
         lines += [f"RUNTIME_{arch}_SHA256={digest(path)}", f"RUNTIME_{arch}_BYTES={path.stat().st_size}"]
+    windows = out / "laya-server-windows-x86_64.zip"
+    if windows.exists():
+        with zipfile.ZipFile(windows) as archive:
+            if archive.read("VERSION").decode().strip() != version:
+                raise ValueError("Wrong Windows program version")
+            if archive.read("MODEL_ID").decode().strip() != model_id():
+                raise ValueError("Wrong Windows model version")
+        lines += [f"WINDOWS_x86_64_SHA256={digest(windows)}", f"WINDOWS_x86_64_BYTES={windows.stat().st_size}"]
     (out / "release.env").write_text("\n".join(lines) + "\n")
     shutil.copyfile(ROOT / "scripts/install.sh", out / "install.sh")
     assets = [out / "release.env", out / "install.sh"]
+    if windows.exists():
+        shutil.copyfile(ROOT / "scripts/laya.ps1", out / "laya.ps1")
+        assets += [windows, out / "laya.ps1"]
     assets += sorted(out.glob("laya-server-linux-*.tar.gz"))
     assets += sorted(out.glob("runtime-sources-*.tar.gz"))
     (out / "SHA256SUMS").write_text("".join(f"{digest(p)}  {p.name}\n" for p in assets))

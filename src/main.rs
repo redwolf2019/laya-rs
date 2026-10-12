@@ -12,7 +12,8 @@ Usage: laya-server --model DIR [OPTIONS]
 Pass each option and its value as separate arguments.
 
   --model DIR               Required local multilingual bundle directory
-  --ort-library FILE        Local ORT 1.28 CPU library [default: libonnxruntime.so]
+  --ort-library FILE        Local ORT 1.28 CPU library
+                            Unix: libonnxruntime.so; Windows: executable directory/onnxruntime.dll
   --listen IP:PORT          Listen address [default: 0.0.0.0:8080]; nonzero port
   --threads N               ORT intra-op threads [default: 8]; 1..=2147483647
   --inter-op-threads N      ORT inter-op threads [default: 1]; 1..=2147483647

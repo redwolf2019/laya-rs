@@ -254,8 +254,20 @@ Tokenizer 和独立 CPU Sessions，并逐槽执行固定 `tensor-L2` 探针。�
 除鉴权密钥从 `LAYA_API_TOKEN` 环境变量读取外，运行配置使用 CLI，不实现第二套 YAML。
 `--model` 必须提供本地 bundle 目录；
 `--listen` 默认 `0.0.0.0:8080`，必须可解析为 IP 和非零端口。
-`--ort-library` 指定本地 ORT CPU 动态库文件，默认 `libonnxruntime.so`；建议使用绝对路径。
+`--ort-library` 指定本地 ORT CPU 动态库文件；Unix 默认 `libonnxruntime.so`，
+Windows 默认可执行程序所在目录的 `onnxruntime.dll`，不依赖工作目录或全局 PATH。
+显式路径覆盖默认值，建议使用绝对路径。
 这是 #8 加载器新增的 CLI 路径参数；不从环境变量选择运行库，不在启动时下载。
+
+Windows 11 x64 便携部署使用 PowerShell 5.1 的 `Install/Start/Stop/Update` 入口。
+Windows ORT Session 关闭图优化，保留固定权重和原数值阈值：默认图优化在本次 x64 主机
+使 `long-padding` 的官方舍入 Score 不一致；关闭后 21 请求完整对照通过。Linux 设置不变。
+脚本的线程起点为 intra=2、inter=1、slots=1、grace=120 秒；通用 CLI 默认值不变。
+Ctrl+C、Ctrl+Break 及脚本的用户私有停止文件通知共用准入关闭和 drain。
+仅 Windows 读取 `LAYA_STOP_FILE`：文件出现即停止，路径由脚本在私有部署目录中按实例生成；
+直接运行 exe 可以不设置该变量。目录权限由创建通知的部署方负责。
+窗口关闭、注销、关机和外部强杀不承诺完整 grace。具体安装与恢复契约见
+[Windows 操作说明](windows.md)。本次 #20 的最低系统由用户改为 Windows 11 x64。
 
 | CLI 参数 | 默认 | 有效性 / 计量边界 |
 | --- | ---: | --- |

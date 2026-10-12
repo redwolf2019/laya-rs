@@ -1,4 +1,4 @@
-//! Independent Linux processes for N=1/2: actual Session::run intervals and RSS.
+//! Independent native processes for N=1/2: actual Session::run intervals and RSS.
 use super::*;
 use laya_server::{
     scheduler::{Client, Scheduler},
@@ -50,6 +50,7 @@ impl Subscriber for Observer {
     }
 }
 
+#[cfg(target_os = "linux")]
 fn rss(stage: &str) {
     for line in std::fs::read_to_string("/proc/self/status")
         .unwrap()
@@ -61,10 +62,28 @@ fn rss(stage: &str) {
     }
 }
 
+#[cfg(windows)]
+fn rss(stage: &str) {
+    let script = format!(
+        "Get-Process -Id {} | Select-Object WorkingSet64,PeakWorkingSet64,TotalProcessorTime | ConvertTo-Json -Compress",
+        std::process::id()
+    );
+    let output = std::process::Command::new("powershell.exe")
+        .args(["-NoProfile", "-Command", &script])
+        .output()
+        .unwrap();
+    assert!(output.status.success());
+    println!("{stage}: {}", String::from_utf8(output.stdout).unwrap());
+}
+
+#[cfg(not(any(windows, target_os = "linux")))]
+fn rss(stage: &str) {
+    println!("{stage}: resource measurement unavailable on this platform");
+}
+
 #[test]
-#[ignore = "Linux real bundle/ORT; LAYA_TEST_CONCURRENCY=1 or 2; run in separate processes"]
+#[ignore = "Native real bundle/ORT; LAYA_TEST_CONCURRENCY=1 or 2; run in separate processes"]
 fn linux_scheduler_concurrency() {
-    assert_eq!(std::env::consts::OS, "linux");
     let config = test_config();
     assert!([1, 2].contains(&config.max_concurrency));
     rss("before_load");

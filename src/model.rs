@@ -178,7 +178,12 @@ fn initialize_runtime(path: &Path) -> Result<(), Error> {
 
 fn create_session(config: &Config) -> Result<Session, Error> {
     let build = || -> ort::Result<Session> {
-        Session::builder()?
+        let builder = Session::builder()?;
+        // Windows ORT optimizations cross long-padding's official Score rounding boundary.
+        #[cfg(windows)]
+        let builder = builder
+            .with_optimization_level(ort::session::builder::GraphOptimizationLevel::Disable)?;
+        builder
             .with_no_environment_execution_providers()?
             .with_execution_providers([ort::ep::CPU::default().build().error_on_failure()])?
             .with_intra_threads(config.threads)?

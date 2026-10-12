@@ -35,7 +35,7 @@ impl Config {
         let limits = Limits::default();
         let mut config = Self {
             model: PathBuf::new(),
-            ort_library: PathBuf::from("libonnxruntime.so"),
+            ort_library: default_ort_library()?,
             listen: SocketAddr::from((Ipv4Addr::UNSPECIFIED, 8080)),
             threads: 8,
             inter_op_threads: 1,
@@ -96,6 +96,20 @@ impl Config {
     }
 }
 
+#[cfg(windows)]
+fn default_ort_library() -> Result<PathBuf, &'static str> {
+    let executable = std::env::current_exe().map_err(|_| "cannot locate executable directory")?;
+    let directory = executable
+        .parent()
+        .ok_or("cannot locate executable directory")?;
+    Ok(directory.join("onnxruntime.dll"))
+}
+
+#[cfg(not(windows))]
+fn default_ort_library() -> Result<PathBuf, &'static str> {
+    Ok(PathBuf::from("libonnxruntime.so"))
+}
+
 fn integer(value: &OsStr, minimum: usize) -> Result<usize, &'static str> {
     value
         .to_str()
@@ -134,7 +148,17 @@ mod tests {
     fn defaults_match_the_frozen_cli_contract() {
         let config = parse(&["--model", "."]);
         assert_eq!(config.model, PathBuf::from("."));
+        #[cfg(not(windows))]
         assert_eq!(config.ort_library, PathBuf::from("libonnxruntime.so"));
+        #[cfg(windows)]
+        assert_eq!(
+            config.ort_library,
+            std::env::current_exe()
+                .unwrap()
+                .parent()
+                .unwrap()
+                .join("onnxruntime.dll")
+        );
         assert_eq!(config.listen.to_string(), "0.0.0.0:8080");
         assert_eq!(config.threads, 8);
         assert_eq!(config.inter_op_threads, 1);
