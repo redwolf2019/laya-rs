@@ -35,6 +35,8 @@ Python 仅可用于该准备环节和开发期参考对照，不进入服务构�
 #20 的 Windows 最低系统已按用户指令改为 Windows 11 x64。
 原生 MSVC 便携程序和 PowerShell 5.1 入口、升级回退及发布门禁见
 [Windows 操作说明](windows.md)；实测范围见 [Windows 验收](validation/windows.md)。
+普通用户、干净环境/VC-UAC 及公开候选验收按用户要求暂缓，
+#20 按已完成的 Windows 11 实现和现有实测收口。
 Windows 沿用同一固定模型、CPU provider、HTTP/鉴权契约和 drain，不引入 GPU、SCM 或自启。
 
 Laya 的职责是有限答案空间上的判断，不是聊天或文本生成，也不替代通用 LLM。
