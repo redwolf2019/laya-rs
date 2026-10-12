@@ -121,3 +121,37 @@ code-review 基点 `141bba9483029ce8222f0e9c138c9702e96a55a8`：Standards 0 项�
 Spec 0 项必须修复发现；Spec 独立执行普通后处理 10 passed。
 Standards 复核了 manifest 工具和证据摘要；两轴均为固定实现/样例范围的审查，
 不外推其他硬件或全输入空间。
+
+## 2026-10-12：FP32 求和舍入回归
+
+`[已验证/HIGH，人工 logits 与 Linux ARM64 范围]` 全仓库审查发现两组 32 项人工
+logits 的 Score 跨过四位舍入边界。相同输入在固定官方 API 后处理 AST、
+CPython 3.11.16 / NumPy 2.3.3 中分别得到 `21.2359` 和 `14.3144`，旧 Rust
+实现得到 `21.2360` 和 `14.3143`。输入及官方期望保存在
+[numpy-reduction.json](../../tests/fixtures/numpy-reduction.json)，包含 API 摘要与 revision。
+
+隔离实验固定 Rust 计算出的 exp 值，只改变求和顺序：第一组分母从
+`2.0381219387054443` 变为 `2.0381221771240234`，第二组从
+`5.045550346374512` 变为 `5.0455498695373535`，两组 Score 均回到官方期望。
+这证明了这两个案例的归约顺序根因，不把人工 logits 当成真实文本推理失败。
+
+`numpy_sum` 按固定
+[NumPy 2.3.3 pairwise sum](https://github.com/numpy/numpy/blob/v2.3.3/numpy/_core/src/umath/loops_utils.h.src)
+保留八路累加、尾项和 128 项分块顺序，用于 softmax 分母及 confidence 熵。
+沿用固定 bundle、温度、四位舍入与原容差；新增依赖为零，移植许可见
+[NOTICE](../../NOTICE.md)。新增评分回归先在旧实现上失败，修复后通过。
+16 个长度边界的 FP32 位模式期望来自同一 NumPy 的
+`a = np.full(n, 2**-24, dtype=np.float32); a[0] = 1; a.sum().view(np.uint32)`，
+覆盖短数组、八路累加、尾项及跨 128 项递归。
+
+`[已验证/HIGH，限下列执行环境与样例]` macOS ARM64：`cargo fmt --check`、
+`cargo clippy --locked --all-targets -- -D warnings` 通过；`cargo test --locked`
+为 85 passed / 8 ignored。Docker Linux ARM64（8 CPU、12 GiB、禁用额外 swap，
+Rust 1.98.1、ORT CPU 1.28.0）以 release 模式通过以下检查：
+
+- `cargo test --release --locked --lib postprocess::tests`：16 个求和长度边界。
+- `cargo test --release --locked --test postprocess`：11 项后处理测试，含两组新评分回归。
+- `cargo test --release --locked --bin laya-server model::tests::parity::linux_system_one_model_parity -- --ignored --nocapture`：21 个真实请求及异常后的 Session 恢复。
+- `cargo test --release --locked --bin laya-server model::tests::http::linux_http_model_parity_and_disconnect -- --ignored --nocapture`：21 个 HTTP/engine/官方对照、并发重复、分块 413、断开回收、原生错误恢复及指标。
+
+未复验 Windows、Linux x86_64 或性能；上述结果不证明所有输入上的逐位一致。

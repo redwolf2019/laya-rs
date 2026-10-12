@@ -22,3 +22,9 @@ softmax 的输出。使用标准库十进制定点格式化保留 Python 四位�
 中保存的 Apache 官方标准文本，不伪称上游自带文件，不添加未知版权人。
 其余原创代码继续遵循项目 [MIT License](LICENSE)。模型准备工具的其他归属见
 [model-prep NOTICE](tools/model-prep/NOTICE.md)。
+
+`src/postprocess.rs` 的 `numpy_sum` 改写自 NumPy 2.3.3
+[`loops_utils.h.src` 的实数 pairwise sum](https://github.com/numpy/numpy/blob/v2.3.3/numpy/_core/src/umath/loops_utils.h.src)。
+保留 FP32 八路累加、尾项和 128 项分块的加法顺序，去掉指针、stride、SIMD 预取及其他类型支持。
+Copyright (c) 2005-2025, NumPy Developers. All rights reserved.
+这部分遵循 [BSD-3-Clause](licenses/NumPy-BSD-3-Clause.txt)，许可文本随源码和发布包保留。

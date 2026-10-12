@@ -257,6 +257,41 @@ fn cpython_decimal_rounding_preserves_midpoint_sides_and_signed_zero() {
     }
 }
 
+#[test]
+fn numpy_reduction_preserves_score_rounding_boundaries() {
+    let data: Value = serde_json::from_str(include_str!("fixtures/numpy-reduction.json")).unwrap();
+    let calibration: Calibration = serde_json::from_str("{}").unwrap();
+    for case in data["cases"].as_array().unwrap() {
+        let logits: Vec<f32> = serde_json::from_value(case["logits"].clone()).unwrap();
+        let body = serde_json::json!({"state":null,"questions":{"q":{
+            "type":"score","instructions":"","criteria":vec![""; logits.len()]
+        }}});
+        let request =
+            Request::from_slice(&serde_json::to_vec(&body).unwrap(), &Limits::default()).unwrap();
+        let response = calibration
+            .response(
+                &request,
+                Outputs {
+                    logits_shape: &[1, logits.len() as i64],
+                    logits: &logits,
+                    act_probs_shape: &[1, 2],
+                    act_probs: &[0.5, 0.5],
+                },
+                0,
+            )
+            .unwrap();
+        let actual = serde_json::to_value(response).unwrap();
+        for field in ["score", "confidence"] {
+            assert_eq!(
+                actual["answers"]["q"][field].as_f64(),
+                case[field].as_f64(),
+                "{}/{field}",
+                case["name"]
+            );
+        }
+    }
+}
+
 fn replay(calibration: &Calibration, request: &Request, data: &Value, tokens: usize) -> Value {
     let logits: Vec<Vec<f32>> = serde_json::from_value(data["logits"].clone()).unwrap();
     let act: Vec<Vec<f32>> = serde_json::from_value(data["act_probs"].clone()).unwrap();

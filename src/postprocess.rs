@@ -1,9 +1,10 @@
 //! Official temperature selection and typed answers (compatibility.md §5/9).
-//! SPDX-License-Identifier: Apache-2.0
+//! SPDX-License-Identifier: Apache-2.0 AND BSD-3-Clause
 //!
 //! Port of he-jev/laya c5d78730's system_one / confidence_from_probs / temp_bucket;
-//! see NOTICE.md. Main arithmetic follows NumPy 2.3.3 float32; Score's weighted
-//! sum promotes to float64. Decimal formatting rounds the exact binary64 value
+//! NumPy 2.3.3's pairwise sum is adapted below; see NOTICE.md. Main arithmetic
+//! follows NumPy 2.3.3 float32; Score's weighted sum promotes to float64.
+//! Decimal formatting rounds the exact binary64 value
 //! to four places, ties to even, without a multiply that could erase midpoint sides.
 //! Outputs are row-major float32: logits [B,K], already-softmaxed act_probs [B,2].
 //! Validate every slot (including padding); only real options enter main softmax.
@@ -139,7 +140,7 @@ impl Calibration {
         for value in &mut p {
             *value = value.exp();
         }
-        let sum: f32 = p.iter().sum();
+        let sum = numpy_sum(&p);
         for value in &mut p {
             *value /= sum;
         }
@@ -220,8 +221,31 @@ pub fn round4(value: f64) -> Result<f64, Error> {
 }
 
 fn confidence(p: &[f32]) -> Result<f64, Error> {
-    let entropy = -p.iter().map(|v| v * v.clamp(1e-12, 1.0).ln()).sum::<f32>();
+    let terms: Vec<_> = p.iter().map(|v| v * v.clamp(1e-12, 1.0).ln()).collect();
+    let entropy = -numpy_sum(&terms);
     round4(f64::from(1.0 - entropy / (p.len() as f64).ln() as f32))
+}
+
+// Keep NumPy 2.3.3's addition order: reassociation can change four-place answers.
+fn numpy_sum(values: &[f32]) -> f32 {
+    if values.len() > 128 {
+        let half = values.len() / 2;
+        let half = half - half % 8;
+        return numpy_sum(&values[..half]) + numpy_sum(&values[half..]);
+    }
+    let (chunks, tail) = values.as_chunks::<8>();
+    let Some((first, remaining)) = chunks.split_first() else {
+        return values.iter().fold(-0.0, |sum, value| sum + value);
+    };
+    let mut sums = *first;
+    for chunk in remaining {
+        for (sum, value) in sums.iter_mut().zip(chunk) {
+            *sum += value;
+        }
+    }
+    let sum =
+        ((sums[0] + sums[1]) + (sums[2] + sums[3])) + ((sums[4] + sums[5]) + (sums[6] + sums[7]));
+    tail.iter().fold(sum, |sum, value| sum + value)
 }
 
 fn answer(criteria: &Criteria, p: &[f32], act_probability: f64) -> Result<Answer, Error> {
@@ -271,4 +295,35 @@ fn rounded_probabilities(
     keys.zip(p)
         .map(|(key, v)| Ok((key, round4(f64::from(*v))?)))
         .collect()
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn numpy_sum_matches_pinned_float32_reduction_at_block_boundaries() {
+        // NumPy 2.3.3: a = np.full(n, 2**-24, dtype=np.float32); a[0] = 1.
+        // Expected bits come from a.sum().view(np.uint32), not a Rust reduction.
+        for (len, expected) in [
+            (2, 0x3f800000),
+            (7, 0x3f800000),
+            (8, 0x3f800003),
+            (9, 0x3f800004),
+            (15, 0x3f800004),
+            (16, 0x3f800007),
+            (17, 0x3f800008),
+            (31, 0x3f80000c),
+            (32, 0x3f80000e),
+            (33, 0x3f80000e),
+            (127, 0x3f800036),
+            (128, 0x3f800038),
+            (129, 0x3f80003c),
+            (255, 0x3f800078),
+            (256, 0x3f800078),
+            (257, 0x3f800078),
+        ] {
+            let mut values = vec![f32::EPSILON / 2.0; len];
+            values[0] = 1.0;
+            assert_eq!(super::numpy_sum(&values).to_bits(), expected, "n={len}");
+        }
+    }
 }

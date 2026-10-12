@@ -190,6 +190,9 @@ Choice probabilities 保留规范化选项顺序；Score legend/probabilities �
 | action 头 | 官方对 act logits 做 softmax，取第 0 项为 `rl_agent.act_probability`；不受主答案温度影响，不作四位舍入 |
 
 官方主 logits 先转 float32 NumPy 数组再运算，Score 的索引乘法涉及 NumPy dtype 提升。
+softmax 分母和 confidence 熵的 FP32 求和遵循 NumPy 2.3.3 的 pairwise 顺序：
+不足 8 项顺序累加，8–128 项使用八路累加与固定合并顺序，超过 128 项按 8 的倍数分块。
+不能用逐项累加或改为 f64 求和替代该顺序；差异可能跨过四位舍入边界。
 不能假定全部 f64 运算或数学公式相同即可过对照；参考环境的 NumPy/PyTorch 版本和逐阶段 dtype
 由 fixture 产物锁定并记录，误差判断始终使用第 9 节已冻结阈值。
 `round(0.03125,4)=0.0312`；中点及两侧要做独立测试。

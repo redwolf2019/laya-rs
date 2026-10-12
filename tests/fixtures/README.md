@@ -29,6 +29,13 @@ Python 的记数法（指数范围 -4..15 用定点，其余指数带符号且�
 容器及 Unicode 不使用 serde_json 默认 dump 或全局空格替换；转义规则对照
 [固定 CPython 编码器](https://github.com/python/cpython/blob/41388c9cb160d0886d5ca00d2e6c8782608a4549/Modules/_json.c)。
 
+[numpy-reduction.json](numpy-reduction.json) 是两组人工 32 项 logits，来自全仓库审查的
+求和舍入复现。Score/confidence 期望由固定官方 API 后处理 AST 在 CPython 3.11.16、
+NumPy 2.3.3 的 Linux ARM64 环境中生成，API 摘要和 revision 保存在文件内。
+这些样例不来自真实模型；它们只验证 FP32 归约的四位边界，原有模型 fixtures 不变。
+另有 `postprocess::tests` 对 `[1.0, 2**-24, ...]` 的 NumPy FP32 求和值逐位比较，
+覆盖 8 路、尾项及 128 项分块边界；来源与范围见[后处理验收](../../docs/validation/postprocess.md)。
+
 开发期复现使用已有 #7 固定容器，新路径不能已存在：
 
 ```sh
