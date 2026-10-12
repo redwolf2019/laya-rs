@@ -1,0 +1,161 @@
+Actual native check output excerpts; paths after log= replaced with <validation-log>.
+Full model and deployment stdout is retained in the task staging directory.
+
+== windows-parity.log ==
+PASS: en-choice.json, slot=0
+PASS: en-noul.json, slot=1
+PASS: en-score.json, slot=0
+PASS: huge-integer.json, slot=1
+PASS: json-order-numbers.json, slot=0
+PASS: long-padding.json, slot=1
+PASS: marker.json, slot=0
+PASS: mixed-16.json, slot=1
+PASS: mixed-6.json, slot=0
+PASS: normalization.json, slot=1
+PASS: options-10.json, slot=0
+PASS: options-11.json, slot=1
+PASS: options-2.json, slot=0
+PASS: options-3.json, slot=1
+PASS: options-32.json, slot=0
+PASS: options-5.json, slot=1
+PASS: options-6.json, slot=0
+PASS: scalars.json, slot=1
+PASS: zh-choice.json, slot=0
+PASS: zh-noul.json, slot=1
+PASS: zh-score.json, slot=0
+PASS: artificial native shape/NaN outputs rejected; same probe Session recovers
+PASS: typed sequence/native failures; same real Session recovers without reloading
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 25.56s
+
+== windows-final-gate.log ==
+PASS: Install (expected failure=False)
+PASS: Start (expected failure=False)
+PASS: repeated Start rejects conflict and preserves old process
+PASS: wrong PID ownership rejected
+PASS: asset verification failure preserves old process
+PASS: Stop (expected failure=False)
+PASS: Install (expected failure=False)
+PASS: Start (expected failure=False)
+PASS: Update (expected failure=False)
+PASS: A-to-B version switch and external model reuse without model archive
+PASS: Update (expected failure=False)
+PASS: Update (expected failure=False)
+PASS: Update (expected failure=True)
+PASS: Update (expected failure=True)
+PASS: Update (expected failure=False)
+PASS: Stop (expected failure=False)
+PASS: Update (expected failure=False)
+PASS: real install/start/stop/update, startup/API rollback, recovery, stopped-state and model/token reuse
+PASS: real deployment/rollback gate with 8.3 TEMP
+PASS: chunked body >1 MiB rejected before terminal chunk
+PASS: disconnected CPU work completed and owner reaped it
+PASS: real native inference failure returns a static 500 envelope
+PASS: 21 HTTP/engine/official fixtures, 4 concurrent repeats, chunked 413, TCP disconnect, recovery, all tasks reaped
+PASS: native log fields contain only a static event and typed severity
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 53.02s
+PASS: real CPU drain; timed=False queued=503 exit=0; port rebind
+PASS: real CPU timed-file; timed=True queued=503 exit=1; port rebind
+PASS: real CPU timed-ctrl-c; timed=True queued=503 exit=1; port rebind
+PASS: real CPU timed-ctrl-break; timed=True queued=503 exit=1; port rebind
+PASS: final ZIP HTTP parity and native lifecycle
+
+== macos-final-gate.log ==
+PASS: install expected_failure=False
+PASS: start expected_failure=True
+PASS: port conflict and interrupted first start do not adopt a listener or leave a child
+PASS: start Validated. log=<validation-log>
+PASS: start expected_failure=True
+PASS: stop expected_failure=True
+PASS: update expected_failure=True
+PASS: duplicate start, wrong PID and download failure preserve old live instance
+PASS: update Validated. log=<validation-log>
+PASS: stop expected_failure=False
+PASS: start Validated. log=<validation-log>
+PASS: update Previous deployment restored and validated. log=<validation-log>
+PASS: stop expected_failure=False
+PASS: start Validated. log=<validation-log>
+PASS: update Previous deployment restored and validated. log=<validation-log>
+PASS: stop expected_failure=False
+PASS: start Validated. log=<validation-log>
+PASS: update Previous deployment restored and validated. log=<validation-log>
+PASS: stop expected_failure=False
+PASS: start Validated. log=<validation-log>
+PASS: real A-to-B upgrade and startup/API-failure rollback
+PASS: update expected_failure=True
+PASS: start expected_failure=True
+PASS: update Previous deployment restored and validated. log=<validation-log>
+PASS: concurrent update rejected; interrupted real switch reclaims candidate; recovery validates old CPU inference
+PASS: stop expected_failure=False
+PASS: update expected_failure=False
+PASS: Chinese Choice/Score/Noul real API response
+PASS: stopped state, unchanged model cache and token; real deployment gate
+
+== macos-final-parity.log ==
+PASS: en-choice.json, slot=0
+PASS: en-noul.json, slot=1
+PASS: en-score.json, slot=0
+PASS: huge-integer.json, slot=1
+PASS: json-order-numbers.json, slot=0
+PASS: long-padding.json, slot=1
+PASS: marker.json, slot=0
+PASS: mixed-16.json, slot=1
+PASS: mixed-6.json, slot=0
+PASS: normalization.json, slot=1
+PASS: options-10.json, slot=0
+PASS: options-11.json, slot=1
+PASS: options-2.json, slot=0
+PASS: options-3.json, slot=1
+PASS: options-32.json, slot=0
+PASS: options-5.json, slot=1
+PASS: options-6.json, slot=0
+PASS: scalars.json, slot=1
+PASS: zh-choice.json, slot=0
+PASS: zh-noul.json, slot=1
+PASS: zh-score.json, slot=0
+PASS: artificial native shape/NaN outputs rejected; same probe Session recovers
+PASS: typed sequence/native failures; same real Session recovers without reloading
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 11.02s
+PASS: chunked body >1 MiB rejected before terminal chunk
+PASS: disconnected CPU work completed and owner reaped it
+PASS: real native inference failure returns a static 500 envelope
+PASS: 21 HTTP/engine/official fixtures, 4 concurrent repeats, chunked 413, TCP disconnect, recovery, all tasks reaped
+PASS: native log fields contain only a static event and typed severity
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 24.95s
+PASS: requests=8 native_runs=8 observed_max=1 configured_slots=1 threads_per_session=2 inter_op=1
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 4.49s
+PASS: requests=8 native_runs=8 observed_max=2 configured_slots=2 threads_per_session=2 inter_op=1
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 3.27s
+PASS: idle-SIGINT, signal=SIGINT, exit=0, port rebind
+PASS: drain-SIGINT, signal=SIGINT, exit=0, port rebind
+PASS: timed-SIGINT, signal=SIGINT, exit=1, port rebind
+PASS: idle-SIGTERM, signal=SIGTERM, exit=0, port rebind
+PASS: drain-SIGTERM, signal=SIGTERM, exit=0, port rebind
+PASS: timed-SIGTERM, signal=SIGTERM, exit=1, port rebind
+PASS: final macOS parity, HTTP, N=1/2, native lifecycle
+
+== public-download.log ==
+PASS: anonymous HTTPS full download laya-macos.sh c12791e7558e28877b03af31ff0145eca0d44ddc4bbf52bfb49609223c6dc18a
+PASS: anonymous HTTPS full download install.sh 8f980b000eac3eec1e525eac3dbf5605c985939eb896e4031a6b182cd4eb1ee3
+PASS: anonymous HTTPS full download laya-server-linux-x86_64.tar.gz 1cdc3de282eafba5b2d00e4cffbda8a1cab8b1ee17af10c6a2a99c62150227d8
+PASS: anonymous HTTPS full download laya-server-windows-x86_64.zip d380376bf5c15d3d3c241f46f44bf74384e0c7fe06e0b3e842adeb2f0a002cd8
+PASS: anonymous HTTPS full download laya.ps1 5d505c5f07b4b988dec409845e86d8043ed69291e6e6df448eef4b425a302c33
+PASS: anonymous HTTPS full download release.env 8e8f448e6654872123500dacf708837c4fa7ca98a3ce688e07143e8670e61a82
+PASS: anonymous HTTPS full download laya-server-linux-aarch64.tar.gz b442a1931cfda907e33aa6c3e66dc0cd80868454b60c912cb7d0b36fcd122d93
+PASS: anonymous HTTPS full download laya-server-macos-aarch64.tar.gz 47b5ae6522a6508c88a2630f839b9d2f5dadb48aaa007c1aca3dde9b9c94d4ec
+PASS: anonymous HTTPS full download SHA256SUMS 1a76c3f124d3fa400408980addcd7c540468c14df51f89ef7e6bc2d8f1924be5
+PASS: anonymous HTTPS full download runtime-sources-aarch64.tar.gz 8d1284e8370e8fa412bf7d24b9fb8427af86b904245c53e3edbbec7509dcaa78
+PASS: anonymous HTTPS full download runtime-sources-x86_64.tar.gz b91423c1eb1408c205e1a27c4bc0610946ef9a551de8402f9c57c5d301f1dd37
+PASS: public latest v0.1.4; all 11 downloads, sizes and SHA-256 match
+
+== macos-public.log ==
+Prepared v0.1.4. Run start in the terminal; install does not start a process.
+PASS: public latest lookup, script hash, GitHub program/metadata download, install, three-type API and readiness
+Managed process stopped
+PASS: public macOS process stopped; existing model reused
+
+== windows-public.log ==
+Prepared and validated v0.1.4. Running state preserved. Token was not printed.
+Managed console process started; use Stop from another PowerShell window.
+PASS: public latest lookup, script hash, GitHub program/metadata download, install, three-type API and readiness
+Managed process is stopped.
+PASS: public Windows process stopped; existing model reused

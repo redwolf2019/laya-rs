@@ -2,8 +2,9 @@
 
 #20 的原始 Windows 10 22H2 范围已按用户本次指令改为仅 Windows 11 x64。
 应用使用 CPU ONNX Runtime，不使用显卡。实现与实测范围见
-[Windows 验收记录](validation/windows.md)。正式发布前须记录候选资产校验值。
-本票按已完成实现和现有主机实测收口；普通用户、干净环境/VC-UAC 及公开候选验收
+[Windows 历史验收记录](validation/windows.md)。v0.1.4 已公开发布，最终 ZIP、哈希与本机复验见
+[发布验收](validation/release-v0.1.4.md)。Windows Server CI 的数值对照未通过，本次仅按已验 Windows 11 范围发布。
+原 #20 按已完成实现和现有主机实测收口；普通用户、干净环境/VC-UAC 验收
 按用户要求暂缓，未执行状态保留在验收记录中。
 
 ## 部署契约
@@ -32,15 +33,15 @@ VC++ x64 运行库最低版本随构建产物记录；缺失或过旧时须先�
 
 ## 操作与恢复
 
-公开 Windows 资产尚未发布时，现有 Linux release 无法用于 Windows 安装。
-在 MSVC x64 Developer PowerShell 中生成候选：
+[v0.1.4 Release](https://github.com/redwolf2019/laya-rs/releases/tag/v0.1.4) 提供 Windows ZIP 和管理脚本；
+普通运行可直接使用下方下载入口。需要自行构建时，在 MSVC x64 Developer PowerShell 中生成候选：
 
 ```powershell
 rustup show active-toolchain
 cargo fmt --check
 cargo clippy --locked --all-targets -- -D warnings
 cargo test --locked
-powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File .\tools\release\build-windows.ps1 -Version v0.1.2-candidate
+powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File .\tools\release\build-windows.ps1 -Version v0.1.4-candidate
 ```
 
 程序 ZIP、固定模型 `model-3bff67d421ae27d4.tar.gz` 与 `release.env` 放在同一候选目录。
@@ -50,14 +51,15 @@ powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File .\tools\release\bu
 生成同样字段。ZIP 包含 `build.json`、`pe-dependencies.txt`、`VC_MIN`、
 `program-files.json`、`source-files.json` 和许可证，不复制或替换系统 DLL。
 
-发布 Windows 资产后，下载完整脚本、核对同次发布清单，再解除下载标记：
+下载完整脚本、核对同次发布清单，再解除下载标记：
 
 ```powershell
 $release = Invoke-RestMethod 'https://api.github.com/repos/redwolf2019/laya-rs/releases/latest'
 if ($release.assets.name -notcontains 'laya-server-windows-x86_64.zip') { throw 'This release has no Windows asset.' }
 $base = "https://github.com/redwolf2019/laya-rs/releases/download/$($release.tag_name)"
 Invoke-WebRequest -UseBasicParsing -TimeoutSec 600 "$base/laya.ps1" -OutFile .\laya.ps1
-$sums = (Invoke-WebRequest -UseBasicParsing -TimeoutSec 60 "$base/SHA256SUMS").Content
+Invoke-WebRequest -UseBasicParsing -TimeoutSec 60 "$base/SHA256SUMS" -OutFile .\SHA256SUMS
+$sums = Get-Content -LiteralPath .\SHA256SUMS -Raw
 $expected = @($sums -split "`n" | Where-Object { $_ -match '^([0-9a-f]{64})  laya\.ps1\r?$' })
 if ($expected.Count -ne 1 -or (Get-FileHash .\laya.ps1).Hash.ToLowerInvariant() -ne $expected[0].Substring(0,64)) { throw 'Script hash mismatch.' }
 Unblock-File -LiteralPath .\laya.ps1
@@ -73,7 +75,7 @@ Stop 可从另一个 PowerShell 窗口运行：
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File .\laya.ps1 Stop
 powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File .\laya.ps1 Update
-powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File .\laya.ps1 Update -Version v0.1.2
+powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File .\laya.ps1 Update -Version v0.1.4
 ```
 
 程序位置用 `-Root 'D:\Laya 程序'`，外部固定模型用 Install 的

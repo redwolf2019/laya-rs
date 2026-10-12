@@ -6,8 +6,8 @@
 
 [![Rust 应用实现](https://img.shields.io/badge/Rust-runtime-F46623?logo=rust&logoColor=F46623&labelColor=24292F)](#构建与-cli)
 [![Linux x86_64 与 ARM64 原生部署](https://img.shields.io/badge/Linux-x86__64%20%7C%20ARM64-FCC624?logo=linux&logoColor=FCC624&labelColor=24292F)](docs/installation.md)
-[![Windows 11 x64 本地候选](https://img.shields.io/badge/Windows_11-x64_candidate-0078D4)](#windows-11-x64-便携版)
-[![macOS ARM64 本地候选](https://img.shields.io/badge/macOS-ARM64_candidate-555555?logo=apple)](#macos-apple-silicon-便携版)
+[![Windows 11 x64 便携版](https://img.shields.io/badge/Windows_11-x64-0078D4)](#windows-11-x64-便携版)
+[![macOS ARM64 便携版](https://img.shields.io/badge/macOS-ARM64-555555?logo=apple)](#macos-apple-silicon-便携版)
 [![Docker 仅支持 Linux ARM64](https://img.shields.io/badge/Docker-ARM64-2496ED?logo=docker&logoColor=2496ED&labelColor=24292F)](#docker-部署linux-arm64-cpu)
 [![原创代码采用 MIT 许可证](https://img.shields.io/badge/License-MIT-238636?labelColor=24292F)](LICENSE)
 
@@ -66,13 +66,14 @@ laya-rs 行为依据 [API 兼容契约](docs/compatibility.md)；本项目未执
 
 ## 选择部署方式
 
-核验日期 **2026-10-12**。公开稳定程序版 [v0.1.1](https://github.com/redwolf2019/laya-rs/releases/tag/v0.1.1)
-仅含 Linux 资产；Windows/macOS 已实现便携运行，当前只有本地候选，尚无公开下载包。
+核验日期 **2026-10-12**。公开程序版 [v0.1.4](https://github.com/redwolf2019/laya-rs/releases/tag/v0.1.4)
+提供下列四种原生程序包。程序与固定模型独立下载，按所用平台选择脚本。
+Windows Server 的数值对照、macOS 15 的回退 CI 未通过；Windows 按已验 Windows 11、macOS 按本机 27.0.1 范围发布，详见[失败记录与验收范围](docs/validation/release-v0.1.4.md)。
 
 | 平台与最低版本 | CPU 架构 | 运行方式与入口 | 实际验证范围 |
 | --- | --- | --- | --- |
 | Linux；未定义统一的发行版/内核下限 | x86_64 / ARM64 | [安装器与系统服务](#一键安装--卸载linux-x86_64arm64)，需交互终端、curl、root/sudo | 原生发布 CI；Debian 12 VM 的 systemd 生命周期；Alpine/musl 与其他管理器的局部检查见[安装验收](docs/validation/installer.md) |
-| Windows 11 | x64 | [PowerShell 5.1 控制台便携版](#windows-11-x64-便携版)，需 VC++ x64 运行库 | 11 专业工作站版 build 26300；普通用户、干净环境/VC-UAC 和公开分发未验收；不扩展到 Windows 10、Server、x86 或 ARM64 |
+| Windows 11 | x64 | [PowerShell 5.1 控制台便携版](#windows-11-x64-便携版)，需 VC++ x64 运行库 | 11 专业工作站版 build 26300；普通用户与干净环境/VC-UAC 完整矩阵未验收；不扩展到 Windows 10、Server、x86 或 ARM64 |
 | macOS 14+（最低构建目标） | Apple Silicon ARM64 | [Shell 前台便携版](#macos-apple-silicon-便携版)，使用系统工具，未公证 | 原生 27.0.1 / M2 Max；14、干净环境和 Gatekeeper 手动许可未验收；不支持 Intel、Universal 或 Rosetta |
 | Docker：Linux 容器 | ARM64 | [本地构建 Docker 镜像](#docker-部署linux-arm64-cpu) | Docker Desktop Linux ARM64；不支持该 Dockerfile 构建 linux/amd64 或 Windows/macOS 容器 |
 
@@ -141,13 +142,15 @@ systemd 正常停止：`sudo systemctl stop laya-server`；其他管理器的配
 
 ## Windows 11 x64 便携版
 
-当前可获取方式为按[Windows 候选构建与组装说明](docs/windows.md#操作与恢复)在开发机生成本地候选，
-或使用维护者提供并核对哈希的同一候选目录；`v0.1.1` 没有 Windows 程序包。
-候选目录须含 `laya.ps1`（仓库 `scripts/laya.ps1`）、`laya-server-windows-x86_64.zip`、
-`release.env` 和固定模型归档 `model-3bff67d421ae27d4.tar.gz`。
-已验收候选为 `v0.1.2-candidate`，哈希及范围见[Windows 验收](docs/validation/windows.md)。
+从 [v0.1.4 Release](https://github.com/redwolf2019/laya-rs/releases/tag/v0.1.4) 下载
+[`laya.ps1`](https://github.com/redwolf2019/laya-rs/releases/download/v0.1.4/laya.ps1)、
+[`laya-server-windows-x86_64.zip`](https://github.com/redwolf2019/laya-rs/releases/download/v0.1.4/laya-server-windows-x86_64.zip)、
+[`release.env`](https://github.com/redwolf2019/laya-rs/releases/download/v0.1.4/release.env) 与 [`SHA256SUMS`](https://github.com/redwolf2019/laya-rs/releases/download/v0.1.4/SHA256SUMS)，
+再从上面的固定模型 Release 获取 `model-3bff67d421ae27d4.tar.gz`，放到同一目录。
+用 `Get-FileHash` 将脚本、程序包和元数据与 `SHA256SUMS` 对照；模型会按 `release.env` 与逐文件清单校验。
+最终产物、同哈希实机复验和未执行项见[发布验收](docs/validation/release-v0.1.4.md)。
 
-在该候选目录打开 **Windows PowerShell 5.1**，核对脚本来源后执行；下载标记和组织执行策略
+在该下载目录打开 **Windows PowerShell 5.1**，核对脚本来源后执行；下载标记和组织执行策略
 按[详细教程](docs/windows.md#操作与恢复)处理。普通运行不需 Rust/MSVC 开发工具。
 VC++ 缺失或过旧时脚本先征求同意，再验证微软安装程序签名，仅运行库安装请求 UAC；
 取消、失败或需要重启均不会报告成功。
@@ -173,24 +176,25 @@ powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File .\laya.ps1 Stop
 数据根目录为 `%LOCALAPPDATA%\laya-server`：`programs` 存程序，`models` 存模型，
 `current.json`/`previous.json` 存配置，`token` 存密钥。目录及密钥 ACL 限当前用户与 SYSTEM；
 另一普通用户的实际访问拒绝仍待验收。升级用 `Update -ReleaseDirectory (Get-Location).Path`
-读取该目录的新候选；公开 Windows 资产发布后才可使用无本地目录参数的 Update。
+读取该目录的新候选；也可使用无本地目录参数的 Update 从最新稳定版下载。
 失败回退、事务恢复 `Update -Recover`、外部模型及配置参数见[操作与恢复](docs/windows.md#操作与恢复)。
 
 ## macOS Apple Silicon 便携版
 
-当前可获取方式为按[macOS 开发与发布说明](docs/macos.md#开发与发布)构建本地候选，
-并按[发布工作流](.github/workflows/release.yml)的 macOS `Real deployment, update and rollback` 步骤生成 `release.env`，
-或使用维护者提供并核对哈希的同一候选目录；`v0.1.1` 没有 macOS 程序包。
-候选目录须含 `laya-macos.sh`（仓库 `scripts/laya-macos.sh`）、`laya-server-macos-aarch64.tar.gz`、
-`release.env` 和固定模型归档 `model-3bff67d421ae27d4.tar.gz`。
-已验收候选为 `v0.1.1-macos21`，哈希见[macOS 验收](docs/validation/macos.md)。
+从 [v0.1.4 Release](https://github.com/redwolf2019/laya-rs/releases/tag/v0.1.4) 下载
+[`laya-macos.sh`](https://github.com/redwolf2019/laya-rs/releases/download/v0.1.4/laya-macos.sh)、
+[`laya-server-macos-aarch64.tar.gz`](https://github.com/redwolf2019/laya-rs/releases/download/v0.1.4/laya-server-macos-aarch64.tar.gz)、
+[`release.env`](https://github.com/redwolf2019/laya-rs/releases/download/v0.1.4/release.env) 与 [`SHA256SUMS`](https://github.com/redwolf2019/laya-rs/releases/download/v0.1.4/SHA256SUMS)，
+再获取固定模型 `model-3bff67d421ae27d4.tar.gz`，放到同一目录。
+用 `shasum -a 256` 将脚本、程序包和元数据与 `SHA256SUMS` 对照；模型由脚本校验。
+最终产物与同哈希实机复验见[发布验收](docs/validation/release-v0.1.4.md)。
 
 程序与 dylib 为 **ad-hoc 签名，未公证**。浏览器下载可能附带 quarantine；
 核验来源后按[具体文件手动允许运行说明](docs/macos.md#未公证分发)处理。
 该 Gatekeeper 流程尚未实测，脚本不关闭防护或自动清除隔离属性。
 普通用户使用系统 Bash 和工具即可，无需 sudo、Homebrew 或 Xcode。
 
-在候选目录的终端执行（Bash/zsh 均可调用）：
+在下载目录的终端执行（Bash/zsh 均可调用）：
 
 ```sh
 bash ./laya-macos.sh install --release-directory "$PWD"
@@ -209,7 +213,7 @@ printf 'Authorization: Bearer %s\n' "$LAYA_API_TOKEN" | \
 unset LAYA_API_TOKEN
 ```
 
-回到候选目录后停止：
+回到下载目录后停止：
 
 ```sh
 bash ./laya-macos.sh stop
@@ -218,7 +222,7 @@ bash ./laya-macos.sh stop
 数据根目录为 `$HOME/Library/Application Support/laya-server`，目录 0700、密钥 `token` 为 0600，
 移除继承 ACL。`programs`、`models`、`current.env`/`previous.env` 和 `run` 分别保存程序、
 模型、配置和日志。升级用 `update --release-directory "$PWD"` 读取该目录的新候选；
-公开 macOS 资产发布后才可直接使用 update。原来运行的实例更新或回退后由当前终端承载。
+也可直接使用 update 从最新稳定版下载。原来运行的实例更新或回退后由当前终端承载。
 事务恢复 `update --recover` 和外部目录规则见[升级与恢复](docs/macos.md#升级回退和中断恢复)。
 
 ### 监听、密钥与便携版维护
@@ -407,14 +411,15 @@ cargo build --release --locked
   [安装验收](docs/validation/installer.md)。
 - **Windows 本地候选**：#20 实现 `5403ddd`、独立探针 `fdc7123`、收口 `90fd6e4`；
   `v0.1.2-candidate` 在 Windows 11 build 26300 / i5-13600KF 通过 21 请求、HTTP、退出及升级回退。
-  普通用户 ACL、干净环境/VC-UAC、公开候选仍未验收，见[Windows 记录](docs/validation/windows.md)。
+  普通用户 ACL 与干净环境/VC-UAC 完整矩阵仍未验收，见[Windows 记录](docs/validation/windows.md)。
 - **macOS 本地候选**：#21 实现 `121a103`；`v0.1.1-macos21` 在 macOS 27.0.1 / M2 Max
   通过 21 请求、HTTP、退出及升级回退。macOS 14、无开发工具环境、浏览器 quarantine/Gatekeeper
-  手动许可及正式分发未验收，见[macOS 记录](docs/validation/macos.md)。
+  手动许可未验收，见[macOS 记录](docs/validation/macos.md)。
 
 #20/#21 按用户调整后的范围关闭，关闭状态不代表暂缓项通过。
 Linux 历史验收日期仍为 2026-09-24；平台候选日期为 2026-10-12。
-本次中英文命令、下载入口和引用的复核见 [README 核验记录](docs/validation/readme.md)。
+v0.1.4 的发布门禁、资产哈希及原机复验见[发布验收](docs/validation/release-v0.1.4.md)。
+发布前的中英文命令、下载入口和引用复核见 [README 核验记录](docs/validation/readme.md)。
 
 这些记录验证实现与固定参考的一致性，不等同于业务分类准确率评测、全部语言评测或 JEV 客户端兼容认证。
 
@@ -422,8 +427,8 @@ Linux 历史验收日期仍为 2026-09-24；平台候选日期为 2026-10-12。
 
 ### Windows/macOS 能直接从 latest 安装吗？
 
-目前不能：公开 `v0.1.1` 仅含 Linux 程序。请使用上面的本地候选入口；候选构建需要开发环境，
-运行已准备好的候选不需要。Windows 10、macOS Intel/Rosetta 不在本次支持范围，
+可以，`v0.1.4` 已提供两平台资产。上面使用完整下载目录安装；脚本自动下载的方式见平台教程。
+普通运行不需要开发工具。Windows 10、macOS Intel/Rosetta 不在本次支持范围，
 macOS 14 仅是构建目标。原生平台增加不改变 Docker 的 Linux ARM64 限制。
 
 ### 能离线运行吗？业务数据会发送给 JEV 吗？

@@ -15,7 +15,9 @@ Xcode、Rust、Python、Node.js 或 Docker。开发期构建和验收使用的 P
 资产的版本，下载 `laya-macos.sh`、`release.env` 和 `SHA256SUMS`。
 先用 `shasum -a 256 laya-macos.sh release.env` 对照同次发布的 `SHA256SUMS`。
 清单与资产同源，这只是完整性校验，不是独立签名；不要执行下载了一半的脚本。
-当前候选不等于已发布的稳定资产，未包含 macOS 包的旧版本会明确失败。
+[v0.1.4](https://github.com/redwolf2019/laya-rs/releases/tag/v0.1.4) 已包含 macOS 程序包。
+最终包在本机 macOS 27.0.1 验收；macOS 15 CI 的回退检查未通过，详情见[发布验收](validation/release-v0.1.4.md)。
+未包含 macOS 包的旧版本会明确失败。
 
 ```sh
 bash ./laya-macos.sh install
@@ -117,7 +119,7 @@ bash ./laya-macos.sh update --recover
 
 ## 未公证分发
 
-候选的可执行文件和 dylib 使用有效 **ad-hoc** 签名，没有 Developer ID 身份认证，
+发布包的可执行文件和 dylib 使用有效 **ad-hoc** 签名，没有 Developer ID 身份认证，
 也没有 Apple 公证。程序包内 `macho-signatures.txt` 记录每个文件的签名和依赖。
 浏览器下载可能附带 quarantine，首次运行及后续换版本都可能再次接受系统检查。
 
@@ -147,4 +149,5 @@ python3 tools/release/build-macos.py --version <候选 tag> --ort /绝对路径/
 发布新增 `laya-server-macos-aarch64.tar.gz`、`laya-macos.sh` 和 `MACOS_aarch64_*` 元数据；
 复用现有独立模型包，不改变 Linux/Windows 资产。CI 核验 runner 的实际架构/OS/SDK，
 普通 CI 不带权重；release job 运行真实模型、HTTP、生命周期及升级回退后只创建 draft。
-本次没有发布远端资产。
+v0.1.4 的 release workflow 因 Windows/macOS CI 失败未自动创建 draft；本次按用户已确认的平台范围，
+使用原生 Linux CI 产物和两台实测主机的 Windows/macOS 产物手动发布，未将失败步骤标记为通过。

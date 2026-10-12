@@ -6,8 +6,8 @@
 
 [![Rust application runtime](https://img.shields.io/badge/Rust-runtime-F46623?logo=rust&logoColor=F46623&labelColor=24292F)](#build-and-cli)
 [![Native deployment on Linux x86_64 and ARM64](https://img.shields.io/badge/Linux-x86__64%20%7C%20ARM64-FCC624?logo=linux&logoColor=FCC624&labelColor=24292F)](docs/installation.md)
-[![Windows 11 x64 local candidate](https://img.shields.io/badge/Windows_11-x64_candidate-0078D4)](#windows-11-x64-portable-build)
-[![macOS ARM64 local candidate](https://img.shields.io/badge/macOS-ARM64_candidate-555555?logo=apple)](#macos-apple-silicon-portable-build)
+[![Windows 11 x64 portable build](https://img.shields.io/badge/Windows_11-x64-0078D4)](#windows-11-x64-portable-build)
+[![macOS ARM64 portable build](https://img.shields.io/badge/macOS-ARM64-555555?logo=apple)](#macos-apple-silicon-portable-build)
 [![Docker supports Linux ARM64 only](https://img.shields.io/badge/Docker-ARM64-2496ED?logo=docker&logoColor=2496ED&labelColor=24292F)](#docker-deployment-linux-arm64-cpu)
 [![Original code is MIT licensed](https://img.shields.io/badge/License-MIT-238636?labelColor=24292F)](LICENSE)
 
@@ -67,13 +67,14 @@ For an existing JEV integration, start with your business question definitions, 
 
 ## Choose a deployment method
 
-Checked on **2026-10-12**. The public stable program release, [v0.1.1](https://github.com/redwolf2019/laya-rs/releases/tag/v0.1.1),
-contains Linux assets only. Windows and macOS portable builds are implemented, but their candidates are local and have no public download yet.
+Checked on **2026-10-12**. The public program release, [v0.1.4](https://github.com/redwolf2019/laya-rs/releases/tag/v0.1.4),
+provides the four native packages below. The program and fixed model are separate downloads; choose the script for your platform.
+Windows Server numerical parity and macOS 15 rollback CI failed. Windows is released for the tested Windows 11 scope; macOS validation is limited to the local 27.0.1 host. See [failures and coverage](docs/validation/release-v0.1.4.md).
 
 | Platform and minimum version | CPU architecture | Deployment and entry point | Actual validation coverage |
 | --- | --- | --- | --- |
 | Linux; no single distribution/kernel minimum defined | x86_64 / ARM64 | [Installer and system service](#one-command-installation--uninstallation-linux-x86_64-arm64); interactive terminal, curl, root/sudo | Native release CI; systemd lifecycle on Debian 12 VMs; partial Alpine/musl and other service-manager checks in [installer validation](docs/validation/installer.md) |
-| Windows 11 | x64 | [PowerShell 5.1 console portable build](#windows-11-x64-portable-build); requires VC++ x64 runtime | 11 Pro for Workstations build 26300; standard-user, clean-system/VC-UAC and public distribution checks pending; does not extend to Windows 10, Server, x86, or ARM64 |
+| Windows 11 | x64 | [PowerShell 5.1 console portable build](#windows-11-x64-portable-build); requires VC++ x64 runtime | 11 Pro for Workstations build 26300; standard-user and full clean-system/VC-UAC checks pending; does not extend to Windows 10, Server, x86, or ARM64 |
 | macOS 14+ (deployment target) | Apple Silicon ARM64 | [Shell foreground portable build](#macos-apple-silicon-portable-build); system tools; not notarized | Native 27.0.1 / M2 Max; 14, clean-system and manual Gatekeeper approval checks pending; no Intel, Universal, or Rosetta support |
 | Docker: Linux containers | ARM64 | [Build the Docker image locally](#docker-deployment-linux-arm64-cpu) | Docker Desktop Linux ARM64; this Dockerfile does not support linux/amd64 or Windows/macOS containers |
 
@@ -145,13 +146,15 @@ See [installer validation](docs/validation/installer.md) for the tested distribu
 
 ## Windows 11 x64 portable build
 
-For now, [build and assemble a local candidate](docs/windows.md#操作与恢复) on a development machine,
-or use the same candidate directory supplied by a maintainer after checking its hashes. `v0.1.1` has no Windows package.
-The directory must contain `laya.ps1` (from `scripts/laya.ps1`), `laya-server-windows-x86_64.zip`,
-`release.env`, and the fixed `model-3bff67d421ae27d4.tar.gz` archive.
-The tested candidate is `v0.1.2-candidate`; see [Windows validation](docs/validation/windows.md) for its hashes and coverage.
+From [v0.1.4](https://github.com/redwolf2019/laya-rs/releases/tag/v0.1.4), download
+[`laya.ps1`](https://github.com/redwolf2019/laya-rs/releases/download/v0.1.4/laya.ps1),
+[`laya-server-windows-x86_64.zip`](https://github.com/redwolf2019/laya-rs/releases/download/v0.1.4/laya-server-windows-x86_64.zip),
+[`release.env`](https://github.com/redwolf2019/laya-rs/releases/download/v0.1.4/release.env), and [`SHA256SUMS`](https://github.com/redwolf2019/laya-rs/releases/download/v0.1.4/SHA256SUMS).
+Get `model-3bff67d421ae27d4.tar.gz` from the fixed-model release linked above and put them in the same directory.
+Use `Get-FileHash` to compare the script, program package, and metadata with `SHA256SUMS`; the installer checks the model against `release.env` and its per-file manifest.
+See [release validation](docs/validation/release-v0.1.4.md) for final artifacts, native checks of the same hashes, and untested cases.
 
-Open **Windows PowerShell 5.1** in that candidate directory and verify the script's source before running it.
+Open **Windows PowerShell 5.1** in that download directory and verify the script's source before running it.
 Follow the [detailed guide](docs/windows.md#操作与恢复) for download marking and organization execution policies.
 Running the package requires no Rust/MSVC development tools. If VC++ is absent or too old, the script asks for consent,
 verifies the Microsoft installer's signature, and requests UAC for the runtime installation only.
@@ -181,24 +184,25 @@ The data root is `%LOCALAPPDATA%\laya-server`: `programs` holds programs, `model
 `current.json`/`previous.json` hold configuration, and `token` holds the secret.
 Directory and token ACLs restrict access to the current user and SYSTEM; actual access denial for another standard user remains untested.
 Use `Update -ReleaseDirectory (Get-Location).Path` to read a new candidate placed in that directory.
-Update without a local directory becomes usable once Windows assets are published.
+Update without a local directory downloads the latest stable version.
 See [operations and recovery](docs/windows.md#操作与恢复) for failed-update rollback, `Update -Recover`, external models, and configuration options.
 
 ## macOS Apple Silicon portable build
 
-For now, [build a local candidate](docs/macos.md#开发与发布) and generate `release.env` using the macOS
-`Real deployment, update and rollback` step in the [release workflow](.github/workflows/release.yml), or use the same candidate directory supplied by a maintainer
-after checking its hashes. `v0.1.1` has no macOS package.
-The directory must contain `laya-macos.sh` (from `scripts/laya-macos.sh`), `laya-server-macos-aarch64.tar.gz`,
-`release.env`, and the fixed `model-3bff67d421ae27d4.tar.gz` archive.
-The tested candidate is `v0.1.1-macos21`; hashes are in [macOS validation](docs/validation/macos.md).
+From [v0.1.4](https://github.com/redwolf2019/laya-rs/releases/tag/v0.1.4), download
+[`laya-macos.sh`](https://github.com/redwolf2019/laya-rs/releases/download/v0.1.4/laya-macos.sh),
+[`laya-server-macos-aarch64.tar.gz`](https://github.com/redwolf2019/laya-rs/releases/download/v0.1.4/laya-server-macos-aarch64.tar.gz),
+[`release.env`](https://github.com/redwolf2019/laya-rs/releases/download/v0.1.4/release.env), and [`SHA256SUMS`](https://github.com/redwolf2019/laya-rs/releases/download/v0.1.4/SHA256SUMS).
+Add the fixed `model-3bff67d421ae27d4.tar.gz` archive to the same directory.
+Use `shasum -a 256` to compare the script, program package, and metadata with `SHA256SUMS`; the installer verifies the model.
+See [release validation](docs/validation/release-v0.1.4.md) for final artifacts and native checks of the same hashes.
 
 The executable and dylib have **ad-hoc signatures and are not notarized**. Browser downloads may carry quarantine attributes;
 verify the source and follow the [manual approval guidance for the specific file](docs/macos.md#未公证分发).
 That Gatekeeper flow has not been tested. The script neither disables protection nor removes quarantine automatically.
 Use the system Bash and tools as a normal user; sudo, Homebrew, and Xcode are not required to run it.
 
-From a terminal in the candidate directory (callable from Bash or zsh):
+From a terminal in the download directory (callable from Bash or zsh):
 
 ```sh
 bash ./laya-macos.sh install --release-directory "$PWD"
@@ -218,7 +222,7 @@ printf 'Authorization: Bearer %s\n' "$LAYA_API_TOKEN" | \
 unset LAYA_API_TOKEN
 ```
 
-Return to the candidate directory to stop it:
+Return to the download directory to stop it:
 
 ```sh
 bash ./laya-macos.sh stop
@@ -227,7 +231,7 @@ bash ./laya-macos.sh stop
 The data root is `$HOME/Library/Application Support/laya-server`: directories use 0700, the `token` file uses 0600,
 and inherited ACLs are removed. `programs`, `models`, `current.env`/`previous.env`, and `run` hold programs,
 models, configuration, and logs respectively. Use `update --release-directory "$PWD"` to read a new candidate placed in that directory;
-update without it becomes usable once macOS assets are published. A previously running instance stays attached to the update terminal after an update or rollback.
+update without it downloads the latest stable version. A previously running instance stays attached to the update terminal after an update or rollback.
 See [updates and recovery](docs/macos.md#升级回退和中断恢复) for `update --recover` and external-directory rules.
 
 ### Network, tokens, and portable-build maintenance
@@ -418,15 +422,16 @@ Platform and release status checked on **2026-10-12**. The existing validation r
   other service managers, and public installation commands.
 - **Windows local candidate**: #20 implementation `5403ddd`, independent probe `fdc7123`, and scope closure `90fd6e4`.
   `v0.1.2-candidate` passed 21 requests, HTTP, shutdown, updates, and rollback on Windows 11 build 26300 / i5-13600KF.
-  Standard-user ACL, clean-system/VC-UAC, and public candidate checks remain pending; see [Windows records](docs/validation/windows.md).
+  Standard-user ACL and full clean-system/VC-UAC checks remain pending; see [Windows records](docs/validation/windows.md).
 - **macOS local candidate**: #21 implementation `121a103`.
   `v0.1.1-macos21` passed 21 requests, HTTP, shutdown, updates, and rollback on macOS 27.0.1 / M2 Max.
-  macOS 14, operation without development tools, browser quarantine/manual Gatekeeper approval, and formal distribution remain untested;
+  macOS 14, operation without development tools, browser quarantine/manual Gatekeeper approval remain untested;
   see [macOS records](docs/validation/macos.md).
 
 #20/#21 were closed under user-adjusted scopes; closure does not mark deferred checks as passed.
 The historical Linux validation date remains 2026-09-24; the platform candidates were validated on 2026-10-12.
-See the [README verification record](docs/validation/readme.md) for this pass over commands, download entry points, and links.
+See [release validation](docs/validation/release-v0.1.4.md) for v0.1.4 gates, asset hashes, and native rechecks.
+See the pre-release [README verification record](docs/validation/readme.md) for this pass over commands, download entry points, and links.
 
 These records verify consistency with a fixed reference. They are not business classification accuracy evaluations,
 evaluations of every supported language, or certification of JEV client compatibility.
@@ -435,8 +440,8 @@ evaluations of every supported language, or certification of JEV client compatib
 
 ### Can Windows/macOS install directly from latest?
 
-Not yet: public `v0.1.1` contains Linux programs only. Use the local-candidate paths above.
-Building a candidate requires a development environment; running a prepared candidate does not.
+Yes. `v0.1.4` includes both platforms. The steps above install from a complete download directory; see the platform guides for automatic downloads.
+Running the packages does not require development tools.
 Windows 10 and macOS Intel/Rosetta are outside this scope, and macOS 14 is a deployment target only.
 Adding native platforms does not change Docker's Linux ARM64 restriction.
 
