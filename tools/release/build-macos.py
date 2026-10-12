@@ -51,7 +51,8 @@ def licenses(package, ort):
     shutil.copytree(ROOT / "licenses", destination / "project")
     for name in ("LICENSE", "ThirdPartyNotices.txt"):
         shutil.copy2(ort / name, destination / ("ORT-" + name))
-    metadata = json.loads(run("cargo", "metadata", "--locked", "--format-version", "1"))
+    metadata = json.loads(subprocess.check_output(
+        ["cargo", "metadata", "--locked", "--format-version", "1"], cwd=ROOT, text=True))
     for crate in metadata["packages"]:
         if not crate["source"]:
             continue

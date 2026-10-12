@@ -5,9 +5,10 @@ $ProgressPreference = 'SilentlyContinue'
 if ($Version -notmatch '^v[0-9]+[A-Za-z0-9.+-]*$') { throw 'Invalid version' }
 if ($env:PROCESSOR_ARCHITECTURE -ne 'AMD64' -or -not $env:VCToolsRedistDir) { throw 'Use an x64 MSVC developer environment.' }
 $Utf8 = New-Object Text.UTF8Encoding($false)
-$repo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..'))
+$repo = (Get-Item -LiteralPath (Join-Path $PSScriptRoot '..\..')).FullName
 $Out = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Out)
 New-Item -ItemType Directory -Force $Out | Out-Null
+$Out = (Get-Item -LiteralPath $Out).FullName
 $work = Join-Path $Out ('windows-build-'+[Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory $work | Out-Null
 try {

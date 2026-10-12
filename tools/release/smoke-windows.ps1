@@ -26,6 +26,7 @@ function Test-Candidate([string]$Fault) {
     $unpack = Join-Path $bad 'unpacked'
     if (Test-Path $unpack) { Remove-Item $unpack -Recurse -Force }
     Expand-Archive (Join-Path $ReleaseDirectory 'laya-server-windows-x86_64.zip') $unpack
+    $unpack = (Get-Item -LiteralPath $unpack).FullName
     [IO.File]::WriteAllText((Join-Path $unpack 'VERSION'),'v0.1.2-fault-'+$Fault,$Utf8)
     if ($Fault -eq 'startup') { [IO.File]::WriteAllBytes((Join-Path $unpack 'onnxruntime.dll'),[byte[]]@(0)) }
     elseif ($Fault -eq 'api') { [IO.File]::WriteAllText((Join-Path $unpack 'smoke.json'),'{}',$Utf8) }

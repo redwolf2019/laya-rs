@@ -1,11 +1,14 @@
 """Exercise release metadata through the packaging CLI, without learned weights."""
 import io
+import importlib.util
+import os
 from pathlib import Path
 import subprocess
 import sys
 import tarfile
 import tempfile
 import zipfile
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 with tempfile.TemporaryDirectory() as temp:
@@ -38,3 +41,30 @@ with tempfile.TemporaryDirectory() as temp:
     # Windows metadata stays separate; Linux installers retain their existing fields.
     assert "RUNTIME_x86_64_SHA256" in metadata and "RUNTIME_aarch64_SHA256" in metadata
 print("PASS: macOS/Windows assets and Linux metadata compatibility")
+
+if os.name == "posix":
+    spec = importlib.util.spec_from_file_location("build_macos", ROOT / "tools/release/build-macos.py")
+    build_macos = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(build_macos)
+    with tempfile.TemporaryDirectory() as temp:
+        directory = Path(temp)
+        package, ort, commands = (directory / name for name in ("package", "ort", "bin"))
+        for path in (package, ort, commands):
+            path.mkdir()
+        for name in ("LICENSE", "ThirdPartyNotices.txt"):
+            (ort / name).write_text("ORT test license\n")
+        rust = directory / "share/doc/rust"
+        (rust / "licenses").mkdir(parents=True)
+        (rust / "licenses/test.txt").write_text("Rust test license\n")
+        (rust / "COPYRIGHT.html").write_text("Rust test copyright\n")
+        cargo = commands / "cargo"
+        cargo.write_text("#!/bin/sh\nprintf 'Fetching metadata fixture\\n' >&2\nprintf '{\"packages\":[]}\\n'\n")
+        rustc = commands / "rustc"
+        rustc.write_text(f"#!{sys.executable}\nprint({str(directory)!r})\n")
+        for path in (cargo, rustc):
+            path.chmod(0o755)
+        with patch.dict(os.environ, PATH=str(commands) + os.pathsep + os.environ["PATH"]):
+            build_macos.licenses(package, ort)
+        assert (package / "licenses/ORT-LICENSE").read_text() == "ORT test license\n"
+        assert (package / "licenses/rust/test.txt").read_text() == "Rust test license\n"
+    print("PASS: macOS license collection parses stdout despite metadata diagnostics")
