@@ -1,0 +1,2 @@
+# Fixtures and release manifests are hashed byte-for-byte on every platform.
+* text=auto eol=lf
